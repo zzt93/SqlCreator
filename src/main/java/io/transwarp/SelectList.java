@@ -10,6 +10,13 @@ import java.util.ArrayList;
  * <h3></h3>
  */
 public class SelectList implements Table {
+
+    private final Table limit;
+
+    public SelectList(Table limit) {
+        this.limit = limit;
+    }
+
     public Optional<String> name() {
         return null;
     }

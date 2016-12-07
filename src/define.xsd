@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="tests" type="root" >
+        <xs:element name="sql" type="xs:complexType">
+            <xs:element name="where">
+
+            </xs:element>
+        </xs:element>
+    </xs:element>
+    <xs:complexType name="root">
+        <xs:sequence>
+            <xs:element name="test" maxOccurs="unbounded" type="test-type"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="test-type">
+        <xs:sequence>
+            <xs:element name="sql" maxOccurs="unbounded" type="sql-type"/>
+        </xs:sequence>
+        <xs:attributes>
+            <xs:attribute name="transaction" type="xs:boolean" default="false"/>
+            <xs:attribute name="threads" type="xs:unsignedInt" default="2"/>
+        </xs:attributes>
+    </xs:complexType>
+    <xs:complexType name="sql-type">
+        <xs:sequence>
+            <xs:element name="group-by" type="keyword"/>
+            <xs:element name="having" type="keyword"/>
+            <xs:element name="where" type="keyword"/>
+            <xs:element name="join" type="keyword"/>
+        </xs:sequence>
+        <xs:attributes>
+            <xs:attribute name="type" type="sql-op"/>
+            <xs:attribute name="table" type="xs:string"/>
+            <xs:attribute name="num" type="xs:int" default="100"/>
+            <xs:attribute name="nested-query-depth" type="xs:int" default="1"/>
+        </xs:attributes>
+
+    </xs:complexType>
+    <xs:complexType name="keyword">
+        <xs:attributes>
+            <xs:attribute name="type" type="xs:string"/>
+        </xs:attributes>
+    </xs:complexType>
+
+    <xs:complexType name="sql-op">
+        <xs:choice>
+            <xs:element name="select"/>
+            <xs:element name="update"/>
+            <xs:element name="delete"/>
+            <xs:element name="create"/>
+        </xs:choice>
+    </xs:complexType>
+</xs:schema>

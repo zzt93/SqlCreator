@@ -11,6 +11,13 @@ import java.util.ArrayList;
  */
 public class FromObj implements Table {
 
+    private ArrayList<Column> columns = new ArrayList<>();
+    private StringBuilder sql = new StringBuilder();
+
+
+    FromObj join(FromObj table) {
+        return this;
+    }
 
     public Optional<String> name() {
         return null;

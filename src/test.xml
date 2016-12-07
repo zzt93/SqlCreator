@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="define.xsd" >
+    <test>
+        <sql type="select">
+            <where type="=">
+            </where>
+        </sql>
+    </test>
+
+
+    <test>
+        <sql type="select" table="src.sql" num="1000">
+            <!--specify needed keyword-->
+            <group-by/>
+            <having/>
+        </sql>
+    </test>
+
+
+    <!--transaction default value is false-->
+    <test transaction="true" threads="3">
+        <sql type="select" num="1000" />
+        <sql type="update" num="1000" />
+        <sql type="delete" num="1000" />
+    </test>
+
+
+    <test>
+        <sql type="select">
+            <join type="non-equal"/>
+        </sql>
+    </test>
+
+
+</tests>
