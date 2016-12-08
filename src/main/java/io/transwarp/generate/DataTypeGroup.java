@@ -1,4 +1,4 @@
-package io.transwarp;
+package io.transwarp.generate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
 public enum DataTypeGroup {
 
     BoolGroup(DataType.BOOL),
-    NumGroup(DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE),
-    StringGroup(DataType.CHAR, DataType.VARCHAR, DataType.STRING),
+    NumGroup(DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+    StringGroup(DataType.CHAR),
     DateGroup(DataType.DATE, DataType.TIME, DataType.TIMESTAMP);
 
     private List<DataType> types;

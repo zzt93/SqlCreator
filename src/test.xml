@@ -10,7 +10,7 @@
     </test>
 
 
-    <test>
+    <test dialect="oracle">
         <sql type="select" table="src.sql" num="1000">
             <!--specify needed keyword-->
             <group-by/>

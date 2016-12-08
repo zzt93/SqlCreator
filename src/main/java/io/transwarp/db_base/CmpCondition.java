@@ -1,4 +1,6 @@
-package io.transwarp;
+package io.transwarp.db_base;
+
+import io.transwarp.generate.Table;
 
 /**
  * Created by zzt on 12/2/16.

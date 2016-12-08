@@ -1,4 +1,4 @@
-package io.transwarp;
+package io.transwarp.db_base;
 
 /**
  * Created by zzt on 12/5/16.

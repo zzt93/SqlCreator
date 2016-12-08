@@ -1,4 +1,4 @@
-package io.transwarp;
+package io.transwarp.generate;
 
 import com.google.common.base.Optional;
 

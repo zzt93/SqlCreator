@@ -1,6 +1,4 @@
-package io.transwarp;
-
-import org.aspectj.lang.annotation.Around;
+package io.transwarp.db_base;
 
 /**
  * Created by zzt on 12/5/16.

@@ -1,4 +1,4 @@
-package io.transwarp;
+package io.transwarp.generate;
 
 import com.google.common.base.Optional;
 
@@ -11,8 +11,14 @@ import java.util.ArrayList;
  */
 public class FromObj implements Table {
 
+    private final String name;
     private ArrayList<Column> columns = new ArrayList<>();
     private StringBuilder sql = new StringBuilder();
+
+    public FromObj(String name, ArrayList<Column> columns) {
+        this.name = name;
+        this.columns = columns;
+    }
 
 
     FromObj join(FromObj table) {
@@ -20,14 +26,14 @@ public class FromObj implements Table {
     }
 
     public Optional<String> name() {
-        return null;
+        return Optional.of(name);
     }
 
     public ArrayList<Column> columns() {
-        return null;
+        return columns;
     }
 
     public StringBuilder toSql() {
-        return null;
+        return sql;
     }
 }
