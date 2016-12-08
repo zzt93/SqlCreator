@@ -26,8 +26,13 @@ public class Column {
         this.type = type;
     }
 
+
     @Override
     public String toString() {
         return table.name() + "." + name;
+    }
+
+    public String getNameOrConst() {
+        return type.getRandom();
     }
 }

@@ -1,5 +1,7 @@
 package io.transwarp.generate.condition;
 
+import io.transwarp.generate.type.GenerationDataType;
+
 /**
  * Created by zzt on 12/5/16.
  * <p>
@@ -7,13 +9,7 @@ package io.transwarp.generate.condition;
  * <a href="https://docs.oracle.com/cd/B28359_01/server.111/b28286/conditions001.htm#SQLRF52081">document of
  * oracle condition</a>
  */
-public abstract class Condition {
-
-    public Condition() {
-        generate();
-    }
-
-    abstract void generate();
+abstract class Condition {
 
     Condition and(Condition condition) {
         toSql().append(LogicalOp.AND).append(condition.toSql());
@@ -32,6 +28,9 @@ public abstract class Condition {
 
     /**
      * @return return the string represent the condition of sql
+     *
+     * @see ParenAspect
+     * Post condition: -- ensured by aop
      * assert(sb.charAt(0) == '(');
      * assert(sb.charAt(sb.length()-1) == ')');
      */

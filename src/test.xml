@@ -4,8 +4,7 @@
       xsi:noNamespaceSchemaLocation="define.xsd" >
     <test>
         <sql type="select">
-            <where type="=">
-            </where>
+            <where type="="/>
         </sql>
     </test>
 

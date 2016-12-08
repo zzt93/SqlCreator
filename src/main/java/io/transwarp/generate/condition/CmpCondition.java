@@ -11,16 +11,13 @@ import io.transwarp.generate.common.Table;
  * <br>result</br>
  */
 public class CmpCondition extends Condition {
-    private StringBuilder stringBuilder = new StringBuilder();
-    private Table limit;
+    private StringBuilder stringBuilder;
+    private Table from;
 
-    public CmpCondition(Table limit) {
-        this.limit = limit;
-    }
-
-    @Override
-    void generate() {
-
+    public CmpCondition(Table from) {
+        this.from = from;
+        CmpOp op = CmpOp.randomOp();
+        stringBuilder = new StringBuilder(op.toSql(from.columns()));
     }
 
     public StringBuilder toSql() {
