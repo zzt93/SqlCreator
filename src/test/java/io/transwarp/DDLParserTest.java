@@ -1,6 +1,6 @@
 package io.transwarp;
 
-import io.transwarp.db_base.Dialect;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.parse.DDLParser;
 import org.junit.Test;
 

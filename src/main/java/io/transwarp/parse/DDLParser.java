@@ -1,16 +1,16 @@
 package io.transwarp.parse;
 
-import io.transwarp.db_base.Dialect;
-import io.transwarp.generate.Column;
-import io.transwarp.generate.FromObj;
-import io.transwarp.generate.GenerationDataType;
+import io.transwarp.db_specific.base.DBType;
+import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.common.Column;
+import io.transwarp.generate.common.FromObj;
+import io.transwarp.generate.type.GenerationDataType;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +23,12 @@ import java.util.regex.Pattern;
 public class DDLParser {
 
     private static final String TABLE = "TABLE";
-    private static Pattern columns = Pattern.compile("\\([^\\)]+\\)");
+    /**
+     * Pattern.DOTALL or (?s) tells Java to allow the dot to match newline characters
+     */
+    private static Pattern columns = Pattern.compile("\\(.*\\)", Pattern.DOTALL);
+    // TODO can't recognize 'a\n    NUMBER (1, 2) NOT NULL'
+    private static Pattern colDetail = Pattern.compile("[^\\s]+", Pattern.DOTALL);
     private final Dialect dialect;
     private final Scanner scanner;
 
@@ -42,7 +47,7 @@ public class DDLParser {
     }
 
     /**
-     * <a href="https://docs.oracle.com/cd/B14156_01/doc/B13812/html/sqcmd.htm#BABFBEFF">create table bnf</a>
+     * <a href="https://docs.oracle.com/cd/B14156_01/doc/B13812/html/sqcmd.htm#BABFBEFF">create table syntax</a>
      *
      * @return the object defined by ddl
      */
@@ -50,38 +55,48 @@ public class DDLParser {
         final StmtIterator it = createSql();
         while (it.hasNext()) {
             final String stmt = it.next();
-            int table = stmt.indexOf(TABLE);
-            if (table == -1) {
-                table = stmt.indexOf(TABLE.toLowerCase());
-            }
-            final String name = stmt.substring(table + TABLE.length(), stmt.indexOf('(', table));
+            final String name = extractTableName(stmt);
             final Matcher matcher = columns.matcher(stmt);
             if (matcher.find()) {
-                final String[] cols = matcher.group().split(",");
-                System.out.printf(Arrays.toString(cols));
+                final String group = matcher.group();
+                final String[] cols = group.substring(1, group.length() - 1).split(",");
                 ArrayList<Column> columns = new ArrayList<>();
                 for (String col : cols) {
-                    final String[] colDetail = col.split("\\s+|\\(");
-                    if (colDetail.length == 0) {
-                        continue;
-                    }
-                    // TODO always right?
-                    final String type = colDetail[1].toUpperCase();
-                    final GenerationDataType mapping = dialect.getType(type).mapping(extractLen(type));
-                    columns.add(new Column(colDetail[0], mapping));
+                    columns.add(extractCol(col));
                 }
                 // TODO how to require join column
                 return new FromObj(name, columns);
+            } else {
+                throw new IllegalArgumentException("Can't find create stmt:" + stmt);
             }
         }
         return null;
     }
 
+    private Column extractCol(String col) {
+        final Matcher m = colDetail.matcher(col);
+        assert m.find();
+        String cname = m.group();
+        assert m.find();
+        String ctype = m.group();
+        final String type = ctype.toUpperCase();
+        final GenerationDataType mapping = dialect.getType(type).mapToGeneration(extractLen(type));
+        return new Column(cname, mapping);
+    }
+
+    private String extractTableName(String stmt) {
+        int table = stmt.indexOf(TABLE);
+        if (table == -1) {
+            table = stmt.indexOf(TABLE.toLowerCase());
+        }
+        return stmt.substring(table + TABLE.length(), stmt.indexOf('(', table));
+    }
+
     private int extractLen(String type) {
         try {
-            return Integer.parseInt(type);
+            return Integer.parseInt(type.replaceAll("[^\\d]*", ""));
         } catch (NumberFormatException e) {
-            return 1;
+            return DBType.NO_LEN;
         }
     }
 }

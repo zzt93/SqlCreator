@@ -1,6 +1,6 @@
-package io.transwarp.db_base;
+package io.transwarp.generate.condition;
 
-import io.transwarp.generate.Table;
+import io.transwarp.generate.common.Table;
 
 /**
  * Created by zzt on 12/2/16.

@@ -1,6 +1,7 @@
-package io.transwarp.generate;
+package io.transwarp.generate.common;
 
 import com.google.common.base.Optional;
+import io.transwarp.generate.common.Column;
 
 import java.util.ArrayList;
 

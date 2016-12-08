@@ -1,4 +1,4 @@
-package io.transwarp.generate;
+package io.transwarp.generate.type;
 
 /**
  * Created by zzt on 12/7/16.

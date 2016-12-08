@@ -1,4 +1,4 @@
-package io.transwarp.generate;
+package io.transwarp.generate.type;
 
 import com.google.common.base.Strings;
 

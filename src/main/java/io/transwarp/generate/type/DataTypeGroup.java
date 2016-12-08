@@ -1,4 +1,4 @@
-package io.transwarp.generate;
+package io.transwarp.generate.type;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package io.transwarp.generate;
+package io.transwarp.generate.type;
 
 /**
  * Created by zzt on 12/2/16.
@@ -50,6 +50,26 @@ public enum DataType implements GenerationDataType {
         }
     },
     CHAR {
+        public String getRandom() {
+            return null;
+        }
+
+        /**
+         * @return max possible printable ascii char
+         */
+        public String getMax() {
+            return "~";
+        }
+
+        /**
+         * @return min printable char
+         */
+        public String getMin() {
+            return " ";
+        }
+    },
+    UNICODE {
+        @Override
         public String getRandom() {
             return null;
         }

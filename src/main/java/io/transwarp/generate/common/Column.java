@@ -1,4 +1,6 @@
-package io.transwarp.generate;
+package io.transwarp.generate.common;
+
+import io.transwarp.generate.type.GenerationDataType;
 
 /**
  * Created by zzt on 12/2/16.
@@ -22,5 +24,10 @@ public class Column {
     public Column(String name, GenerationDataType type) {
         this.name = name;
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return table.name() + "." + name;
     }
 }

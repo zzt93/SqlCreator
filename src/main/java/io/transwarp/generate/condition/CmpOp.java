@@ -1,7 +1,7 @@
-package io.transwarp.db_base;
+package io.transwarp.generate.condition;
 
 /**
- * Createdbyzzton12/6/16.
+ * Created by zzt on 12/6/16.
  * <p>
  * <h3></h3>
  */
@@ -12,7 +12,11 @@ public enum CmpOp {
     SMALL("<"),
     LARGE(">"),
     SMA_EQ("<="),
-    LAR_EQ(">=");
+    LAR_EQ(">="),
+    IS_NULL("IS NULL"),
+    LIKE("LIKE"),
+    BETWEEN("")
+    ;
 
     CmpOp(String s) {
 

@@ -1,8 +1,7 @@
 package io.transwarp.generate;
 
+import io.transwarp.generate.type.DataType;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by zzt on 12/7/16.

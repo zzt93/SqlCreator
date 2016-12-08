@@ -9,6 +9,6 @@
     <aop:aspectj-autoproxy />
 
     <!-- Aspect -->
-    <bean id="logAspect" class="io.transwarp.db_base.Condition" />
+    <bean id="logAspect" class="io.transwarp.generate.condition.Condition" />
 
 </beans>
