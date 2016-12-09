@@ -12,17 +12,17 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class ParenAspect {
 
-    @Around("execution(* io.transwarp.generate.condition.Condition+.toSql(..))")
-    public Object addParen(ProceedingJoinPoint pjp) {
-        final StringBuilder proceed;
-        try {
-            proceed = (StringBuilder) pjp.proceed();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            return new StringBuilder();
-        }
-        proceed.insert(0, '(');
-        proceed.append(')');
-        return proceed;
+  @Around("execution(* io.transwarp.generate.condition.Condition+.toSql(..))")
+  public Object addParen(ProceedingJoinPoint pjp) {
+    final StringBuilder proceed;
+    try {
+      proceed = (StringBuilder) pjp.proceed();
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
+      return new StringBuilder();
     }
+    proceed.insert(0, '(');
+    proceed.append(')');
+    return proceed;
+  }
 }

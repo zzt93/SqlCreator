@@ -8,15 +8,15 @@ import org.junit.Test;
  * <h3></h3>
  */
 public class CmpOpTest {
-    @Test
-    public void toSql() throws Exception {
+  @Test
+  public void toSql() throws Exception {
 
-    }
+  }
 
-    @Test
-    public void randomOp() throws Exception {
+  @Test
+  public void randomOp() throws Exception {
 
-    }
+  }
 
 
 }

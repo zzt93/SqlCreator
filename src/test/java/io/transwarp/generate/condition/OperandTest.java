@@ -14,13 +14,13 @@ import java.util.Arrays;
  * <h3></h3>
  */
 public class OperandTest {
-    @Test
-    public void randomSameTypeOperand() throws Exception {
+  @Test
+  public void randomSameTypeOperand() throws Exception {
 
-        ArrayList<Column> cols = new ArrayList<>();
-        Table test = new FromObj("test", cols);
-        final Operand[] operands = Operand.randomSameTypeGroupOperand(test, 2);
-        System.out.println(Arrays.toString(operands));
-    }
+    ArrayList<Column> cols = new ArrayList<>();
+    Table test = new FromObj("test", cols);
+    final Operand[] operands = Operand.randomSameTypeGroupOperand(test, 2);
+    System.out.println(Arrays.toString(operands));
+  }
 
 }

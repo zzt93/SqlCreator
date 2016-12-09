@@ -11,11 +11,11 @@ import java.util.ArrayList;
  */
 public interface Table {
 
-    Optional<String> name();
+  Optional<String> name();
 
-    ArrayList<Column> columns();
+  ArrayList<Column> columns();
 
-    StringBuilder toSql();
+  StringBuilder toSql();
 
-    Column randomCol();
+  Column randomCol();
 }

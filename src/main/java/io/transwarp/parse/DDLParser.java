@@ -22,82 +22,82 @@ import java.util.regex.Pattern;
  */
 public class DDLParser {
 
-    private static final String TABLE = "TABLE";
-    /**
-     * Pattern.DOTALL or (?s) tells Java to allow the dot to match newline characters
-     */
-    private static Pattern columns = Pattern.compile("\\(.*\\)", Pattern.DOTALL);
-    // TODO can't recognize 'a\n    NUMBER (1, 2) NOT NULL'
-    private static Pattern colDetail = Pattern.compile("[^\\s]+", Pattern.DOTALL);
-    private final Dialect dialect;
-    private final Scanner scanner;
+  private static final String TABLE = "TABLE";
+  /**
+   * Pattern.DOTALL or (?s) tells Java to allow the dot to match newline characters
+   */
+  private static Pattern columns = Pattern.compile("\\(.*\\)", Pattern.DOTALL);
+  // TODO can't recognize 'a\n    NUMBER (1, 2) NOT NULL'
+  private static Pattern colDetail = Pattern.compile("[^\\s]+", Pattern.DOTALL);
+  private final Dialect dialect;
+  private final Scanner scanner;
 
-    public DDLParser(String path, Dialect dialect) throws IOException {
-        Path sqlFile = Paths.get(path);
-        if (!Files.exists(sqlFile)) {
-            throw new IllegalArgumentException("File " + path + " not exists");
+  public DDLParser(String path, Dialect dialect) throws IOException {
+    Path sqlFile = Paths.get(path);
+    if (!Files.exists(sqlFile)) {
+      throw new IllegalArgumentException("File " + path + " not exists");
+    }
+    scanner = new Scanner(sqlFile);
+    scanner.useDelimiter(";");
+    this.dialect = dialect;
+  }
+
+  private StmtIterator createSql() {
+    return new StmtIterator(scanner);
+  }
+
+  /**
+   * <a href="https://docs.oracle.com/cd/B14156_01/doc/B13812/html/sqcmd.htm#BABFBEFF">create table syntax</a>
+   *
+   * @return the object defined by ddl
+   */
+  public FromObj parse() {
+    final StmtIterator it = createSql();
+    while (it.hasNext()) {
+      final String stmt = it.next();
+      final String name = extractTableName(stmt);
+      final Matcher matcher = columns.matcher(stmt);
+      if (matcher.find()) {
+        final String group = matcher.group();
+        final String[] cols = group.substring(1, group.length() - 1).split(",");
+        ArrayList<Column> columns = new ArrayList<>();
+        final FromObj fromObj = new FromObj(name, columns);
+        for (String col : cols) {
+          columns.add(extractCol(col, fromObj));
         }
-        scanner = new Scanner(sqlFile);
-        scanner.useDelimiter(";");
-        this.dialect = dialect;
+        // TODO how to require join column
+        return fromObj;
+      } else {
+        throw new IllegalArgumentException("Can't find create stmt:" + stmt);
+      }
     }
+    return null;
+  }
 
-    private StmtIterator createSql() {
-        return new StmtIterator(scanner);
-    }
+  private Column extractCol(String col, FromObj fromObj) {
+    final Matcher m = colDetail.matcher(col);
+    assert m.find();
+    String cname = m.group();
+    assert m.find();
+    String ctype = m.group();
+    final String type = ctype.toUpperCase();
+    final GenerationDataType mapping = dialect.getType(type).mapToGeneration(extractLen(type));
+    return new Column(cname, mapping, fromObj);
+  }
 
-    /**
-     * <a href="https://docs.oracle.com/cd/B14156_01/doc/B13812/html/sqcmd.htm#BABFBEFF">create table syntax</a>
-     *
-     * @return the object defined by ddl
-     */
-    public FromObj parse() {
-        final StmtIterator it = createSql();
-        while (it.hasNext()) {
-            final String stmt = it.next();
-            final String name = extractTableName(stmt);
-            final Matcher matcher = columns.matcher(stmt);
-            if (matcher.find()) {
-                final String group = matcher.group();
-                final String[] cols = group.substring(1, group.length() - 1).split(",");
-                ArrayList<Column> columns = new ArrayList<>();
-                final FromObj fromObj = new FromObj(name, columns);
-                for (String col : cols) {
-                    columns.add(extractCol(col, fromObj));
-                }
-                // TODO how to require join column
-                return fromObj;
-            } else {
-                throw new IllegalArgumentException("Can't find create stmt:" + stmt);
-            }
-        }
-        return null;
+  private String extractTableName(String stmt) {
+    int table = stmt.indexOf(TABLE);
+    if (table == -1) {
+      table = stmt.indexOf(TABLE.toLowerCase());
     }
+    return stmt.substring(table + TABLE.length(), stmt.indexOf('(', table));
+  }
 
-    private Column extractCol(String col, FromObj fromObj) {
-        final Matcher m = colDetail.matcher(col);
-        assert m.find();
-        String cname = m.group();
-        assert m.find();
-        String ctype = m.group();
-        final String type = ctype.toUpperCase();
-        final GenerationDataType mapping = dialect.getType(type).mapToGeneration(extractLen(type));
-        return new Column(cname, mapping, fromObj);
+  private int extractLen(String type) {
+    try {
+      return Integer.parseInt(type.replaceAll("[^\\d]*", ""));
+    } catch (NumberFormatException e) {
+      return DBType.NO_LEN;
     }
-
-    private String extractTableName(String stmt) {
-        int table = stmt.indexOf(TABLE);
-        if (table == -1) {
-            table = stmt.indexOf(TABLE.toLowerCase());
-        }
-        return stmt.substring(table + TABLE.length(), stmt.indexOf('(', table));
-    }
-
-    private int extractLen(String type) {
-        try {
-            return Integer.parseInt(type.replaceAll("[^\\d]*", ""));
-        } catch (NumberFormatException e) {
-            return DBType.NO_LEN;
-        }
-    }
+  }
 }

@@ -9,20 +9,20 @@ import io.transwarp.db_specific.OracleType;
  */
 public enum Dialect {
 
-    ORACLE(OracleType.values()),;
+  ORACLE(OracleType.values()),;
 
-    private final DBType[] values;
+  private final DBType[] values;
 
-    Dialect(DBType[] values) {
-        this.values = values;
+  Dialect(DBType[] values) {
+    this.values = values;
+  }
+
+  public DBType getType(String name) {
+    for (DBType value : values) {
+      if (name.startsWith(value.toString())) {
+        return value;
+      }
     }
-
-    public DBType getType(String name) {
-        for (DBType value : values) {
-            if (name.startsWith(value.toString())) {
-                return value;
-            }
-        }
-        throw new IllegalArgumentException("unknown name:" + name);
-    }
+    throw new IllegalArgumentException("unknown name:" + name);
+  }
 }

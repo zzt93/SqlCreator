@@ -9,29 +9,29 @@ package io.transwarp.generate.condition;
  */
 abstract class Condition {
 
-    Condition and(Condition condition) {
-        toSql().append(LogicalOp.AND).append(condition.toSql());
-        return this;
-    }
+  Condition and(Condition condition) {
+    toSql().append(LogicalOp.AND).append(condition.toSql());
+    return this;
+  }
 
-    Condition or(Condition condition) {
-        toSql().append(LogicalOp.OR).append(condition.toSql());
-        return this;
-    }
+  Condition or(Condition condition) {
+    toSql().append(LogicalOp.OR).append(condition.toSql());
+    return this;
+  }
 
-    Condition not() {
-        toSql().insert(0, LogicalOp.NOT);
-        return this;
-    }
+  Condition not() {
+    toSql().insert(0, LogicalOp.NOT);
+    return this;
+  }
 
-    /**
-     * @return return the string represent the condition of sql
-     *
-     * @see ParenAspect
-     * Post condition: -- ensured by aop
-     * assert(sb.charAt(0) == '(');
-     * assert(sb.charAt(sb.length()-1) == ')');
-     */
-    abstract StringBuilder toSql();
+  /**
+   * @return return the string represent the condition of sql
+   *
+   * @see ParenAspect
+   * Post condition: -- ensured by aop
+   * assert(sb.charAt(0) == '(');
+   * assert(sb.charAt(sb.length()-1) == ')');
+   */
+  abstract StringBuilder toSql();
 
 }

@@ -9,7 +9,7 @@ import io.transwarp.generate.type.GenerationDataType;
  */
 public interface DBType {
 
-    int NO_LEN = -1;
+  int NO_LEN = -1;
 
-    GenerationDataType mapToGeneration(int len);
+  GenerationDataType mapToGeneration(int len);
 }

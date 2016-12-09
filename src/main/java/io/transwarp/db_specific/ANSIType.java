@@ -12,19 +12,19 @@ import io.transwarp.generate.type.GenerationDataType;
  */
 public enum ANSIType implements DBType {
 
-    DECIMAL {
-        @Override
-        public GenerationDataType mapToGeneration(int len) {
-            return DataType.DECIMAL;
-        }
-    },
-    INT {
-        @Override
-        public GenerationDataType mapToGeneration(int len) {
-            if (len == DBType.NO_LEN) {
-                return DataType.INT;
-            }
-            return new CompoundDataType(DataType.BIT, len);
-        }
-    };
+  DECIMAL {
+    @Override
+    public GenerationDataType mapToGeneration(int len) {
+      return DataType.DECIMAL;
+    }
+  },
+  INT {
+    @Override
+    public GenerationDataType mapToGeneration(int len) {
+      if (len == DBType.NO_LEN) {
+        return DataType.INT;
+      }
+      return new CompoundDataType(DataType.BIT, len);
+    }
+  };
 }

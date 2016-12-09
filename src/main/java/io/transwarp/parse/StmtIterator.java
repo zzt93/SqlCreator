@@ -9,24 +9,24 @@ import java.util.Scanner;
  * <h3></h3>
  */
 public class StmtIterator implements Iterator<String> {
-    private final Scanner scanner;
+  private final Scanner scanner;
 
-    public StmtIterator(Scanner scanner) {
-        this.scanner = scanner;
-    }
+  public StmtIterator(Scanner scanner) {
+    this.scanner = scanner;
+  }
 
-    @Override
-    public boolean hasNext() {
-        return scanner.hasNext();
-    }
+  @Override
+  public boolean hasNext() {
+    return scanner.hasNext();
+  }
 
-    @Override
-    public String next() {
-        return scanner.next();
-    }
+  @Override
+  public String next() {
+    return scanner.next();
+  }
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
-    }
+  @Override
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
 }
