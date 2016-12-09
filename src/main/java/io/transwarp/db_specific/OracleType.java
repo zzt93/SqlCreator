@@ -108,7 +108,6 @@ public enum OracleType implements DBType {
         public GenerationDataType mapToGeneration(int len) {
             return NUMBER.mapToGeneration(len);
         }
-    },
-    ;
+    },;
 
 }

@@ -5,9 +5,10 @@ import com.google.common.base.Optional;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.FromObj;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.condition.Operand;
+import io.transwarp.generate.config.Config;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by zzt on 12/2/16.
@@ -16,28 +17,27 @@ import java.util.Random;
  */
 public class SelectList implements Table {
 
-    private final double possibility;
+    private final Config.Possibility possibility;
     private ArrayList<Column> cols;
 
     SelectList(FromObj from) {
-        this(from, 0.5);
+        this(from, Config.Possibility.SELECT_POSSIBILITY);
     }
 
-    SelectList(FromObj from, double possibility) {
+    SelectList(FromObj from, Config.Possibility possibility) {
         this.possibility = possibility;
         cols = randomCols(from);
     }
 
-    // TODO 12/8/16 remove fixed seed
-    private Random random = new Random(12);
-
     private ArrayList<Column> randomCols(Table from) {
         final ArrayList<Column> res = new ArrayList<>();
         for (Column column : from.columns()) {
-            if (random.nextDouble() < possibility) {
+            if (possibility.chooseFirst(true, false)) {
                 res.add(column);
             }
         }
+        // TODO 12/9/16 add expression produced by cols
+//        res.add(Operand.randomOperand(from, 0));
         return res;
     }
 
@@ -52,5 +52,10 @@ public class SelectList implements Table {
     public StringBuilder toSql() {
         final Joiner joiner = Joiner.on(", ");
         return new StringBuilder(joiner.join(cols));
+    }
+
+    @Override
+    public Column randomCol() {
+        return null;
     }
 }

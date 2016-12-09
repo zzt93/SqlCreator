@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="define.xsd" >
+       xsi:noNamespaceSchemaLocation="../../main/resources/define.xsd">
     <test>
         <sql type="select">
             <where type="="/>
@@ -20,9 +20,9 @@
 
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
-        <sql type="select" num="1000" />
-        <sql type="update" num="1000" />
-        <sql type="delete" num="1000" />
+        <sql type="select" num="1000"/>
+        <sql type="update" num="1000"/>
+        <sql type="delete" num="1000"/>
     </test>
 
 

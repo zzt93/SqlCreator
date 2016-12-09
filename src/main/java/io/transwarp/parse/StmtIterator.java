@@ -8,7 +8,7 @@ import java.util.Scanner;
  * <p>
  * <h3></h3>
  */
-public class StmtIterator implements Iterator<String>{
+public class StmtIterator implements Iterator<String> {
     private final Scanner scanner;
 
     public StmtIterator(Scanner scanner) {

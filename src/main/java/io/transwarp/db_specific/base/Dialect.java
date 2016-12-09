@@ -1,7 +1,6 @@
 package io.transwarp.db_specific.base;
 
 import io.transwarp.db_specific.OracleType;
-import io.transwarp.db_specific.base.DBType;
 
 /**
  * Created by zzt on 12/7/16.

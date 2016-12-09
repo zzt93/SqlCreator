@@ -12,7 +12,7 @@ import org.junit.Test;
 public class DDLParserTest {
     @Test
     public void delimiterTest() throws Exception {
-        final DDLParser ddlParser = new DDLParser("src/src.sql", Dialect.ORACLE);
+        final DDLParser ddlParser = new DDLParser("src/test/src.sql", Dialect.ORACLE);
         ddlParser.parse();
     }
 

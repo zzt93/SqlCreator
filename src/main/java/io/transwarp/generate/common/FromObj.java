@@ -15,8 +15,8 @@ public class FromObj implements Table {
     private ArrayList<Column> columns = new ArrayList<>();
     private StringBuilder sql = new StringBuilder();
 
-    public FromObj(String name, ArrayList<Column> columns) {
-        this.name = name;
+    public FromObj(String tableName, ArrayList<Column> columns) {
+        this.name = tableName;
         this.columns = columns;
     }
 
@@ -35,5 +35,10 @@ public class FromObj implements Table {
 
     public StringBuilder toSql() {
         return sql;
+    }
+
+    @Override
+    public Column randomCol() {
+        return null;
     }
 }

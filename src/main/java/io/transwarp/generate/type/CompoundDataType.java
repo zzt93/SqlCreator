@@ -31,4 +31,19 @@ public class CompoundDataType implements GenerationDataType {
     public String getMin() {
         return type.getMin();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompoundDataType that = (CompoundDataType) o;
+
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return type != null ? type.hashCode() : 0;
+    }
 }

@@ -1,76 +1,75 @@
 package io.transwarp.generate.condition;
 
-import io.transwarp.generate.common.Column;
+import io.transwarp.generate.common.Table;
 
-import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 12/6/16.
  * <p>
  * <h3></h3>
- *
+ * <p>
  * <h3>Questions</h3>
  * - <a href="http://stackoverflow.com/questions/25010763/how-to-use-fields-in-java-enum-by-overriding-the-method">
- *     how ot use fields in java enum by overriding the method</a>
+ * how to use fields in java enum by overriding the method</a>
  */
 public enum CmpOp {
 
     EQ("=") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            return twoOperands(columns, getOperator());
+        StringBuilder toSql(Table from) {
+            return twoOperands(from, getOperator());
         }
     },
     NOT_EQ("!=") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            return CmpOp.twoOperands(columns, getOperator());
+        StringBuilder toSql(Table from) {
+            return CmpOp.twoOperands(from, getOperator());
         }
     },
     SMALL("<") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            return CmpOp.twoOperands(columns, getOperator());
+        StringBuilder toSql(Table from) {
+            return CmpOp.twoOperands(from, getOperator());
         }
     },
     LARGE(">") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            return CmpOp.twoOperands(columns, getOperator());
+        StringBuilder toSql(Table from) {
+            return CmpOp.twoOperands(from, getOperator());
         }
     },
     SMA_EQ("<=") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            return CmpOp.twoOperands(columns, getOperator());
+        StringBuilder toSql(Table from) {
+            return CmpOp.twoOperands(from, getOperator());
         }
     },
     LAR_EQ(">=") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            return CmpOp.twoOperands(columns, getOperator());
+        StringBuilder toSql(Table from) {
+            return CmpOp.twoOperands(from, getOperator());
         }
     },
     IS_NULL("IS NULL") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            CmpOperand[] operands = randomOperand(columns, 1);
+        StringBuilder toSql(Table from) {
+            Operand[] operands = Operand.randomSameTypeGroupOperand(from, 1);
             return new StringBuilder(operands[0].toString()).append(getOperatorWithSpace());
         }
     },
     LIKE("LIKE") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            return CmpOp.twoOperands(columns, getOperatorWithSpace());
+        StringBuilder toSql(Table from) {
+            return CmpOp.twoOperands(from, getOperatorWithSpace());
         }
     },
     BETWEEN("BETWEEN") {
         private static final String and = " AND ";
 
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
-            CmpOperand[] operands = randomOperand(columns, 3);
+        StringBuilder toSql(Table from) {
+            Operand[] operands = Operand.randomSameTypeGroupOperand(from, 3);
             return new StringBuilder(operands[0].toString())
                     .append(getOperatorWithSpace())
                     .append(operands[1])
@@ -80,22 +79,21 @@ public enum CmpOp {
     },
     IN("IN") {
         @Override
-        StringBuilder toSql(ArrayList<Column> columns) {
+        StringBuilder toSql(Table from) {
             return null;
         }
     };
 
-    private static CmpOperand[] randomOperand(ArrayList<Column> columns, int num) {
-        final CmpOperand[] res = new CmpOperand[num];
-        return res;
+    private static int size = CmpOp.values().length;
+    private static ThreadLocalRandom random = ThreadLocalRandom.current();
+
+    private static StringBuilder twoOperands(Table src, String operator) {
+        Operand[] operands = Operand.randomSameTypeGroupOperand(src, 2);
+        return new StringBuilder(operands[0].toString()).append(operator).append(operands[1]);
     }
 
-    public String getOperator() {
-        return operator;
-    }
-
-    public String getOperatorWithSpace() {
-        return operatorWithSpace;
+    public static CmpOp randomOp() {
+        return CmpOp.values()[random.nextInt(size)];
     }
 
     private final String operator;
@@ -106,17 +104,13 @@ public enum CmpOp {
         this.operatorWithSpace = " " + operator + " ";
     }
 
-    abstract StringBuilder toSql(ArrayList<Column> columns);
-
-    private static ThreadLocalRandom random = ThreadLocalRandom.current();
-    private static int size = CmpOp.values().length;
-
-    private static StringBuilder twoOperands(ArrayList<Column> columns, String operator) {
-        CmpOperand[] operands = randomOperand(columns, 2);
-        return new StringBuilder(operands[0].toString()).append(operator).append(operands[1]);
+    public String getOperator() {
+        return operator;
     }
 
-    public static CmpOp randomOp() {
-        return CmpOp.values()[random.nextInt(size)];
+    public String getOperatorWithSpace() {
+        return operatorWithSpace;
     }
+
+    abstract StringBuilder toSql(Table from);
 }

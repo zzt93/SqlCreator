@@ -61,11 +61,12 @@ public class DDLParser {
                 final String group = matcher.group();
                 final String[] cols = group.substring(1, group.length() - 1).split(",");
                 ArrayList<Column> columns = new ArrayList<>();
+                final FromObj fromObj = new FromObj(name, columns);
                 for (String col : cols) {
-                    columns.add(extractCol(col));
+                    columns.add(extractCol(col, fromObj));
                 }
                 // TODO how to require join column
-                return new FromObj(name, columns);
+                return fromObj;
             } else {
                 throw new IllegalArgumentException("Can't find create stmt:" + stmt);
             }
@@ -73,7 +74,7 @@ public class DDLParser {
         return null;
     }
 
-    private Column extractCol(String col) {
+    private Column extractCol(String col, FromObj fromObj) {
         final Matcher m = colDetail.matcher(col);
         assert m.find();
         String cname = m.group();
@@ -81,7 +82,7 @@ public class DDLParser {
         String ctype = m.group();
         final String type = ctype.toUpperCase();
         final GenerationDataType mapping = dialect.getType(type).mapToGeneration(extractLen(type));
-        return new Column(cname, mapping);
+        return new Column(cname, mapping, fromObj);
     }
 
     private String extractTableName(String stmt) {

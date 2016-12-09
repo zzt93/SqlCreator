@@ -1,5 +1,7 @@
 package io.transwarp.generate.type;
 
+import java.util.Random;
+
 /**
  * Created by zzt on 12/2/16.
  * <p>
@@ -10,48 +12,49 @@ public enum DataType implements GenerationDataType {
     BIT {
         @Override
         public String getRandom() {
-            return null;
+            return random.nextBoolean() ? "1" : "0";
         }
 
         @Override
         public String getMax() {
-            return null;
+            return "1";
         }
 
         @Override
         public String getMin() {
-            return null;
+            return "0";
         }
     },
     BOOL {
         public String getRandom() {
-            return null;
+            return random.nextBoolean() ? "true" : "false";
         }
 
         public String getMax() {
-            return null;
+            return "true";
         }
 
         public String getMin() {
-            return null;
+            return "false";
         }
     },
     BYTE {
         public String getRandom() {
-            return null;
+            return "" + random.nextInt(256);
         }
 
         public String getMax() {
-            return null;
+            return "256";
         }
 
         public String getMin() {
-            return null;
+            return "0";
         }
     },
     CHAR {
+        private int count = '~' - ' ';
         public String getRandom() {
-            return null;
+            return "" + (' ' + random.nextInt(count));
         }
 
         /**
@@ -69,16 +72,17 @@ public enum DataType implements GenerationDataType {
         }
     },
     UNICODE {
+        private int count = MAX_PRINTABLE - ' ';
         @Override
         public String getRandom() {
-            return null;
+            return "" + (' ' + random.nextInt(count));
         }
 
         /**
          * @return max possible printable utf-16 char
          */
         public String getMax() {
-            return "" + (char)65533;
+            return "" + MAX_PRINTABLE;
         }
 
         /**
@@ -103,15 +107,15 @@ public enum DataType implements GenerationDataType {
     },
     INT {
         public String getRandom() {
-            return null;
+            return "" + random.nextInt();
         }
 
         public String getMax() {
-            return null;
+            return "" + Integer.MAX_VALUE;
         }
 
         public String getMin() {
-            return null;
+            return "" + Integer.MIN_VALUE;
         }
     },
     LONG {
@@ -206,5 +210,6 @@ public enum DataType implements GenerationDataType {
         }
     };
 
-
+    public static final char MAX_PRINTABLE = (char) 65533;
+    private static final Random random = new Random(12);
 }

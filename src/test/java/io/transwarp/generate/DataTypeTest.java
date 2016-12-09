@@ -11,9 +11,9 @@ import org.junit.Test;
 public class DataTypeTest {
     @Test
     public void codePoint() {
-//        for (int i = 0; i < 65535; i++) {
-//            System.out.println(i + ":" + (char)i);
-//        }
+        //        for (int i = 0; i < 65535; i++) {
+        //            System.out.println(i + ":" + (char)i);
+        //        }
         System.out.println(DataType.CHAR.getMax());
     }
 }

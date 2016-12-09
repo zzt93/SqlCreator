@@ -1,7 +1,5 @@
 package io.transwarp.generate.condition;
 
-import io.transwarp.generate.type.GenerationDataType;
-
 /**
  * Created by zzt on 12/5/16.
  * <p>
