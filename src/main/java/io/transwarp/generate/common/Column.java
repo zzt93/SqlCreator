@@ -20,19 +20,27 @@ public class Column {
   private GenerationDataType type;
   private String name;
 
-  private Table table;
+  //  private Table table;
 
-
-  public Column(String name, GenerationDataType type, FromObj fromObj) {
+  private Column(String name, GenerationDataType type) {
     this.name = name;
     this.type = type;
-    table = fromObj;
+    this.poss = Config.Possibility.NAME_CONST_POSSIBILITY;
+  }
+
+  public Column(String name, GenerationDataType type, Table table) {
+    if (table.name().isPresent()) {
+      this.name = table.name().get() + "." + name;
+    } else {
+      this.name = name;
+    }
+    this.type = type;
     this.poss = Config.Possibility.NAME_CONST_POSSIBILITY;
   }
 
   @Override
   public String toString() {
-    return table.name() + "." + name;
+    return name;
   }
 
   public String getNameOrConst() {
@@ -41,5 +49,13 @@ public class Column {
 
   public GenerationDataType getType() {
     return type;
+  }
+
+  public static Column[] fromOperand(Operand... operands) {
+    Column[] res = new Column[operands.length];
+    for (int i = 0; i < operands.length; i++) {
+      res[i] = new Column(operands[i].getOperand(), operands[i].getType());
+    }
+    return res;
   }
 }

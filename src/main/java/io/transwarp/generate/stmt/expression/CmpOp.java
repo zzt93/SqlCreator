@@ -1,5 +1,6 @@
-package io.transwarp.generate.condition;
+package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.generate.common.Operand;
 import io.transwarp.generate.common.Table;
 
 import java.util.concurrent.ThreadLocalRandom;

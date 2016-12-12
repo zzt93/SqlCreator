@@ -1,6 +1,7 @@
 package io.transwarp.generate.common;
 
 import com.google.common.base.Optional;
+import io.transwarp.generate.stmt.expression.Condition;
 
 import java.util.ArrayList;
 
@@ -13,15 +14,17 @@ public class FromObj implements Table {
 
   private final String name;
   private ArrayList<Column> columns = new ArrayList<>();
-  private StringBuilder sql = new StringBuilder();
+  private StringBuilder sql = new StringBuilder(" from ");
 
   public FromObj(String tableName, ArrayList<Column> columns) {
     this.name = tableName;
     this.columns = columns;
+    sql.append(name);
   }
 
 
-  FromObj join(FromObj table) {
+  @Override
+  public Table join(Table table, Condition condition) {
     return this;
   }
 
@@ -33,12 +36,8 @@ public class FromObj implements Table {
     return columns;
   }
 
-  public StringBuilder toSql() {
+  public StringBuilder sql() {
     return sql;
   }
 
-  @Override
-  public Column randomCol() {
-    return null;
-  }
 }

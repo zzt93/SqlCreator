@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:element name="tests" type="root">
-        <xs:element name="sql" type="xs:complexType">
-            <xs:element name="where">
-
-            </xs:element>
-        </xs:element>
+    <xs:element name="tests">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="test" type="test-type"/>
+            </xs:all>
+        </xs:complexType>
     </xs:element>
-    <xs:complexType name="root">
-        <xs:all>
-            <xs:element name="test" type="test-type"/>
-        </xs:all>
-    </xs:complexType>
     <xs:complexType name="test-type">
         <xs:all>
             <xs:element name="sql" type="sql-type"/>

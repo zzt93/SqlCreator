@@ -1,4 +1,4 @@
-package io.transwarp.generate.condition;
+package io.transwarp.generate.common;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -12,8 +12,12 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class ParenAspect {
 
-  @Around("execution(* io.transwarp.generate.condition.Condition+.toSql(..))")
+  @Around("execution(* io.transwarp.generate.stmt.expression.Condition+.toSql(..))")
   public Object addParen(ProceedingJoinPoint pjp) {
+    return addParenAround(pjp);
+  }
+
+  private StringBuilder addParenAround(ProceedingJoinPoint pjp) {
     final StringBuilder proceed;
     try {
       proceed = (StringBuilder) pjp.proceed();
@@ -24,5 +28,10 @@ public class ParenAspect {
     proceed.insert(0, '(');
     proceed.append(')');
     return proceed;
+  }
+
+  @Around("execution(* io.transwarp.generate.stmt.select.SelectResult.sql())")
+  public Object addParenAndSemicolon(ProceedingJoinPoint pjp) {
+    return addParenAround(pjp).append(";");
   }
 }

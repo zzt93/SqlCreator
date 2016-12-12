@@ -1,4 +1,7 @@
-package io.transwarp.generate.condition;
+package io.transwarp.generate.stmt.expression;
+
+import io.transwarp.generate.SqlGeneration;
+import io.transwarp.generate.common.ParenAspect;
 
 /**
  * Created by zzt on 12/5/16.
@@ -7,20 +10,20 @@ package io.transwarp.generate.condition;
  * <a href="https://docs.oracle.com/cd/B28359_01/server.111/b28286/conditions001.htm#SQLRF52081">document of
  * oracle condition</a>
  */
-abstract class Condition {
+public abstract class Condition implements SqlGeneration {
 
   Condition and(Condition condition) {
-    toSql().append(LogicalOp.AND).append(condition.toSql());
+    sql().append(LogicalOp.AND).append(condition.sql());
     return this;
   }
 
   Condition or(Condition condition) {
-    toSql().append(LogicalOp.OR).append(condition.toSql());
+    sql().append(LogicalOp.OR).append(condition.sql());
     return this;
   }
 
   Condition not() {
-    toSql().insert(0, LogicalOp.NOT);
+    sql().insert(0, LogicalOp.NOT);
     return this;
   }
 
@@ -32,6 +35,6 @@ abstract class Condition {
    * assert(sb.charAt(0) == '(');
    * assert(sb.charAt(sb.length()-1) == ')');
    */
-  abstract StringBuilder toSql();
+  public abstract StringBuilder sql();
 
 }

@@ -1,13 +1,10 @@
-package io.transwarp.generate.condition;
+package io.transwarp.generate.common;
 
-import io.transwarp.generate.common.Column;
-import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 12/8/16.
@@ -16,23 +13,37 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Operand {
 
-  private static ThreadLocalRandom random = ThreadLocalRandom.current();
+  private final GenerationDataType type;
   private String operand;
 
   private Operand(GenerationDataType type, Table src, int depth) {
-    operand = makeOperand(type, src, depth).toString();
+    this.type = type;
+    operand = makeOperand(this.type, src, depth).toString();
   }
 
   private StringBuilder makeOperand(GenerationDataType resultType, Table src, int depth) {
     if (depth == 0) {
       return new StringBuilder(
-              src.randomCol().getNameOrConst());
+              TableUtil.randomCol(src).getNameOrConst());
     } else {
       final StringBuilder sb = makeOperand(resultType, src, depth - 1);
       sb.insert(0, '(').append(')');
-      // TODO 12/9/16 add operator or function according to resultType
+      // TODO 12/9/16 add operator or function according to resultType and db type
       return sb;
     }
+  }
+
+  @Override
+  public String toString() {
+    return operand;
+  }
+
+  public GenerationDataType getType() {
+    return type;
+  }
+
+  String getOperand() {
+    return operand;
   }
 
   /**
@@ -43,7 +54,7 @@ public class Operand {
    *
    * @return operand array
    */
-  static Operand[] randomSameTypeGroupOperand(Table from, int num) {
+  public static Operand[] randomSameTypeGroupOperand(Table from, int num) {
     final Operand[] res = new Operand[num];
     final ArrayList<Column> columns = from.columns();
     ArrayList<Column> same = new ArrayList<>(columns.size());
@@ -56,8 +67,8 @@ public class Operand {
 
   public static Operand[] randomOperand(Table src, int num) {
     final Operand[] res = new Operand[num];
-    GenerationDataType type = src.randomCol().getType();
     for (int i = 0; i < num; i++) {
+      GenerationDataType type = TableUtil.randomCol(src).getType();
       res[i] = new Operand(type, src, Config.getUdfDepth());
     }
     return res;
@@ -65,7 +76,7 @@ public class Operand {
 
   private static GenerationDataType getSameTypeGroupCols(Table src, ArrayList<Column> same) {
     final ArrayList<Column> columns = src.columns();
-    final GenerationDataType type = src.randomCol().getType();
+    final GenerationDataType type = TableUtil.randomCol(src).getType();
     final DataTypeGroup group = DataTypeGroup.sameGroup(type);
     for (Column column : columns) {
       if (group.contains(column.getType())) {
@@ -75,8 +86,4 @@ public class Operand {
     return type;
   }
 
-  @Override
-  public String toString() {
-    return operand;
-  }
 }

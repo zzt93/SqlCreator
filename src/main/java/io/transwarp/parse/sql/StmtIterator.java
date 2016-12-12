@@ -1,4 +1,4 @@
-package io.transwarp.parse;
+package io.transwarp.parse.sql;
 
 import java.util.Iterator;
 import java.util.Scanner;
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class StmtIterator implements Iterator<String> {
   private final Scanner scanner;
 
-  public StmtIterator(Scanner scanner) {
+  StmtIterator(Scanner scanner) {
     this.scanner = scanner;
   }
 

@@ -2,6 +2,7 @@ package io.transwarp.generate.config;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 12/9/16.
@@ -12,6 +13,7 @@ public class Config {
 
 
   private static int udfDepth = 0;
+  private static int subQueryDepth = 0;
 
   public static int getUdfDepth() {
     return udfDepth;
@@ -19,6 +21,14 @@ public class Config {
 
   public static void setUdfDepth(int udfDepth) {
     Config.udfDepth = udfDepth;
+  }
+
+  public static int getSubQueryDepth() {
+    return subQueryDepth;
+  }
+
+  public static void setSubQueryDepth(int subQueryDepth) {
+    Config.subQueryDepth = subQueryDepth;
   }
 
   public enum Possibility {
@@ -33,8 +43,7 @@ public class Config {
       return this;
     }
 
-    // TODO 12/8/16 remove fixed seed
-    private Random random = new Random(12);
+    private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
     Possibility(double... v) {
       this.possibility = v;

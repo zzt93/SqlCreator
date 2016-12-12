@@ -1,4 +1,4 @@
-package io.transwarp.generate.condition;
+package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.generate.common.Table;
 
@@ -15,10 +15,10 @@ public class CmpCondition extends Condition {
 
   public CmpCondition(Table from) {
     CmpOp op = CmpOp.randomOp();
-    stringBuilder = new StringBuilder(op.toSql(from));
+    stringBuilder = new StringBuilder().append(op.toSql(from));
   }
 
-  public StringBuilder toSql() {
+  public StringBuilder sql() {
     return stringBuilder;
   }
 

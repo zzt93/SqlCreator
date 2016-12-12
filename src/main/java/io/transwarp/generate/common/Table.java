@@ -1,6 +1,8 @@
 package io.transwarp.generate.common;
 
 import com.google.common.base.Optional;
+import io.transwarp.generate.SqlGeneration;
+import io.transwarp.generate.stmt.expression.Condition;
 
 import java.util.ArrayList;
 
@@ -9,13 +11,12 @@ import java.util.ArrayList;
  * <p>
  * <h3></h3>
  */
-public interface Table {
+public interface Table extends SqlGeneration {
+
+  Table join(Table table, Condition condition);
 
   Optional<String> name();
 
   ArrayList<Column> columns();
 
-  StringBuilder toSql();
-
-  Column randomCol();
 }

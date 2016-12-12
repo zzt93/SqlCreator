@@ -15,5 +15,8 @@ public class DataTypeTest {
     //            System.out.println(i + ":" + (char)i);
     //        }
     System.out.println(DataType.CHAR.getMax());
+    System.out.println(DataType.UNICODE.getMax());
+    assert Integer.parseInt(DataType.CHAR.getMax()) < Byte.MAX_VALUE;
+    assert Integer.parseInt(DataType.UNICODE.getMax()) < Character.MAX_CODE_POINT;
   }
 }

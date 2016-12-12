@@ -1,9 +1,10 @@
-package io.transwarp.parse;
+package io.transwarp.parse.sql;
 
 import io.transwarp.db_specific.base.DBType;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.FromObj;
+import io.transwarp.generate.common.Table;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class DDLParser {
    *
    * @return the object defined by ddl
    */
-  public FromObj parse() {
+  public Table parse() {
     final StmtIterator it = createSql();
     while (it.hasNext()) {
       final String stmt = it.next();
@@ -61,12 +62,12 @@ public class DDLParser {
         final String group = matcher.group();
         final String[] cols = group.substring(1, group.length() - 1).split(",");
         ArrayList<Column> columns = new ArrayList<>();
-        final FromObj fromObj = new FromObj(name, columns);
+        final Table table = new FromObj(name, columns);
         for (String col : cols) {
-          columns.add(extractCol(col, fromObj));
+          columns.add(extractCol(col, table));
         }
         // TODO how to require join column
-        return fromObj;
+        return table;
       } else {
         throw new IllegalArgumentException("Can't find create stmt:" + stmt);
       }
@@ -74,7 +75,7 @@ public class DDLParser {
     return null;
   }
 
-  private Column extractCol(String col, FromObj fromObj) {
+  private Column extractCol(String col, Table table) {
     final Matcher m = colDetail.matcher(col);
     assert m.find();
     String cname = m.group();
@@ -82,7 +83,7 @@ public class DDLParser {
     String ctype = m.group();
     final String type = ctype.toUpperCase();
     final GenerationDataType mapping = dialect.getType(type).mapToGeneration(extractLen(type));
-    return new Column(cname, mapping, fromObj);
+    return new Column(cname, mapping, table);
   }
 
   private String extractTableName(String stmt) {
