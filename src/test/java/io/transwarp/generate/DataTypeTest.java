@@ -1,7 +1,10 @@
 package io.transwarp.generate;
 
 import io.transwarp.generate.type.DataType;
+import org.junit.ClassRule;
 import org.junit.Test;
+
+import java.util.HashMap;
 
 /**
  * Created by zzt on 12/7/16.
@@ -16,7 +19,17 @@ public class DataTypeTest {
     //        }
     System.out.println(DataType.CHAR.getMax());
     System.out.println(DataType.UNICODE.getMax());
-    assert Integer.parseInt(DataType.CHAR.getMax()) < Byte.MAX_VALUE;
-    assert Integer.parseInt(DataType.UNICODE.getMax()) < Character.MAX_CODE_POINT;
+    assert DataType.CHAR.getMax().toCharArray()[0] < Byte.MAX_VALUE;
+    assert DataType.UNICODE.getMax().toCharArray()[0] < Character.MAX_CODE_POINT;
+  }
+
+  @Test
+  public void classTest() {
+    DataType type = DataType.BIT;
+    System.out.println(type.getClass());
+    HashMap<Class<? extends DataType>, Integer> map = new HashMap<>();
+    map.put(DataType.BIT.getClass(), 1);
+    map.put(DataType.BOOL.getClass(), 1000);
+    System.out.println(map.get(type.getClass()));
   }
 }

@@ -55,7 +55,7 @@ public enum DataType implements GenerationDataType {
     private int count = '~' - ' ';
 
     public String getRandom() {
-      return "" + (' ' + random.nextInt(count));
+      return "" + (MIN_CHAR + random.nextInt(count));
     }
 
     /**
@@ -77,7 +77,7 @@ public enum DataType implements GenerationDataType {
 
     @Override
     public String getRandom() {
-      return "" + (' ' + random.nextInt(count));
+      return "" + (MIN_CHAR + random.nextInt(count));
     }
 
     /**
@@ -96,54 +96,54 @@ public enum DataType implements GenerationDataType {
   },
   SHORT {
     public String getRandom() {
-      return null;
+      return Short.toString((short) random.nextInt(Short.MAX_VALUE));
     }
 
     public String getMax() {
-      return null;
+      return Short.toString(Short.MAX_VALUE);
     }
 
     public String getMin() {
-      return null;
+      return Short.toString(Short.MIN_VALUE);
     }
   },
   INT {
     public String getRandom() {
-      return "" + random.nextInt();
+      return Integer.toString(random.nextInt());
     }
 
     public String getMax() {
-      return "" + Integer.MAX_VALUE;
+      return Integer.toString(Integer.MAX_VALUE);
     }
 
     public String getMin() {
-      return "" + Integer.MIN_VALUE;
+      return Integer.toString(Integer.MIN_VALUE);
     }
   },
   LONG {
     public String getRandom() {
-      return null;
+      return Long.toString(random.nextLong());
     }
 
     public String getMax() {
-      return null;
+      return Long.toString(Long.MAX_VALUE);
     }
 
     public String getMin() {
-      return null;
+      return Long.toString(Long.MIN_VALUE);
     }
   },
   FLOAT {
     public String getRandom() {
-      return null;
+      return Float.toString(random.nextFloat());
     }
 
     public String getMax() {
-      return null;
+      return Float.toString(Float.MAX_VALUE);
     }
 
     public String getMin() {
-      return null;
+      return Float.toString(Float.MIN_VALUE);
     }
   },
   DOUBLE {
@@ -212,6 +212,7 @@ public enum DataType implements GenerationDataType {
     }
   };
 
+  public static final char MIN_CHAR = ' ';
   public static final char MAX_PRINTABLE = (char) 65533;
   private static final Random random = new Random(12);
 }

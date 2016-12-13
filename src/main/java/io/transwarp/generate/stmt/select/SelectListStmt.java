@@ -3,7 +3,7 @@ package io.transwarp.generate.stmt.select;
 import com.google.common.base.Joiner;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
-import io.transwarp.generate.common.Operand;
+import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
@@ -16,14 +16,14 @@ import java.util.Arrays;
  * <p>
  * <h3></h3>
  */
-public class SelectList implements SqlGeneration {
+public class SelectListStmt implements SqlGeneration {
   private ArrayList<Column> cols;
 
-  SelectList(Table from) {
+  SelectListStmt(Table from) {
     this(from, Config.Possibility.SELECT_POSSIBILITY);
   }
 
-  private SelectList(Table from, Config.Possibility possibility) {
+  private SelectListStmt(Table from, Config.Possibility possibility) {
     cols = TableUtil.randomSubTable(from, possibility);
     cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, 0))));
   }

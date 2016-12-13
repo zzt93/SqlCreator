@@ -12,21 +12,6 @@ import io.transwarp.generate.common.ParenAspect;
  */
 public abstract class Condition implements SqlGeneration {
 
-  Condition and(Condition condition) {
-    sql().append(LogicalOp.AND).append(condition.sql());
-    return this;
-  }
-
-  Condition or(Condition condition) {
-    sql().append(LogicalOp.OR).append(condition.sql());
-    return this;
-  }
-
-  Condition not() {
-    sql().insert(0, LogicalOp.NOT);
-    return this;
-  }
-
   /**
    * @return return the string represent the condition of sql
    *

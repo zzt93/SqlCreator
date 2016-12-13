@@ -1,6 +1,5 @@
 package io.transwarp.generate.stmt.expression;
 
-import io.transwarp.generate.common.Operand;
 import io.transwarp.generate.common.Table;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,69 +17,69 @@ public enum CmpOp {
 
   EQ("=") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       return twoOperands(from, getOperator());
     }
   },
   NOT_EQ("!=") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       return CmpOp.twoOperands(from, getOperator());
     }
   },
   SMALL("<") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       return CmpOp.twoOperands(from, getOperator());
     }
   },
   LARGE(">") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       return CmpOp.twoOperands(from, getOperator());
     }
   },
   SMA_EQ("<=") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       return CmpOp.twoOperands(from, getOperator());
     }
   },
   LAR_EQ(">=") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       return CmpOp.twoOperands(from, getOperator());
     }
   },
-  IS_NULL("IS NULL") {
+  IS_NULL(" IS NULL ") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       Operand[] operands = Operand.randomSameTypeGroupOperand(from, 1);
-      return new StringBuilder(operands[0].toString()).append(getOperatorWithSpace());
+      return new StringBuilder(operands[0].toString()).append(getOperator());
     }
   },
-  LIKE("LIKE") {
+  LIKE(" LIKE " ) {
     @Override
-    StringBuilder toSql(Table from) {
-      return CmpOp.twoOperands(from, getOperatorWithSpace());
+    StringBuilder sql(Table from) {
+      return CmpOp.twoOperands(from, getOperator());
     }
   },
-  BETWEEN("BETWEEN") {
+  BETWEEN(" BETWEEN ") {
     private static final String and = " AND ";
 
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       Operand[] operands = Operand.randomSameTypeGroupOperand(from, 3);
       return new StringBuilder(operands[0].toString())
-              .append(getOperatorWithSpace())
+              .append(getOperator())
               .append(operands[1])
               .append(and)
               .append(operands[2]);
     }
   },
-  IN("IN") {
+  IN(" IN ") {
     @Override
-    StringBuilder toSql(Table from) {
+    StringBuilder sql(Table from) {
       return null;
     }
   };
@@ -98,20 +97,15 @@ public enum CmpOp {
   }
 
   private final String operator;
-  private final String operatorWithSpace;
 
   CmpOp(String s) {
     this.operator = s;
-    this.operatorWithSpace = " " + operator + " ";
   }
 
   public String getOperator() {
     return operator;
   }
 
-  public String getOperatorWithSpace() {
-    return operatorWithSpace;
-  }
 
-  abstract StringBuilder toSql(Table from);
+  abstract StringBuilder sql(Table from);
 }

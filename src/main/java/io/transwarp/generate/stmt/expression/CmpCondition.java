@@ -15,7 +15,7 @@ public class CmpCondition extends Condition {
 
   public CmpCondition(Table from) {
     CmpOp op = CmpOp.randomOp();
-    stringBuilder = new StringBuilder().append(op.toSql(from));
+    stringBuilder = new StringBuilder().append(op.sql(from));
   }
 
   public StringBuilder sql() {

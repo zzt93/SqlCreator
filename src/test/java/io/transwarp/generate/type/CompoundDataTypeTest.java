@@ -15,9 +15,9 @@ public class CompoundDataTypeTest {
     final CompoundDataType bits = new CompoundDataType(DataType.BIT, 12);
     final CompoundDataType chars = new CompoundDataType(DataType.CHAR, 12);
     final CompoundDataType str = new CompoundDataType(DataType.UNICODE, 12);
-    assertTrue(DataTypeGroup.sameGroup(bits) == DataTypeGroup.NumGroup
-            && DataTypeGroup.sameGroup(chars) == DataTypeGroup.StringGroup
-            && DataTypeGroup.sameGroup(str) == DataTypeGroup.StringGroup);
+    assertTrue(DataTypeGroup.sameGroup(bits) == DataTypeGroup.NUM_GROUP
+            && DataTypeGroup.sameGroup(chars) == DataTypeGroup.STRING_GROUP
+            && DataTypeGroup.sameGroup(str) == DataTypeGroup.STRING_GROUP);
   }
 
 }

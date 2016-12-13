@@ -3,7 +3,7 @@ package io.transwarp.parse.sql;
 import io.transwarp.db_specific.base.DBType;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
-import io.transwarp.generate.common.FromObj;
+import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -91,7 +91,8 @@ public class DDLParser {
     if (table == -1) {
       table = stmt.indexOf(TABLE.toLowerCase());
     }
-    return stmt.substring(table + TABLE.length(), stmt.indexOf('(', table));
+    final int beginIndex = table + TABLE.length();
+    return stmt.substring(beginIndex, stmt.indexOf('(', beginIndex)).trim();
   }
 
   private int extractLen(String type) {

@@ -1,6 +1,8 @@
-package io.transwarp.generate.common;
+package io.transwarp.generate.stmt.share;
 
 import com.google.common.base.Optional;
+import io.transwarp.generate.common.Column;
+import io.transwarp.generate.common.Table;
 import io.transwarp.generate.stmt.expression.Condition;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class FromObj implements Table {
 
   private final String name;
   private ArrayList<Column> columns = new ArrayList<>();
-  private StringBuilder sql = new StringBuilder(" from ");
+  private StringBuilder sql = new StringBuilder();
 
   public FromObj(String tableName, ArrayList<Column> columns) {
     this.name = tableName;

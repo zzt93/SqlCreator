@@ -9,12 +9,12 @@ import io.transwarp.generate.stmt.expression.CmpCondition;
  * <p>
  * <h3></h3>
  */
-public class WhereCondition implements SqlGeneration{
+public class WhereStmt implements SqlGeneration{
 
 
   private final CmpCondition cmpCondition;
 
-  public WhereCondition(Table from) {
+  public WhereStmt(Table from) {
     cmpCondition = new CmpCondition(from);
   }
 

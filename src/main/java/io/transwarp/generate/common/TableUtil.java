@@ -15,7 +15,7 @@ public class TableUtil {
 
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
-  static Column randomCol(Table table) {
+  public static Column randomCol(Table table) {
     final ArrayList<Column> cols = table.columns();
     return cols.get(random.nextInt(cols.size()));
   }
@@ -28,5 +28,9 @@ public class TableUtil {
       }
     }
     return res;
+  }
+
+  public static Table randomTable(Table[] src) {
+    return src[random.nextInt(src.length)];
   }
 }

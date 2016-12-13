@@ -1,5 +1,8 @@
-package io.transwarp.generate.common;
+package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.generate.common.Column;
+import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -42,7 +45,7 @@ public class Operand {
     return type;
   }
 
-  String getOperand() {
+  public String getOperand() {
     return operand;
   }
 
@@ -55,12 +58,16 @@ public class Operand {
    * @return operand array
    */
   public static Operand[] randomSameTypeGroupOperand(Table from, int num) {
-    final Operand[] res = new Operand[num];
     final ArrayList<Column> columns = from.columns();
     ArrayList<Column> same = new ArrayList<>(columns.size());
     GenerationDataType type = getSameTypeGroupCols(from, same);
+    return getOperands(from, num, type);
+  }
+
+  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType) {
+    final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = new Operand(type, from, Config.getUdfDepth());
+      res[i] = new Operand(resultType, src, Config.getUdfDepth());
     }
     return res;
   }

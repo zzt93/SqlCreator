@@ -1,6 +1,7 @@
 package io.transwarp.generate.common;
 
 import io.transwarp.generate.config.Config;
+import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**
