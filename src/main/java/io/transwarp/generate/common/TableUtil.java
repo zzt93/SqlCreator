@@ -1,6 +1,8 @@
 package io.transwarp.generate.common;
 
+import com.google.common.base.Optional;
 import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,10 +21,28 @@ public class TableUtil {
     return cols.get(random.nextInt(cols.size()));
   }
 
-  public static ArrayList<Column> randomSubTable(Table table, Possibility possibility) {
+  public static Optional<Column> sameTypeRandomCol(Table table, GenerationDataType type) {
+    final ArrayList<Column> cols = sameTypeSubCols(table, type);
+    if (cols.isEmpty()) {
+      return Optional.absent();
+    }
+    return Optional.of(cols.get(random.nextInt(cols.size())));
+  }
+
+  public static ArrayList<Column> randomSubCols(Table table, Possibility possibility) {
     final ArrayList<Column> res = new ArrayList<>();
     for (Column column : table.columns()) {
       if (possibility.chooseFirst(true, false)) {
+        res.add(column);
+      }
+    }
+    return res;
+  }
+
+  public static ArrayList<Column> sameTypeSubCols(Table table, GenerationDataType type) {
+    final ArrayList<Column> res = new ArrayList<>();
+    for (Column column : table.columns()) {
+      if (type.equals(column.getType())) {
         res.add(column);
       }
     }

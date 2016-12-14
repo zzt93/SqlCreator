@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.expression;
 
+import com.google.common.base.Optional;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
  * <br>states</br>
  * <br>operation</br>
  * <br>result</br>
- *
  */
 public class Operand implements SqlGeneration {
 
@@ -39,14 +39,23 @@ public class Operand implements SqlGeneration {
 
   private Operand makeOperand(GenerationDataType resultType, Table src, int depth) {
     if (depth == FunctionDepth.SINGLE) {
-      return new Operand(type,
-              TableUtil.randomCol(src).getNameOrConst());
+      final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
+      if (col.isPresent()) {
+        return new Operand(type,
+                col.get().getNameOrConst());
+      } else {
+        return convertColType(resultType, src);
+      }
     } else {
       final Operand op = makeOperand(resultType, src, depth - 1);
       //      sb.insert(0, '(').append(')');
       // TODO 12/9/16 add operator or function according to resultType and db type
       return op;
     }
+  }
+
+  private Operand convertColType(GenerationDataType resultType, Table src) {
+    return null;
   }
 
   public GenerationDataType getType() {
@@ -68,7 +77,7 @@ public class Operand implements SqlGeneration {
     return getOperands(from, num, type);
   }
 
-  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType) {
+  static Operand[] getOperands(Table src, int num, GenerationDataType resultType) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       res[i] = new Operand(resultType, src, Config.getUdfDepth());

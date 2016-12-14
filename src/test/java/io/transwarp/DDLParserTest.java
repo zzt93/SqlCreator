@@ -5,6 +5,8 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.parse.sql.DDLParser;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * Created by zzt on 12/6/16.
  * <p>
@@ -13,11 +15,15 @@ import org.junit.Test;
 public class DDLParserTest {
   @Test
   public void delimiterTest() throws Exception {
-    final DDLParser ddlParser = new DDLParser("src/test/resources/test.sql", Dialect.ORACLE);
-    final Table parse = ddlParser.parse();
+    final Table parse = getTable();
     assert parse.name().isPresent();
     assert parse.name().get().equals("test");
     assert parse.columns().size() == 3;
+  }
+
+  public static Table getTable() throws IOException {
+    final DDLParser ddlParser = new DDLParser("src/test/resources/test.sql", Dialect.ORACLE);
+    return ddlParser.parse();
   }
 
 }

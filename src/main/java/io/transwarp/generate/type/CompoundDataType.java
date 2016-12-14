@@ -24,7 +24,7 @@ public class CompoundDataType implements GenerationDataType {
     }
   };
 
-  static final CompoundDataType CHARS = new CompoundDataType(DataType.CHAR, 0);
+  public static final CompoundDataType CHARS = new CompoundDataType(DataType.CHAR, 0);
   static final CompoundDataType UNICODE_STRING = new CompoundDataType(DataType.UNICODE, 0);
 
   private final GenerationDataType type;

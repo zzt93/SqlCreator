@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.DDLParserTest;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.type.GenerationDataType;
@@ -18,9 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class OperandTest {
   @Test
   public void randomSameTypeOperand() throws Exception {
-
-    final DDLParser ddlParser = new DDLParser("src/test/resources/test.sql", Dialect.ORACLE);
-    final Table test = ddlParser.parse();
+    final Table test = DDLParserTest.getTable();
     for (int i = 0; i < 1000; i++) {
       final Operand[] operands = Operand.randomSameTypeGroupOperand(test, 3);
       System.out.println(Arrays.toString(operands));

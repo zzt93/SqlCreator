@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.select;
 
+import io.transwarp.DDLParserTest;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Config;
@@ -20,8 +21,7 @@ public class SelectResultTest {
 
   @Before
   public void setUp() throws Exception {
-    final DDLParser ddlParser = new DDLParser("src/test/resources/test.sql", Dialect.ORACLE);
-    from = ddlParser.parse();
+    from = DDLParserTest.getTable();
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
       selectResults[i] = new SelectResult(Config.getSubQueryDepth(), from);

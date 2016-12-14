@@ -67,6 +67,6 @@ public class SelectResult implements Table {
     return sql;
   }
 
-  // TODO 12/12/16 conversion to operand
+  // TODO 12/12/16 conversion to operand when only one row one column and requested
 
 }
