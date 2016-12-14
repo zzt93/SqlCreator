@@ -11,8 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Config {
 
-
-  private static int udfDepth = 0;
+  private static int udfDepth = FunctionDepth.SINGLE;
   private static int subQueryDepth = 0;
 
   public static int getUdfDepth() {
@@ -31,30 +30,4 @@ public class Config {
     Config.subQueryDepth = subQueryDepth;
   }
 
-  public enum Possibility {
-
-    SELECT_POSSIBILITY(0.75),
-    NAME_CONST_POSSIBILITY(0.95);
-
-    private double[] possibility;
-
-    private Possibility setPossibility(double[] possibility) {
-      this.possibility = possibility;
-      return this;
-    }
-
-    private static ThreadLocalRandom random = ThreadLocalRandom.current();
-
-    Possibility(double... v) {
-      this.possibility = v;
-    }
-
-    @SafeVarargs
-    public final <T> T chooseFirst(T... choice) {
-      if (possibility.length + 1 != choice.length) {
-        throw new IllegalArgumentException("Wrong number of choice: " + Arrays.toString(choice));
-      }
-      return random.nextDouble() < possibility[0] ? choice[0] : choice[1];
-    }
-  }
 }

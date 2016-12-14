@@ -1,34 +1,31 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.generate.type.DataType;
+import io.transwarp.generate.type.GenerationDataType;
+
 /**
  * Created by zzt on 12/5/16.
  * <p>
  * <h3></h3>
  */
-public enum LogicalOp {
-  AND(" AND ") {
+public enum LogicalOp implements Function {
+  AND(" AND ") , OR(" OR "),
+  NOT(" NOT ") {
     @Override
-    public Condition apply(Condition... conditions) {
-      Condition f = conditions[0];
-      Condition s = conditions[1];
-      f.sql().append(LogicalOp.AND).append(s.sql());
-      return f;
-    }
-  }, OR(" OR ") {
-    @Override
-    public Condition apply(Condition... conditions) {
-      Condition s = conditions[1];
-      Condition f = conditions[0];
-      f.sql().append(LogicalOp.OR).append(s.sql());
-      return f;
-    }
-  }, NOT(" NOT ") {
-    @Override
-    public Condition apply(Condition... conditions) {
-      final Condition f = conditions[0];
+    public Operand apply(Operand... operands) {
+      final Operand f = operands[0];
       f.sql().insert(0, LogicalOp.NOT);
       return f;
     }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[]{DataType.BOOL};
+    }
+  };
+
+  private static final GenerationDataType[] TWO_BOOL = {
+          DataType.BOOL, DataType.BOOL
   };
 
   private final StringBuilder name;
@@ -42,5 +39,21 @@ public enum LogicalOp {
     return name.toString();
   }
 
-  abstract Condition apply(Condition... conditions);
+  @Override
+  public void register() {
+    FunctionMap.register(this, DataType.BOOL.getClass());
+  }
+
+  @Override
+  public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+    return TWO_BOOL;
+  }
+
+  @Override
+  public Operand apply(Operand... operands) {
+    Operand f = operands[0];
+    Operand s = operands[1];
+    f.sql().append(this).append(s.sql());
+    return f;
+  }
 }

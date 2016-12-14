@@ -1,6 +1,10 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.type.DataType;
+import io.transwarp.generate.type.DataTypeGroup;
+import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.type.ListDataType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -13,88 +17,57 @@ import java.util.concurrent.ThreadLocalRandom;
  * - <a href="http://stackoverflow.com/questions/25010763/how-to-use-fields-in-java-enum-by-overriding-the-method">
  * how to use fields in java enum by overriding the method</a>
  */
-public enum CmpOp {
+public enum CmpOp implements Function {
 
-  EQ("=") {
+  EQ("="),
+  NOT_EQ("!="),
+  SMALL("<"),
+  LARGE(">"),
+  SMA_EQ("<="),
+  LAR_EQ(">="),
+  IS_NULL(" IS NULL") {
     @Override
-    StringBuilder sql(Table from) {
-      return twoOperands(from, getOperator());
+    public Operand apply(Operand... input) {
+      input[0].sql().append(this);
+      return input[0];
+    }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return ONE_ALL_OPS;
     }
   },
-  NOT_EQ("!=") {
-    @Override
-    StringBuilder sql(Table from) {
-      return CmpOp.twoOperands(from, getOperator());
-    }
-  },
-  SMALL("<") {
-    @Override
-    StringBuilder sql(Table from) {
-      return CmpOp.twoOperands(from, getOperator());
-    }
-  },
-  LARGE(">") {
-    @Override
-    StringBuilder sql(Table from) {
-      return CmpOp.twoOperands(from, getOperator());
-    }
-  },
-  SMA_EQ("<=") {
-    @Override
-    StringBuilder sql(Table from) {
-      return CmpOp.twoOperands(from, getOperator());
-    }
-  },
-  LAR_EQ(">=") {
-    @Override
-    StringBuilder sql(Table from) {
-      return CmpOp.twoOperands(from, getOperator());
-    }
-  },
-  IS_NULL(" IS NULL ") {
-    @Override
-    StringBuilder sql(Table from) {
-      Operand[] operands = Operand.randomSameTypeGroupOperand(from, 1);
-      return new StringBuilder(operands[0].toString()).append(getOperator());
-    }
-  },
-  LIKE(" LIKE " ) {
-    @Override
-    StringBuilder sql(Table from) {
-      return CmpOp.twoOperands(from, getOperator());
-    }
-  },
+  LIKE(" LIKE "),
   BETWEEN(" BETWEEN ") {
     private static final String and = " AND ";
 
     @Override
-    StringBuilder sql(Table from) {
-      Operand[] operands = Operand.randomSameTypeGroupOperand(from, 3);
-      return new StringBuilder(operands[0].toString())
-              .append(getOperator())
-              .append(operands[1])
+    public Operand apply(Operand... input) {
+      input[0].sql()
+              .append(this)
+              .append(input[1])
               .append(and)
-              .append(operands[2]);
+              .append(input[2]);
+      return input[0];
     }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return Thr_ALL_OPS;
+    }
+
   },
   IN(" IN ") {
     @Override
-    StringBuilder sql(Table from) {
-      return null;
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return IN_OPS;
     }
   };
 
-  private static int size = CmpOp.values().length;
-  private static ThreadLocalRandom random = ThreadLocalRandom.current();
-
-  private static StringBuilder twoOperands(Table src, String operator) {
-    Operand[] operands = Operand.randomSameTypeGroupOperand(src, 2);
-    return new StringBuilder(operands[0].toString()).append(operator).append(operands[1]);
-  }
-
-  public static CmpOp randomOp() {
-    return CmpOp.values()[random.nextInt(size)];
-  }
+  private static final GenerationDataType[] Thr_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
+  private static final GenerationDataType[] TWO_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
+  private static final GenerationDataType[] IN_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_LIST};
+  private static final GenerationDataType[] ONE_ALL_OPS = {DataTypeGroup.ALL_GROUP};
 
   private final String operator;
 
@@ -102,10 +75,24 @@ public enum CmpOp {
     this.operator = s;
   }
 
-  public String getOperator() {
+  @Override
+  public String toString() {
     return operator;
   }
 
+  @Override
+  public void register() {
+    FunctionMap.register(this, DataType.BOOL.getClass());
+  }
 
-  abstract StringBuilder sql(Table from);
+  @Override
+  public Operand apply(Operand... input) {
+    input[0].sql().append(this).append(input[1].sql());
+    return input[0];
+  }
+
+  @Override
+  public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+    return TWO_ALL_OPS;
+  }
 }

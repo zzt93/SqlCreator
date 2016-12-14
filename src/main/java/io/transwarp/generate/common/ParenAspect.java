@@ -12,7 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class ParenAspect {
 
-  @Around("execution(* io.transwarp.generate.stmt.expression.Condition+.toSql(..))")
+  @Around("execution(* io.transwarp.generate.stmt.expression.LogicalOp+.toSql(..))")
   public Object addParen(ProceedingJoinPoint pjp) {
     return addParenAround(pjp);
   }

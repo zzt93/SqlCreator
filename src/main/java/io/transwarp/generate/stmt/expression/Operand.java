@@ -1,9 +1,11 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -13,40 +15,42 @@ import java.util.ArrayList;
  * Created by zzt on 12/8/16.
  * <p>
  * <h3></h3>
+ * <br>states</br>
+ * <br>operation</br>
+ * <br>result</br>
+ *
  */
-public class Operand {
+public class Operand implements SqlGeneration {
 
   private final GenerationDataType type;
-  private String operand;
+  private StringBuilder operand;
 
   private Operand(GenerationDataType type, Table src, int depth) {
     this.type = type;
-    operand = makeOperand(this.type, src, depth).toString();
+    final Operand operand = makeOperand(this.type, src, depth);
+    this.operand = operand.sql();
+    assert type == operand.type;
   }
 
-  private StringBuilder makeOperand(GenerationDataType resultType, Table src, int depth) {
-    if (depth == 0) {
-      return new StringBuilder(
+  private Operand(GenerationDataType type, String operand) {
+    this.type = type;
+    this.operand = new StringBuilder(operand);
+  }
+
+  private Operand makeOperand(GenerationDataType resultType, Table src, int depth) {
+    if (depth == FunctionDepth.SINGLE) {
+      return new Operand(type,
               TableUtil.randomCol(src).getNameOrConst());
     } else {
-      final StringBuilder sb = makeOperand(resultType, src, depth - 1);
-      sb.insert(0, '(').append(')');
+      final Operand op = makeOperand(resultType, src, depth - 1);
+      //      sb.insert(0, '(').append(')');
       // TODO 12/9/16 add operator or function according to resultType and db type
-      return sb;
+      return op;
     }
-  }
-
-  @Override
-  public String toString() {
-    return operand;
   }
 
   public GenerationDataType getType() {
     return type;
-  }
-
-  public String getOperand() {
-    return operand;
   }
 
   /**
@@ -93,4 +97,8 @@ public class Operand {
     return type;
   }
 
+  @Override
+  public StringBuilder sql() {
+    return operand;
+  }
 }

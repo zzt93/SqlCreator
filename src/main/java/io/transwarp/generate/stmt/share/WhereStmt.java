@@ -2,7 +2,10 @@ package io.transwarp.generate.stmt.share;
 
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.stmt.expression.CmpCondition;
+import io.transwarp.generate.config.FunctionDepth;
+import io.transwarp.generate.stmt.expression.Condition;
+import io.transwarp.generate.stmt.expression.Operand;
+import io.transwarp.generate.type.DataType;
 
 /**
  * Created by zzt on 12/12/16.
@@ -12,14 +15,14 @@ import io.transwarp.generate.stmt.expression.CmpCondition;
 public class WhereStmt implements SqlGeneration{
 
 
-  private final CmpCondition cmpCondition;
+  private final Condition condition;
 
   public WhereStmt(Table from) {
-    cmpCondition = new CmpCondition(from);
+    condition = new Condition(from);
   }
 
   @Override
   public StringBuilder sql() {
-    return cmpCondition.sql().insert(0, " where ");
+    return condition.sql().insert(0, " where ");
   }
 }

@@ -10,10 +10,15 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by zzt on 12/6/16.
  * <p>
  * <h3></h3>
+ * A way to organize meta data type as DataType described.
+ * CompoundDataType use another dimension to organize them
+ *
+ * @see DataType
+ * @see CompoundDataType
  */
 public enum DataTypeGroup implements GenerationDataType {
 
-  ALL_GROUP() {
+  ALL_GROUP(DataType.values()) {
     @Override
     public String getMax() {
       throw new NotImplementedException();
@@ -35,7 +40,7 @@ public enum DataTypeGroup implements GenerationDataType {
       return null;
     }
   },
-  NUM_GROUP(new CompoundDataType(DataType.BIT, 0), DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL) {
+  NUM_GROUP(CompoundDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL) {
     @Override
     public String getMax() {
       return null;
@@ -46,7 +51,7 @@ public enum DataTypeGroup implements GenerationDataType {
       return null;
     }
   },
-  STRING_GROUP(new CompoundDataType(DataType.CHAR, 0), new CompoundDataType(DataType.UNICODE, 0)) {
+  STRING_GROUP(CompoundDataType.CHARS, CompoundDataType.UNICODE_STRING) {
     @Override
     public String getMax() {
       return null;

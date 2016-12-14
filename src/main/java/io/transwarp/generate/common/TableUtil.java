@@ -1,9 +1,8 @@
 package io.transwarp.generate.common;
 
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.Possibility;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -20,7 +19,7 @@ public class TableUtil {
     return cols.get(random.nextInt(cols.size()));
   }
 
-  public static ArrayList<Column> randomSubTable(Table table, Config.Possibility possibility) {
+  public static ArrayList<Column> randomSubTable(Table table, Possibility possibility) {
     final ArrayList<Column> res = new ArrayList<>();
     for (Column column : table.columns()) {
       if (possibility.chooseFirst(true, false)) {

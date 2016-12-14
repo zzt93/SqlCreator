@@ -3,10 +3,10 @@ package io.transwarp.generate.stmt.select;
 import com.google.common.base.Joiner;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
+import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,10 +20,10 @@ public class SelectListStmt implements SqlGeneration {
   private ArrayList<Column> cols;
 
   SelectListStmt(Table from) {
-    this(from, Config.Possibility.SELECT_POSSIBILITY);
+    this(from, Possibility.SELECT_POSSIBILITY);
   }
 
-  private SelectListStmt(Table from, Config.Possibility possibility) {
+  private SelectListStmt(Table from, Possibility possibility) {
     cols = TableUtil.randomSubTable(from, possibility);
     cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, 0))));
   }

@@ -1,25 +1,52 @@
 package io.transwarp.generate.type;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 12/7/16.
  * <p>
  * <h3></h3>
+ * A way to organize meta data type as DataType described.
+ * DataTypeGroup use another dimension to organize them
+ *
+ * @see DataType
+ * @see DataTypeGroup
  */
 public class CompoundDataType implements GenerationDataType {
 
-  private final DataType type;
+  static final CompoundDataType BITS = new CompoundDataType(DataType.BIT, 0) {
+    @Override
+    public String getRandom() {
+      return Long.toString(Long.parseLong(super.getRandom(), 2));
+    }
+  };
+
+  static final CompoundDataType CHARS = new CompoundDataType(DataType.CHAR, 0);
+  static final CompoundDataType UNICODE_STRING = new CompoundDataType(DataType.UNICODE, 0);
+
+  private final GenerationDataType type;
   private final int len;
 
-  public CompoundDataType(DataType type, int len) {
+  public CompoundDataType(GenerationDataType type, int len) {
     this.type = type;
     this.len = len;
   }
 
+  GenerationDataType getType() {
+    return type;
+  }
+
+  int getLen() {
+    return len;
+  }
+
   @Override
   public String getRandom() {
-    return null;
+    final Joiner on = Joiner.on("");
+    return on.join(DataTypeUtil.randoms(type, len));
   }
 
   @Override
