@@ -3,8 +3,6 @@ package io.transwarp.generate.type;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 /**
  * Created by zzt on 12/7/16.
  * <p>
@@ -19,13 +17,14 @@ public class CompoundDataType implements GenerationDataType {
 
   static final CompoundDataType BITS = new CompoundDataType(DataType.BIT, 0) {
     @Override
-    public String getRandom() {
-      return Long.toString(Long.parseLong(super.getRandom(), 2));
+    public String randomData() {
+      return Long.toString(Long.parseLong(super.randomData(), 2));
     }
   };
 
   public static final CompoundDataType CHARS = new CompoundDataType(DataType.CHAR, 0);
   static final CompoundDataType UNICODE_STRING = new CompoundDataType(DataType.UNICODE, 0);
+  public static final GenerationDataType[] COMPOUNDS = {BITS, CHARS, UNICODE_STRING};
 
   private final GenerationDataType type;
   private final int len;
@@ -44,7 +43,7 @@ public class CompoundDataType implements GenerationDataType {
   }
 
   @Override
-  public String getRandom() {
+  public String randomData() {
     final Joiner on = Joiner.on("");
     return on.join(DataTypeUtil.randoms(type, len));
   }
@@ -72,5 +71,9 @@ public class CompoundDataType implements GenerationDataType {
   @Override
   public int hashCode() {
     return type != null ? type.hashCode() : 0;
+  }
+
+  public static GenerationDataType[] values() {
+    return COMPOUNDS;
   }
 }

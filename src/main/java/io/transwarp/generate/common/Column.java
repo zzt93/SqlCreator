@@ -45,7 +45,7 @@ public class Column {
   }
 
   public String getNameOrConst() {
-    return poss.chooseFirst(toString(), type.getRandom());
+    return poss.chooseFirst(toString(), type.randomData());
   }
 
   public GenerationDataType getType() {

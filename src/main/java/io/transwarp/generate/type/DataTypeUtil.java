@@ -1,5 +1,7 @@
 package io.transwarp.generate.type;
 
+import io.transwarp.generate.common.Column;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,7 +18,15 @@ public class DataTypeUtil {
     int times = random.nextInt(max);
     List<String> res = new ArrayList<>(times);
     for (int i = 0; i < res.size(); i++) {
-      res.add(type.getRandom());
+      res.add(type.randomData());
+    }
+    return res;
+  }
+
+  public static GenerationDataType[] extract(ArrayList<Column> columns) {
+    final GenerationDataType[] res = new GenerationDataType[columns.size()];
+    for (int i = 0; i < res.length; i++) {
+      res[i] = columns.get(i).getType();
     }
     return res;
   }

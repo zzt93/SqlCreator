@@ -11,7 +11,7 @@ public enum DataType implements GenerationDataType {
 
   BIT {
     @Override
-    public String getRandom() {
+    public String randomData() {
       return random.nextBoolean() ? "1" : "0";
     }
 
@@ -26,7 +26,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   BOOL {
-    public String getRandom() {
+    public String randomData() {
       return random.nextBoolean() ? "true" : "false";
     }
 
@@ -39,7 +39,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   BYTE {
-    public String getRandom() {
+    public String randomData() {
       return "" + random.nextInt(256);
     }
 
@@ -54,7 +54,7 @@ public enum DataType implements GenerationDataType {
   CHAR {
     private int count = '~' - ' ';
 
-    public String getRandom() {
+    public String randomData() {
       return "" + (MIN_CHAR + random.nextInt(count));
     }
 
@@ -76,7 +76,7 @@ public enum DataType implements GenerationDataType {
     private int count = MAX_PRINTABLE - ' ';
 
     @Override
-    public String getRandom() {
+    public String randomData() {
       return "" + (MIN_CHAR + random.nextInt(count));
     }
 
@@ -95,7 +95,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   SHORT {
-    public String getRandom() {
+    public String randomData() {
       return Short.toString((short) random.nextInt(Short.MAX_VALUE));
     }
 
@@ -108,7 +108,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   INT {
-    public String getRandom() {
+    public String randomData() {
       return Integer.toString(random.nextInt());
     }
 
@@ -121,7 +121,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   LONG {
-    public String getRandom() {
+    public String randomData() {
       return Long.toString(random.nextLong());
     }
 
@@ -134,7 +134,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   FLOAT {
-    public String getRandom() {
+    public String randomData() {
       return Float.toString(random.nextFloat());
     }
 
@@ -147,7 +147,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   DOUBLE {
-    public String getRandom() {
+    public String randomData() {
       return null;
     }
 
@@ -160,7 +160,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   DECIMAL {
-    public String getRandom() {
+    public String randomData() {
       return null;
     }
 
@@ -173,7 +173,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   DATE {
-    public String getRandom() {
+    public String randomData() {
       return null;
     }
 
@@ -186,7 +186,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   TIME {
-    public String getRandom() {
+    public String randomData() {
       return null;
     }
 
@@ -199,7 +199,7 @@ public enum DataType implements GenerationDataType {
     }
   },
   TIMESTAMP {
-    public String getRandom() {
+    public String randomData() {
       return null;
     }
 

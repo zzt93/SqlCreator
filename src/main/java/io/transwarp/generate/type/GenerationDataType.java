@@ -7,7 +7,7 @@ package io.transwarp.generate.type;
  */
 public interface GenerationDataType {
 
-  String getRandom();
+  String randomData();
 
   String getMax();
 

@@ -15,7 +15,7 @@ public class ListDataType extends CompoundDataType {
   }
 
   @Override
-  public String getRandom() {
+  public String randomData() {
     final Joiner on = Joiner.on(", ");
     final StringBuilder sql = new StringBuilder("(");
     on.appendTo(sql, DataTypeUtil.randoms(getType(), getLen()));

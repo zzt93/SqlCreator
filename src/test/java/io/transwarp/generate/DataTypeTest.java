@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.util.HashMap;
 
+import static junit.framework.TestCase.assertTrue;
+
 /**
  * Created by zzt on 12/7/16.
  * <p>
@@ -31,5 +33,8 @@ public class DataTypeTest {
     map.put(DataType.BIT.getClass(), 1);
     map.put(DataType.BOOL.getClass(), 1000);
     System.out.println(map.get(type.getClass()));
+    assertTrue(map.get(type.getClass()) == 1);
+    assertTrue(type.getClass() != DataType.class);
+    assertTrue(type.getClass() == DataType.BIT.getClass());
   }
 }

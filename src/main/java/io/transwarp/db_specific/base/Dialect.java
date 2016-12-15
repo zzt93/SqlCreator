@@ -1,5 +1,6 @@
 package io.transwarp.db_specific.base;
 
+import io.transwarp.db_specific.InceptorType;
 import io.transwarp.db_specific.OracleType;
 
 /**
@@ -9,7 +10,9 @@ import io.transwarp.db_specific.OracleType;
  */
 public enum Dialect {
 
-  ORACLE(OracleType.values()),;
+  ORACLE(OracleType.values()),
+  INCEPTOR(InceptorType.values()),
+  ;
 
   private final DBType[] values;
 
@@ -23,6 +26,6 @@ public enum Dialect {
         return value;
       }
     }
-    throw new IllegalArgumentException("unknown name:" + name);
+    throw new IllegalArgumentException("unknown name: " + name);
   }
 }

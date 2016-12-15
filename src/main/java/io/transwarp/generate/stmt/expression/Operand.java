@@ -8,7 +8,9 @@ import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.type.DataTypeGroup;
+import io.transwarp.generate.type.DataTypeUtil;
 import io.transwarp.generate.type.GenerationDataType;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
@@ -41,22 +43,21 @@ public class Operand implements SqlGeneration {
     if (depth == FunctionDepth.SINGLE) {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
-        return new Operand(type,
-                col.get().getNameOrConst());
+        return new Operand(type, col.get().getNameOrConst());
       } else {
-        return convertColType(resultType, src);
+        return new Operand(type, type.randomData());
       }
     } else {
-      final Operand op = makeOperand(resultType, src, depth - 1);
-      //      sb.insert(0, '(').append(')');
-      // TODO 12/9/16 add operator or function according to resultType and db type
-      return op;
+      final Function function = FunctionMap.random(resultType);
+      final GenerationDataType[] inputs = function.inputTypes(resultType);
+      Operand[] ops = new Operand[inputs.length];
+      for (int i = 0; i < Config.getInputRelation().refine(inputs).length; i++) {
+        ops[i] = makeOperand(inputs[i], src, depth - 1);
+      }
+      return function.apply(ops);
     }
   }
 
-  private Operand convertColType(GenerationDataType resultType, Table src) {
-    return null;
-  }
 
   public GenerationDataType getType() {
     return type;

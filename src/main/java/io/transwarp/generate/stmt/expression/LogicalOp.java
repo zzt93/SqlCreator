@@ -41,7 +41,7 @@ public enum LogicalOp implements Function {
 
   @Override
   public void register() {
-    FunctionMap.register(this, DataType.BOOL.getClass());
+    FunctionMap.register(this, DataType.BOOL);
   }
 
   @Override

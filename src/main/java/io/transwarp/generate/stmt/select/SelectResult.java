@@ -5,6 +5,8 @@ import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.stmt.expression.Condition;
+import io.transwarp.generate.stmt.share.FromObj;
+import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
 
 import java.util.ArrayList;
@@ -18,16 +20,16 @@ public class SelectResult implements Table {
 
   private Table from;
   private SelectListStmt selectListStmt;
-  private WhereStmt where;
   private StringBuilder sql;
 
   SelectResult(int subQueryDepth, Table... src) {
     makeFromTable(subQueryDepth, src);
     selectListStmt = new SelectListStmt(from);
-    where = new WhereStmt(from);
+    final FromStmt fromStmt = new FromStmt(from);
+    final WhereStmt where = new WhereStmt(from);
     sql = new StringBuilder()
             .append(selectListStmt.sql())
-            .append(from.sql())
+            .append(fromStmt.sql())
             .append(where.sql());
   }
 

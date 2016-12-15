@@ -1,6 +1,7 @@
 package io.transwarp.generate.stmt.share;
 
 import io.transwarp.generate.SqlGeneration;
+import io.transwarp.generate.common.Table;
 
 /**
  * Created by zzt on 12/13/16.
@@ -9,10 +10,10 @@ import io.transwarp.generate.SqlGeneration;
  */
 public class FromStmt implements SqlGeneration {
 
-  private FromObj fromObj;
-  private StringBuilder sql = new StringBuilder(" where ");
+  private Table fromObj;
+  private StringBuilder sql = new StringBuilder(" from ");
 
-  public FromStmt(FromObj fromObj) {
+  public FromStmt(Table fromObj) {
     this.fromObj = fromObj;
   }
 
