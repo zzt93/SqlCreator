@@ -24,7 +24,7 @@ public class CompoundDataType implements GenerationDataType {
 
   public static final CompoundDataType CHARS = new CompoundDataType(DataType.CHAR, 0);
   static final CompoundDataType UNICODE_STRING = new CompoundDataType(DataType.UNICODE, 0);
-  public static final GenerationDataType[] COMPOUNDS = {BITS, CHARS, UNICODE_STRING};
+  private static final GenerationDataType[] COMPOUNDS = {BITS, CHARS, UNICODE_STRING};
 
   private final GenerationDataType type;
   private final int len;
@@ -44,8 +44,8 @@ public class CompoundDataType implements GenerationDataType {
 
   @Override
   public String randomData() {
-    final Joiner on = Joiner.on("");
-    return on.join(DataTypeUtil.randoms(type, len));
+    final Joiner on = Joiner.on(DataTypeGroup.STRING_DELIMITER);
+    return on.join(DataTypeUtil.randoms(type, len)) + DataTypeGroup.STRING_DELIMITER;
   }
 
   @Override

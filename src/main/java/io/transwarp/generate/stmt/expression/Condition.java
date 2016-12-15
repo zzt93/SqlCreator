@@ -17,7 +17,7 @@ public class Condition implements SqlGeneration{
   private final Operand condition;
 
   public Condition(Table from) {
-    final Operand[] operands = Operand.getOperands(from, FunctionDepth.WITH_OPERATOR, DataType.BOOL);
+    final Operand[] operands = Operand.getOperands(from, 1, DataType.BOOL);
     condition = operands[0];
   }
 

@@ -11,6 +11,11 @@ public interface Function {
 
   void register();
 
+  /**
+   * update sql & update type
+   * @param input parameter
+   * @return result
+   */
   Operand apply(Operand... input);
 
   GenerationDataType[] inputTypes(GenerationDataType resultType);

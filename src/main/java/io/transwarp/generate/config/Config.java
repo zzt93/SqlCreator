@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Config {
 
-  private static int udfDepth = FunctionDepth.SINGLE;
+  private static int udfDepth = FunctionDepth.WITH_OPERATOR;
   private static int subQueryDepth = 0;
   private static InputRelation inputRelation = InputRelation.RANDOM;
   private static Dialect dialect = Dialect.ORACLE;

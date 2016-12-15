@@ -45,9 +45,9 @@ public enum CmpOp implements Function {
     public Operand apply(Operand... input) {
       input[0].sql()
               .append(this)
-              .append(input[1])
+              .append(input[1].sql())
               .append(and)
-              .append(input[2]);
+              .append(input[2].sql());
       return input[0];
     }
 
@@ -88,6 +88,7 @@ public enum CmpOp implements Function {
   @Override
   public Operand apply(Operand... input) {
     input[0].sql().append(this).append(input[1].sql());
+    input[0].setType(DataType.BOOL);
     return input[0];
   }
 

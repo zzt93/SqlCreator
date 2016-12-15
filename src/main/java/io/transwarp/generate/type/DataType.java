@@ -1,5 +1,7 @@
 package io.transwarp.generate.type;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 /**
@@ -148,7 +150,7 @@ public enum DataType implements GenerationDataType {
   },
   DOUBLE {
     public String randomData() {
-      return null;
+      return Double.toString(random.nextDouble());
     }
 
     public String getMax() {
@@ -161,7 +163,9 @@ public enum DataType implements GenerationDataType {
   },
   DECIMAL {
     public String randomData() {
-      return null;
+      String integer = String.valueOf(random.nextInt());
+      String decimal = String.valueOf(Math.abs(random.nextInt()));
+      return integer + "." + decimal;
     }
 
     public String getMax() {
@@ -174,7 +178,9 @@ public enum DataType implements GenerationDataType {
   },
   DATE {
     public String randomData() {
-      return null;
+      long l = Math.abs(random.nextLong());
+      SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD);
+      return sdf.format(new Date(l));
     }
 
     public String getMax() {
@@ -187,7 +193,10 @@ public enum DataType implements GenerationDataType {
   },
   TIME {
     public String randomData() {
-      return null;
+      System.out.println(HH_MM_SS);
+      long l = Math.abs(random.nextLong());
+      SimpleDateFormat sdf = new SimpleDateFormat(HH_MM_SS);
+      return sdf.format(new Date(l));
     }
 
     public String getMax() {
@@ -200,7 +209,9 @@ public enum DataType implements GenerationDataType {
   },
   TIMESTAMP {
     public String randomData() {
-      return null;
+      long l = Math.abs(random.nextLong());
+      SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
+      return sdf.format(new Date(l));
     }
 
     public String getMax() {
@@ -211,6 +222,9 @@ public enum DataType implements GenerationDataType {
       return null;
     }
   };
+  public static final String HH_MM_SS = "HH:mm:ss";
+  public static final String YYYY_MM_DD = "yyyy-MM-dd";
+  public static final String YYYY_MM_DD_HH_MM_SS = YYYY_MM_DD + " " + HH_MM_SS;
 
   public static final char MIN_CHAR = ' ';
   public static final char MAX_PRINTABLE = (char) 65533;

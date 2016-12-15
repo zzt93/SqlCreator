@@ -7,6 +7,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
+import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.DataTypeUtil;
 import io.transwarp.generate.type.GenerationDataType;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  */
 public class Operand implements SqlGeneration {
 
-  private final GenerationDataType type;
+  private GenerationDataType type;
   private StringBuilder operand;
 
   private Operand(GenerationDataType type, Table src, int depth) {
@@ -43,16 +44,17 @@ public class Operand implements SqlGeneration {
     if (depth == FunctionDepth.SINGLE) {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
-        return new Operand(type, col.get().getNameOrConst());
+        return new Operand(resultType, col.get().getNameOrConst());
       } else {
-        return new Operand(type, type.randomData());
+        return new Operand(resultType, resultType.randomData());
       }
     } else {
       final Function function = FunctionMap.random(resultType);
       final GenerationDataType[] inputs = function.inputTypes(resultType);
       Operand[] ops = new Operand[inputs.length];
-      for (int i = 0; i < Config.getInputRelation().refine(inputs).length; i++) {
-        ops[i] = makeOperand(inputs[i], src, depth - 1);
+      final GenerationDataType[] nextResultType = Config.getInputRelation().refine(inputs);
+      for (int i = 0; i < nextResultType.length; i++) {
+        ops[i] = makeOperand(nextResultType[i], src, depth - 1);
       }
       return function.apply(ops);
     }
@@ -110,5 +112,9 @@ public class Operand implements SqlGeneration {
   @Override
   public StringBuilder sql() {
     return operand;
+  }
+
+  public void setType(DataType type) {
+    this.type = type;
   }
 }

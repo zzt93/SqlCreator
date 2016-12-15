@@ -1,7 +1,5 @@
 package io.transwarp.generate.stmt.expression;
 
-import com.google.common.base.Optional;
-import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
@@ -15,18 +13,24 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class FunctionMap {
 
-  private static final ConcurrentHashMap<GenerationDataType, ArrayList<Function>> functions = new ConcurrentHashMap<>(20);
+  private static final ConcurrentHashMap<GenerationDataType, ArrayList<Function>> share = new ConcurrentHashMap<>(20);
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   static void register(Function f, GenerationDataType resultType) {
     // TODO 12/14/16 handle type group, list type
-    final ArrayList<Function> val = FunctionMap.functions.putIfAbsent(resultType, new ArrayList<Function>(30));
+    final ArrayList<Function> val;
+    if (share.containsKey(resultType)) {
+      val = share.get(resultType);
+    } else {
+      val = new ArrayList<>(30);
+      share.put(resultType, val);
+    }
     val.add(f);
   }
 
   static Function random(GenerationDataType resultType) {
     // TODO 12/15/16 return function according to db type
-    final ArrayList<Function> functions = FunctionMap.functions.get(resultType);
+    final ArrayList<Function> functions = share.get(resultType);
     return functions.get(random.nextInt(functions.size()));
   }
 
