@@ -1,5 +1,8 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.generate.type.CompoundDataType;
+import io.transwarp.generate.type.DataType;
+import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
@@ -31,9 +34,25 @@ public class FunctionMap {
     val.add(f);
   }
 
+  /**
+   * find exact data type's conversion function
+   * @param resultType a {@link DataType} or {@link CompoundDataType}
+   * @return conversion function
+   *
+   * @see DataType
+   * @see CompoundDataType
+   */
   static Function random(GenerationDataType resultType) {
+    assert resultType instanceof DataType || resultType instanceof CompoundDataType;
     // TODO 12/15/16 return function according to db type
-    final ArrayList<Function> functions = share.get(resultType);
+    ArrayList<Function> functions = share.get(resultType);
+    while (functions == null) {
+      GenerationDataType larger = DataTypeGroup.largerGroup(resultType);
+      functions = share.get(larger);
+    }
+    if (functions == null) {
+
+    }
     return functions.get(random.nextInt(functions.size()));
   }
 

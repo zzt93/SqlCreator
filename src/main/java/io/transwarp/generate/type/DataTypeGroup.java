@@ -147,4 +147,8 @@ public enum DataTypeGroup implements GenerationDataType {
     }
     return group == type;
   }
+
+  public static DataTypeGroup largerGroup(GenerationDataType resultType) {
+    return null;
+  }
 }

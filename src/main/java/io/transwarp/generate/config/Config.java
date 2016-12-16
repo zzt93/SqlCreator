@@ -11,7 +11,7 @@ public class Config {
 
   public static int randomMaxBitLen = 64;
   private static int randomListMaxLen = 10;
-  public static int randomStrMaxLen = 100;
+  private static int randomStrMaxLen = 100;
   private static int udfDepth = FunctionDepth.WITH_OPERATOR;
   private static int subQueryDepth = 0;
   private static InputRelation inputRelation = InputRelation.RANDOM;
