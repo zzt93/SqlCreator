@@ -9,6 +9,7 @@ import io.transwarp.db_specific.base.Dialect;
  */
 public class Config {
 
+  public static int randomMaxBitLen = 64;
   private static int randomListMaxLen = 10;
   public static int randomStrMaxLen = 100;
   private static int udfDepth = FunctionDepth.WITH_OPERATOR;

@@ -79,8 +79,8 @@ public enum DataTypeGroup implements GenerationDataType {
   };
 
   public static final String STRING_DELIMITER = "'";
-  private static int groups = DataTypeGroup.values().length;
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
+  private final int typeCount;
 
   public static DataTypeGroup sameGroup(GenerationDataType type) {
     for (DataTypeGroup dataTypeGroup : values()) {
@@ -123,17 +123,18 @@ public enum DataTypeGroup implements GenerationDataType {
 
   DataTypeGroup(GenerationDataType... types) {
     this.types = Arrays.asList(types);
+    this.typeCount = types.length;
   }
 
 
   public String randomData() {
-    types.get(random.nextInt(groups));
-    assert false;
-    return null;
+    throw new NotImplementedException();
   }
 
   public GenerationDataType randomType() {
-    return types.get(random.nextInt(groups));
+    // TODO 12/16/16 make list type available
+    // TODO 12/16/16 whether to keep bit, char, unicode?
+    return types.get(random.nextInt(typeCount));
   }
 
   public boolean contains(GenerationDataType type) {

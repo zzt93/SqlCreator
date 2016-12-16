@@ -47,6 +47,14 @@ public enum InputRelation {
 
   abstract GenerationDataType[] same(GenerationDataType[] original);
 
+  /**
+   * make original group type into compound type or meta data type
+   * @param original may be group type
+   * @return exact type
+   *
+   * @see io.transwarp.generate.type.CompoundDataType
+   * @see io.transwarp.generate.type.DataType
+   */
   public GenerationDataType[] refine(GenerationDataType[] original) {
     if (allSame(original)) {
       return same(original);

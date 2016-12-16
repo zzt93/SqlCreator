@@ -57,7 +57,7 @@ public enum DataType implements GenerationDataType {
     private int count = '~' - ' ';
 
     public String randomData() {
-      return "" + (MIN_CHAR + random.nextInt(count));
+      return "" + (char)(MIN_CHAR + random.nextInt(count));
     }
 
     /**
@@ -79,7 +79,7 @@ public enum DataType implements GenerationDataType {
 
     @Override
     public String randomData() {
-      return "" + (MIN_CHAR + random.nextInt(count));
+      return "" + (char)(MIN_CHAR + random.nextInt(count));
     }
 
     /**
@@ -193,7 +193,6 @@ public enum DataType implements GenerationDataType {
   },
   TIME {
     public String randomData() {
-      System.out.println(HH_MM_SS);
       long l = Math.abs(random.nextLong());
       SimpleDateFormat sdf = new SimpleDateFormat(HH_MM_SS);
       return sdf.format(new Date(l));

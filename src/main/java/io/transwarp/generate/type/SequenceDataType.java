@@ -16,10 +16,10 @@ import io.transwarp.generate.config.Config;
  */
 public class SequenceDataType extends CompoundDataType {
 
-  static final SequenceDataType BITS = new SequenceDataType(DataType.BIT, 0) {
+  static final SequenceDataType BITS = new SequenceDataType(DataType.BIT, Config.randomMaxBitLen) {
     @Override
     public String randomData() {
-      return Long.toString(Long.parseLong(super.randomData(), 2));
+      return Long.toString(Long.parseLong(getType().randomData(), 2));
     }
   };
 
@@ -47,8 +47,8 @@ public class SequenceDataType extends CompoundDataType {
 
   @Override
   public String randomData() {
-    final Joiner on = Joiner.on(DataTypeGroup.STRING_DELIMITER);
-    return on.join(DataTypeUtil.randoms(type, len)) + DataTypeGroup.STRING_DELIMITER;
+    final Joiner on = Joiner.on("");
+    return DataTypeGroup.STRING_DELIMITER + on.join(DataTypeUtil.randoms(type, len)) + DataTypeGroup.STRING_DELIMITER;
   }
 
   @Override
@@ -82,6 +82,6 @@ public class SequenceDataType extends CompoundDataType {
 
   @Override
   CompoundDataType smallerCompoundType() {
-    return new SequenceDataType(DataTypeGroup.singleSmallerType(getType()), Config.getRandomStrMaxLen());
+    return new SequenceDataType(DataTypeGroup.singleSmallerType(getType()), getLen());
   }
 }

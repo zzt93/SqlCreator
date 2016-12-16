@@ -17,7 +17,7 @@ public class DataTypeUtil {
   static List<String> randoms(GenerationDataType type, int max) {
     int times = random.nextInt(max);
     List<String> res = new ArrayList<>(times);
-    for (int i = 0; i < res.size(); i++) {
+    for (int i = 0; i < times; i++) {
       res.add(type.randomData());
     }
     return res;

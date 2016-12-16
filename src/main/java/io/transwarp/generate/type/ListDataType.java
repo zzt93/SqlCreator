@@ -18,8 +18,7 @@ public class ListDataType extends SequenceDataType {
   @Override
   public String randomData() {
     final Joiner on = Joiner.on(", ");
-    final StringBuilder sql = new StringBuilder("(");
-    on.appendTo(sql, DataTypeUtil.randoms(getType(), getLen()));
+    final StringBuilder sql = on.appendTo(new StringBuilder("("), DataTypeUtil.randoms(getType(), getLen()));
     return sql.append(')').toString();
   }
 
