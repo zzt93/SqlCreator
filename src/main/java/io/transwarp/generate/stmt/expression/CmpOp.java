@@ -19,12 +19,12 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public enum CmpOp implements Function {
 
-  EQ("="),
-  NOT_EQ("!="),
-  SMALL("<"),
-  LARGE(">"),
-  SMA_EQ("<="),
-  LAR_EQ(">="),
+  EQ(" = "),
+  NOT_EQ(" != "),
+  SMALL(" < "),
+  LARGE(" > "),
+  SMA_EQ(" <= "),
+  LAR_EQ(" >= "),
   IS_NULL(" IS NULL") {
     @Override
     public Operand apply(Operand... input) {
@@ -88,7 +88,6 @@ public enum CmpOp implements Function {
   @Override
   public Operand apply(Operand... input) {
     input[0].sql().append(this).append(input[1].sql());
-    input[0].setType(DataType.BOOL);
     return input[0];
   }
 

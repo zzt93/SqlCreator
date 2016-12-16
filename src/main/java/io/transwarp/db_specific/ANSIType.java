@@ -1,7 +1,7 @@
 package io.transwarp.db_specific;
 
 import io.transwarp.db_specific.base.DBType;
-import io.transwarp.generate.type.CompoundDataType;
+import io.transwarp.generate.type.SequenceDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -24,7 +24,7 @@ public enum ANSIType implements DBType {
       if (len == DBType.NO_LEN) {
         return DataType.INT;
       }
-      return new CompoundDataType(DataType.BIT, len);
+      return new SequenceDataType(DataType.BIT, len);
     }
   };
 }

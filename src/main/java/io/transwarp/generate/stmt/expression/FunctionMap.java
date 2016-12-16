@@ -14,9 +14,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public class FunctionMap {
 
   private static final ConcurrentHashMap<GenerationDataType, ArrayList<Function>> share = new ConcurrentHashMap<>(20);
+  private static final ConcurrentHashMap<Function, GenerationDataType> reverse = new ConcurrentHashMap<>(200);
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   static void register(Function f, GenerationDataType resultType) {
+    reverse.put(f, resultType);
+
     // TODO 12/14/16 handle type group, list type
     final ArrayList<Function> val;
     if (share.containsKey(resultType)) {
@@ -32,6 +35,10 @@ public class FunctionMap {
     // TODO 12/15/16 return function according to db type
     final ArrayList<Function> functions = share.get(resultType);
     return functions.get(random.nextInt(functions.size()));
+  }
+
+  public static GenerationDataType resultType(Function f) {
+    return reverse.get(f);
   }
 
   static {

@@ -7,11 +7,8 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
-import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
-import io.transwarp.generate.type.DataTypeUtil;
 import io.transwarp.generate.type.GenerationDataType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
@@ -32,7 +29,7 @@ public class Operand implements SqlGeneration {
     this.type = type;
     final Operand operand = makeOperand(this.type, src, depth);
     this.operand = operand.sql();
-    assert type == operand.type;
+//    assert type == operand.type;
   }
 
   private Operand(GenerationDataType type, String operand) {
@@ -114,7 +111,7 @@ public class Operand implements SqlGeneration {
     return operand;
   }
 
-  public void setType(DataType type) {
+  public void setType(GenerationDataType type) {
     this.type = type;
   }
 }

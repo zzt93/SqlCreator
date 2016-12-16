@@ -70,5 +70,6 @@ public class SelectResult implements Table {
   }
 
   // TODO 12/12/16 conversion to operand when only one row one column and requested
+  // TODO 12/12/16 conversion to list when only one column and requested
 
 }

@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * CompoundDataType use another dimension to organize them
  *
  * @see DataType
- * @see CompoundDataType
+ * @see SequenceDataType
  */
 public enum DataTypeGroup implements GenerationDataType {
 
@@ -30,7 +30,7 @@ public enum DataTypeGroup implements GenerationDataType {
       return null;
     }
   },
-  NUM_GROUP(CompoundDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL) {
+  NUM_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL) {
     @Override
     public String getMax() {
       return null;
@@ -41,7 +41,7 @@ public enum DataTypeGroup implements GenerationDataType {
       return null;
     }
   },
-  STRING_GROUP(CompoundDataType.CHARS, CompoundDataType.UNICODE_STRING) {
+  STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING) {
     @Override
     public String getMax() {
       return null;
@@ -66,7 +66,7 @@ public enum DataTypeGroup implements GenerationDataType {
   /**
    * this must be the last group, or same group will always return this group
    */
-  ALL_GROUP(ObjectArrays.concat(DataType.values(), CompoundDataType.values(), GenerationDataType.class)) {
+  ALL_GROUP(ObjectArrays.concat(DataType.values(), SequenceDataType.values(), GenerationDataType.class)) {
     @Override
     public String getMax() {
       throw new NotImplementedException();
@@ -92,16 +92,29 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public static GenerationDataType smallerType(GenerationDataType group) {
+    if (group instanceof SequenceDataType) {
+      return ((CompoundDataType) group).smallerCompoundType();
+    }
+    return singleSmallerType(group);
+  }
+
+  public static GenerationDataType singleSmallerType(GenerationDataType group) {
     if (group instanceof DataTypeGroup) {
-      final GenerationDataType type = ((DataTypeGroup) group).randomType();
-      return sameGroup(type);
+      return ((DataTypeGroup) group).randomType();
     }
     return group;
   }
 
   public static DataTypeGroup smallerGroup(GenerationDataType type) {
+    if (type instanceof SequenceDataType) {
+      return sameGroup(((CompoundDataType) type).smallerCompoundType());
+    }
+    return singleSmallerGroup(type);
+  }
+
+  public static DataTypeGroup singleSmallerGroup(GenerationDataType type) {
     if (type instanceof DataTypeGroup) {
-      return (DataTypeGroup) smallerType(type);
+      return sameGroup(((DataTypeGroup) type).randomType());
     }
     return sameGroup(type);
   }
@@ -129,7 +142,7 @@ public enum DataTypeGroup implements GenerationDataType {
 
   public static boolean contain(GenerationDataType group, GenerationDataType type) {
     if (group instanceof DataTypeGroup) {
-      return ((DataTypeGroup)group).contains(type);
+      return ((DataTypeGroup) group).contains(type);
     }
     return group == type;
   }

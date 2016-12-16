@@ -1,7 +1,7 @@
 package io.transwarp.db_specific;
 
 import io.transwarp.db_specific.base.DBType;
-import io.transwarp.generate.type.CompoundDataType;
+import io.transwarp.generate.type.SequenceDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -14,7 +14,7 @@ public enum InceptorType implements DBType {
   STRING {
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      return new CompoundDataType(DataType.CHAR, len);
+      return new SequenceDataType(DataType.CHAR, len);
     }
   };
 }

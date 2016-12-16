@@ -1,7 +1,7 @@
 package io.transwarp.generate.common;
 
 import io.transwarp.DDLParserTest;
-import io.transwarp.generate.type.CompoundDataType;
+import io.transwarp.generate.type.SequenceDataType;
 import io.transwarp.generate.type.DataType;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class TableUtilTest {
     final Table table = DDLParserTest.getTable();
     assertTrue(TableUtil.sameTypeRandomCol(table, DataType.INT).isPresent());
     assertTrue(TableUtil.sameTypeRandomCol(table, DataType.DATE).isPresent());
-    assertTrue(TableUtil.sameTypeRandomCol(table, CompoundDataType.CHARS).isPresent());
+    assertTrue(TableUtil.sameTypeRandomCol(table, SequenceDataType.CHARS).isPresent());
     assertTrue(!TableUtil.sameTypeRandomCol(table, DataType.BOOL).isPresent());
   }
 

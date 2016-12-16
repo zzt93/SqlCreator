@@ -9,12 +9,12 @@ import static org.junit.Assert.assertTrue;
  * <p>
  * <h3></h3>
  */
-public class CompoundDataTypeTest {
+public class SequenceDataTypeTest {
   @Test
   public void equals() throws Exception {
-    final CompoundDataType bits = new CompoundDataType(DataType.BIT, 12);
-    final CompoundDataType chars = new CompoundDataType(DataType.CHAR, 12);
-    final CompoundDataType str = new CompoundDataType(DataType.UNICODE, 12);
+    final SequenceDataType bits = new SequenceDataType(DataType.BIT, 12);
+    final SequenceDataType chars = new SequenceDataType(DataType.CHAR, 12);
+    final SequenceDataType str = new SequenceDataType(DataType.UNICODE, 12);
     assertTrue(DataTypeGroup.sameGroup(bits) == DataTypeGroup.NUM_GROUP
             && DataTypeGroup.sameGroup(chars) == DataTypeGroup.STRING_GROUP
             && DataTypeGroup.sameGroup(str) == DataTypeGroup.STRING_GROUP);

@@ -1,7 +1,7 @@
 package io.transwarp.db_specific;
 
 import io.transwarp.db_specific.base.DBType;
-import io.transwarp.generate.type.CompoundDataType;
+import io.transwarp.generate.type.SequenceDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -23,7 +23,7 @@ public enum OracleType implements DBType {
       if (len > 4000 || len == NO_LEN) {
         throw new IllegalArgumentException("invalid len for varchar2: " + len);
       }
-      return new CompoundDataType(DataType.CHAR, len);
+      return new SequenceDataType(DataType.CHAR, len);
     }
   },
   NVARCHAR {
@@ -32,7 +32,7 @@ public enum OracleType implements DBType {
       if (len > 4000 || len == NO_LEN) {
         throw new IllegalArgumentException("invalid len for nvarchar2: " + len);
       }
-      return new CompoundDataType(DataType.UNICODE, len);
+      return new SequenceDataType(DataType.UNICODE, len);
     }
   },
 
@@ -82,7 +82,7 @@ public enum OracleType implements DBType {
       if (len == DBType.NO_LEN) {
         len = 1;
       }
-      return new CompoundDataType(DataType.CHAR, len);
+      return new SequenceDataType(DataType.CHAR, len);
     }
   },
   NCHAR {
@@ -94,7 +94,7 @@ public enum OracleType implements DBType {
       if (len == DBType.NO_LEN) {
         len = 1;
       }
-      return new CompoundDataType(DataType.UNICODE, len);
+      return new SequenceDataType(DataType.UNICODE, len);
     }
   },
 

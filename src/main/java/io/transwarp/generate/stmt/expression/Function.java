@@ -12,9 +12,11 @@ public interface Function {
   void register();
 
   /**
-   * update sql & update type
+   * <li> update sql</li>
+   * <li> update type -- implement by aop</li>
    * @param input parameter
    * @return result
+   * @see io.transwarp.generate.common.FunctionApplyAspect
    */
   Operand apply(Operand... input);
 
