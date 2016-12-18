@@ -97,7 +97,7 @@ public class Operand implements SqlGeneration {
   private static GenerationDataType getSameTypeGroupCols(Table src, ArrayList<Column> same) {
     final ArrayList<Column> columns = src.columns();
     final GenerationDataType type = TableUtil.randomCol(src).getType();
-    final DataTypeGroup group = DataTypeGroup.sameGroup(type);
+    final DataTypeGroup group = DataTypeGroup.groupOf(type);
     for (Column column : columns) {
       if (group.contains(column.getType())) {
         same.add(column);

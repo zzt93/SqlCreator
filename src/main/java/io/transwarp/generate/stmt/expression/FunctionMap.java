@@ -50,9 +50,6 @@ public class FunctionMap {
       GenerationDataType larger = DataTypeGroup.largerGroup(resultType);
       functions = share.get(larger);
     }
-    if (functions == null) {
-
-    }
     return functions.get(random.nextInt(functions.size()));
   }
 

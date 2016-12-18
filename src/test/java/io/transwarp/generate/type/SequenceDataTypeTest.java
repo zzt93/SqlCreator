@@ -15,9 +15,9 @@ public class SequenceDataTypeTest {
     final SequenceDataType bits = new SequenceDataType(DataType.BIT, 12);
     final SequenceDataType chars = new SequenceDataType(DataType.CHAR, 12);
     final SequenceDataType str = new SequenceDataType(DataType.UNICODE, 12);
-    assertTrue(DataTypeGroup.sameGroup(bits) == DataTypeGroup.NUM_GROUP
-            && DataTypeGroup.sameGroup(chars) == DataTypeGroup.STRING_GROUP
-            && DataTypeGroup.sameGroup(str) == DataTypeGroup.STRING_GROUP);
+    assertTrue(DataTypeGroup.groupOf(bits) == DataTypeGroup.NUM_GROUP
+            && DataTypeGroup.groupOf(chars) == DataTypeGroup.STRING_GROUP
+            && DataTypeGroup.groupOf(str) == DataTypeGroup.STRING_GROUP);
   }
 
 }

@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**
@@ -7,14 +8,12 @@ import io.transwarp.generate.type.GenerationDataType;
  * <p>
  * <h3></h3>
  */
-public enum ArithOp implements Function{
+public enum ArithOp implements Function {
   PLUS(" + "),
   MINUS(" - "),
   MUL(" * "),
   DIV(" / "),
-  MOD(" % "),
-  
-  ;
+  MOD(" % "),;
 
 
   private final String op;
@@ -25,17 +24,18 @@ public enum ArithOp implements Function{
 
   @Override
   public void register() {
-
+    FunctionMap.register(this, DataTypeGroup.ALL_GROUP);
   }
 
   @Override
   public Operand apply(Operand... input) {
-    return null;
+    input[0].sql().append(op).append(input[1].sql());
+    return input[0];
   }
 
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-    return new GenerationDataType[0];
+    return new GenerationDataType[]{resultType, resultType};
   }
 
   @Override

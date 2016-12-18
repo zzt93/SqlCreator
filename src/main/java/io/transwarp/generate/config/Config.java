@@ -9,7 +9,7 @@ import io.transwarp.db_specific.base.Dialect;
  */
 public class Config {
 
-  public static int randomMaxBitLen = 64;
+  private static int randomMaxBitLen = 64;
   private static int randomListMaxLen = 10;
   private static int randomStrMaxLen = 100;
   private static int udfDepth = FunctionDepth.WITH_OPERATOR;
@@ -40,6 +40,18 @@ public class Config {
 
   public static int getRandomListMaxLen() {
     return randomListMaxLen;
+  }
+
+  public static int getRandomMaxBitLen() {
+    return randomMaxBitLen;
+  }
+
+  public Config setRandomMaxBitLen(int randomMaxBitLen) {
+    if (randomMaxBitLen > 64) {
+      throw new IllegalArgumentException("too long bit len");
+    }
+    Config.randomMaxBitLen = randomMaxBitLen;
+    return this;
   }
 
   public Config setRandomListMaxLen(int randomListMaxLen) {

@@ -19,70 +19,23 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public enum DataTypeGroup implements GenerationDataType {
 
-  BOOL_GROUP(DataType.BOOL) {
-    @Override
-    public String getMax() {
-      return null;
-    }
-
-    @Override
-    public String getMin() {
-      return null;
-    }
-  },
-  NUM_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL) {
-    @Override
-    public String getMax() {
-      return null;
-    }
-
-    @Override
-    public String getMin() {
-      return null;
-    }
-  },
-  STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING) {
-    @Override
-    public String getMax() {
-      return null;
-    }
-
-    @Override
-    public String getMin() {
-      return null;
-    }
-  },
-  DATE_GROUP(DataType.DATE, DataType.TIME, DataType.TIMESTAMP) {
-    @Override
-    public String getMax() {
-      return null;
-    }
-
-    @Override
-    public String getMin() {
-      return null;
-    }
-  },
+  BOOL_GROUP(DataType.BOOL),
+  NUM_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
+  TIME_GROUP(DataType.DATE, DataType.TIME, DataType.TIMESTAMP),
   /**
    * this must be the last group, or same group will always return this group
    */
-  ALL_GROUP(ObjectArrays.concat(DataType.values(), SequenceDataType.values(), GenerationDataType.class)) {
-    @Override
-    public String getMax() {
-      throw new NotImplementedException();
-    }
-
-    @Override
-    public String getMin() {
-      throw new NotImplementedException();
-    }
-  };
+  ALL_GROUP(ObjectArrays.concat(DataType.values(), SequenceDataType.values(), GenerationDataType.class));
 
   public static final String STRING_DELIMITER = "'";
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
   private final int typeCount;
 
-  public static DataTypeGroup sameGroup(GenerationDataType type) {
+  public static DataTypeGroup groupOf(GenerationDataType type) {
+    if (type instanceof DataTypeGroup) {
+      return ALL_GROUP;
+    }
     for (DataTypeGroup dataTypeGroup : values()) {
       if (dataTypeGroup.contains(type)) {
         return dataTypeGroup;
@@ -91,14 +44,20 @@ public enum DataTypeGroup implements GenerationDataType {
     throw new IllegalArgumentException("Unknown type: " + type);
   }
 
-  public static GenerationDataType smallerType(GenerationDataType group) {
-    if (group instanceof SequenceDataType) {
-      return ((CompoundDataType) group).smallerCompoundType();
+  /**
+   * @param type a group or compound group
+   * @return smaller type relative to input type
+   * <p>e.g. {@link DataTypeGroup#ALL_GROUP} -> ALL_GROUP#randomType</p>
+   * <p>e.g. {@link CompoundDataType}(ALL_GROUP) -> {@link CompoundDataType}(ALL_GROUP#randomType)</p>
+   */
+  public static GenerationDataType smallerType(GenerationDataType type) {
+    if (type instanceof CompoundDataType) {
+      return ((CompoundDataType) type).smallerCompoundType();
     }
-    return singleSmallerType(group);
+    return singleSmallerType(type);
   }
 
-  public static GenerationDataType singleSmallerType(GenerationDataType group) {
+  static GenerationDataType singleSmallerType(GenerationDataType group) {
     if (group instanceof DataTypeGroup) {
       return ((DataTypeGroup) group).randomType();
     }
@@ -106,17 +65,11 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public static DataTypeGroup smallerGroup(GenerationDataType type) {
-    if (type instanceof SequenceDataType) {
-      return sameGroup(((CompoundDataType) type).smallerCompoundType());
-    }
-    return singleSmallerGroup(type);
+    return groupOf(smallerType(type));
   }
 
-  public static DataTypeGroup singleSmallerGroup(GenerationDataType type) {
-    if (type instanceof DataTypeGroup) {
-      return sameGroup(((DataTypeGroup) type).randomType());
-    }
-    return sameGroup(type);
+  public static DataTypeGroup largerGroup(GenerationDataType resultType) {
+    return groupOf(resultType);
   }
 
   private List<GenerationDataType> types;
@@ -128,6 +81,16 @@ public enum DataTypeGroup implements GenerationDataType {
 
 
   public String randomData() {
+    throw new NotImplementedException();
+  }
+
+  @Override
+  public String getMax() {
+    throw new NotImplementedException();
+  }
+
+  @Override
+  public String getMin() {
     throw new NotImplementedException();
   }
 
@@ -148,7 +111,4 @@ public enum DataTypeGroup implements GenerationDataType {
     return group == type;
   }
 
-  public static DataTypeGroup largerGroup(GenerationDataType resultType) {
-    return null;
-  }
 }

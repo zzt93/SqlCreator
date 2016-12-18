@@ -16,7 +16,7 @@ import io.transwarp.generate.config.Config;
  */
 public class SequenceDataType extends CompoundDataType {
 
-  static final SequenceDataType BITS = new SequenceDataType(DataType.BIT, Config.randomMaxBitLen) {
+  static final SequenceDataType BITS = new SequenceDataType(DataType.BIT, Config.getRandomMaxBitLen()) {
     @Override
     public String randomData() {
       return Long.toString(Long.parseLong(getType().randomData(), 2));
