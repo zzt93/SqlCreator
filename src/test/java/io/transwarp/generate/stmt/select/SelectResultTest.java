@@ -1,23 +1,34 @@
 package io.transwarp.generate.stmt.select;
 
 import io.transwarp.DDLParserTest;
-import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Config;
-import io.transwarp.parse.sql.DDLParser;
+import io.transwarp.generate.config.InputRelation;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  * Created by zzt on 12/12/16.
  * <p>
  * <h3></h3>
  */
+@RunWith(Parameterized.class)
 public class SelectResultTest {
 
   private int count = 1000;
   private SelectResult[] selectResults;
   private Table from;
+
+  public SelectResultTest(InputRelation relation) {
+    new Config.Builder().setInputRelation(relation).build();
+  }
+
+  @Parameterized.Parameters
+  public static InputRelation[] data() {
+    return InputRelation.values();
+  }
 
   @Before
   public void setUp() throws Exception {
@@ -45,7 +56,7 @@ public class SelectResultTest {
   @Test
   public void sql() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      System.out.println(selectResult.sql());
+      System.out.println(selectResult.sql(Config.getBase()));
     }
   }
 

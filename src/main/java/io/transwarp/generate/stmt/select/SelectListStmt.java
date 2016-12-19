@@ -1,6 +1,7 @@
 package io.transwarp.generate.stmt.select;
 
 import com.google.common.base.Joiner;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.config.Possibility;
@@ -33,8 +34,11 @@ public class SelectListStmt implements SqlGeneration {
   }
 
   @Override
-  public StringBuilder sql() {
-    final Joiner joiner = Joiner.on(", ");
-    return new StringBuilder("select ").append(joiner.join(cols));
+  public StringBuilder sql(Dialect dialect) {
+    final StringBuilder res = new StringBuilder("select ");
+    for (Column col : cols) {
+      res.append(col.getName(dialect)).append(", ");
+    }
+    return res;
   }
 }

@@ -1,12 +1,10 @@
 package io.transwarp.generate.stmt.expression;
 
-import io.transwarp.generate.common.Table;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 12/6/16.
@@ -27,8 +25,8 @@ public enum CmpOp implements Function {
   LAR_EQ(" >= "),
   IS_NULL(" IS NULL") {
     @Override
-    public Operand apply(Operand... input) {
-      input[0].sql().append(this);
+    public Operand apply(Dialect dialect, Operand... input) {
+      input[0].sql(dialect).append(this);
       return input[0];
     }
 
@@ -42,12 +40,12 @@ public enum CmpOp implements Function {
     private static final String and = " AND ";
 
     @Override
-    public Operand apply(Operand... input) {
-      input[0].sql()
+    public Operand apply(Dialect dialect, Operand... input) {
+      input[0].sql(dialect)
               .append(this)
-              .append(input[1].sql())
+              .append(input[1].sql(dialect))
               .append(and)
-              .append(input[2].sql());
+              .append(input[2].sql(dialect));
       return input[0];
     }
 
@@ -86,8 +84,8 @@ public enum CmpOp implements Function {
   }
 
   @Override
-  public Operand apply(Operand... input) {
-    input[0].sql().append(this).append(input[1].sql());
+  public Operand apply(Dialect dialect, Operand... input) {
+    input[0].sql(dialect).append(this).append(input[1].sql(dialect));
     return input[0];
   }
 

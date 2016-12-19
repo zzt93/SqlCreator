@@ -1,8 +1,8 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -11,7 +11,7 @@ import io.transwarp.generate.type.GenerationDataType;
  * <p>
  * <h3></h3>
  */
-public class Condition implements SqlGeneration{
+public class Condition implements SqlGeneration {
 
   private static final GenerationDataType type = DataType.BOOL;
   private final Operand condition;
@@ -22,8 +22,8 @@ public class Condition implements SqlGeneration{
   }
 
   @Override
-  public StringBuilder sql() {
-    return condition.sql();
+  public StringBuilder sql(Dialect dialect) {
+    return condition.sql(dialect);
   }
 
 }

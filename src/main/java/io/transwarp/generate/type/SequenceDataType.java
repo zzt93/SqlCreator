@@ -16,15 +16,15 @@ import io.transwarp.generate.config.Config;
  */
 public class SequenceDataType extends CompoundDataType {
 
-  static final SequenceDataType BITS = new SequenceDataType(DataType.BIT, Config.getRandomMaxBitLen()) {
+  static final SequenceDataType BITS = new SequenceDataType(DataType.Meta.BIT, Config.getRandomMaxBitLen()) {
     @Override
     public String randomData() {
       return Long.toString(Long.parseLong(getType().randomData(), 2));
     }
   };
 
-  public static final SequenceDataType CHARS = new SequenceDataType(DataType.CHAR, Config.getRandomStrMaxLen());
-  static final SequenceDataType UNICODE_STRING = new SequenceDataType(DataType.UNICODE, Config.getRandomStrMaxLen());
+  public static final SequenceDataType CHARS = new SequenceDataType(DataType.Meta.CHAR, Config.getRandomStrMaxLen());
+  static final SequenceDataType UNICODE_STRING = new SequenceDataType(DataType.Meta.UNICODE, Config.getRandomStrMaxLen());
   private static final GenerationDataType[] COMPOUNDS = {BITS, CHARS, UNICODE_STRING};
 
   private final GenerationDataType type;
@@ -82,6 +82,6 @@ public class SequenceDataType extends CompoundDataType {
 
   @Override
   CompoundDataType smallerCompoundType() {
-    return new SequenceDataType(DataTypeGroup.singleSmallerType(getType()), getLen());
+    return new SequenceDataType(DataTypeGroup.smallerType(getType()), getLen());
   }
 }

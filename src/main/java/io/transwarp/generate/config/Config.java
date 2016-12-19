@@ -2,6 +2,9 @@ package io.transwarp.generate.config;
 
 import io.transwarp.db_specific.base.Dialect;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Created by zzt on 12/9/16.
  * <p>
@@ -15,7 +18,7 @@ public class Config {
   private static int udfDepth = FunctionDepth.WITH_OPERATOR;
   private static int subQueryDepth = 0;
   private static InputRelation inputRelation = InputRelation.RANDOM;
-  private static Dialect dialect = Dialect.ORACLE;
+  private static Dialect cmp = Dialect.ORACLE;
   private static Dialect base = Dialect.INCEPTOR;
 
   public static int getUdfDepth() {
@@ -30,8 +33,8 @@ public class Config {
     return inputRelation;
   }
 
-  public static Dialect getDialect() {
-    return dialect;
+  public static Dialect getCmp() {
+    return cmp;
   }
 
   public static Dialect getBase() {
@@ -46,50 +49,64 @@ public class Config {
     return randomMaxBitLen;
   }
 
-  public Config setRandomMaxBitLen(int randomMaxBitLen) {
-    if (randomMaxBitLen > 64) {
-      throw new IllegalArgumentException("too long bit len");
-    }
-    Config.randomMaxBitLen = randomMaxBitLen;
-    return this;
-  }
-
-  public Config setRandomListMaxLen(int randomListMaxLen) {
-    Config.randomListMaxLen = randomListMaxLen;
-    return this;
-  }
-
   public static int getRandomStrMaxLen() {
     return randomStrMaxLen;
   }
 
-  public Config setRandomStrMaxLen(int randomStrMaxLen) {
-    Config.randomStrMaxLen = randomStrMaxLen;
-    return this;
-  }
+  public static class Builder {
 
-  public Config setUdfDepth(int udfDepth) {
-    Config.udfDepth = udfDepth;
-    return this;
-  }
+    public Builder setRandomMaxBitLen(int randomMaxBitLen) {
+      checkArgument(randomMaxBitLen < 64 && randomMaxBitLen > 0);
+      Config.randomMaxBitLen = randomMaxBitLen;
+      return this;
+    }
 
-  public Config setSubQueryDepth(int subQueryDepth) {
-    Config.subQueryDepth = subQueryDepth;
-    return this;
-  }
+    public Builder setRandomListMaxLen(int randomListMaxLen) {
+      checkArgument(randomListMaxLen > 0);
+      Config.randomListMaxLen = randomListMaxLen;
+      return this;
+    }
 
-  public Config setInputRelation(InputRelation inputRelation) {
-    Config.inputRelation = inputRelation;
-    return this;
-  }
+    public Builder setRandomStrMaxLen(int randomStrMaxLen) {
+      checkArgument(randomStrMaxLen > 0);
+      Config.randomStrMaxLen = randomStrMaxLen;
+      return this;
+    }
 
-  public Config setDialect(Dialect dialect) {
-    Config.dialect = dialect;
-    return this;
-  }
+    public Builder setUdfDepth(int udfDepth) {
+      checkArgument(udfDepth >= 0 && udfDepth < 10);
+      Config.udfDepth = udfDepth;
+      return this;
+    }
 
-  public Config setBase(Dialect base) {
-    Config.base = base;
-    return this;
+    public Builder setSubQueryDepth(int subQueryDepth) {
+      checkArgument(subQueryDepth >= 0 && subQueryDepth < 10);
+      Config.subQueryDepth = subQueryDepth;
+      return this;
+    }
+
+    public Builder setInputRelation(InputRelation inputRelation) {
+      checkNotNull(inputRelation);
+      Config.inputRelation = inputRelation;
+      return this;
+    }
+
+    public Builder setDialect(Dialect dialect) {
+      checkNotNull(dialect);
+      Config.cmp = dialect;
+      return this;
+    }
+
+    public Builder setBase(Dialect base) {
+      checkNotNull(base);
+      Config.base = base;
+      return this;
+    }
+
+    public void build() {
+      if (cmp == base) {
+        throw new IllegalArgumentException();
+      }
+    }
   }
 }

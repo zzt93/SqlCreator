@@ -1,11 +1,12 @@
 package io.transwarp.generate.stmt.select;
 
 import com.google.common.base.Optional;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
+import io.transwarp.generate.config.Config;
 import io.transwarp.generate.stmt.expression.Condition;
-import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
 
@@ -19,18 +20,15 @@ import java.util.ArrayList;
 public class SelectResult implements Table {
 
   private Table from;
-  private SelectListStmt selectListStmt;
-  private StringBuilder sql;
+  private final SelectListStmt selectListStmt;
+  private final FromStmt fromStmt;
+  private final WhereStmt where;
 
   SelectResult(int subQueryDepth, Table... src) {
     makeFromTable(subQueryDepth, src);
     selectListStmt = new SelectListStmt(from);
-    final FromStmt fromStmt = new FromStmt(from);
-    final WhereStmt where = new WhereStmt(from);
-    sql = new StringBuilder()
-            .append(selectListStmt.sql())
-            .append(fromStmt.sql())
-            .append(where.sql());
+    fromStmt = new FromStmt(from);
+    where = new WhereStmt(from);
   }
 
   private void makeFromTable(int subQueryDepth, Table[] src) {
@@ -64,9 +62,13 @@ public class SelectResult implements Table {
    * @return sql stmt
    *
    * @see io.transwarp.generate.common.ParenAspect
+   * @param dialect sql dialect
    */
-  public StringBuilder sql() {
-    return sql;
+  public StringBuilder sql(Dialect dialect) {
+    return new StringBuilder()
+        .append(selectListStmt.sql(dialect))
+        .append(fromStmt.sql(dialect))
+        .append(where.sql(dialect));
   }
 
   // TODO 12/12/16 conversion to operand when only one row one column and requested

@@ -1,7 +1,7 @@
 package io.transwarp.generate.stmt.expression;
 
 import com.google.common.base.Optional;
-import io.transwarp.generate.SqlGeneration;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
@@ -11,6 +11,7 @@ import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 
 /**
  * Created by zzt on 12/8/16.
@@ -20,28 +21,31 @@ import java.util.ArrayList;
  * <br>operation</br>
  * <br>result</br>
  */
-public class Operand implements SqlGeneration {
-
+public class Operand {
+  /**
+   * use @see DataTypeGeneration for this type is for generation
+   * and should isolate from the specific sql dialect
+   */
   private GenerationDataType type;
-  private StringBuilder operand;
 
-  private Operand(GenerationDataType type, Table src, int depth) {
-    this.type = type;
-    final Operand operand = makeOperand(this.type, src, depth);
-    this.operand = operand.sql();
-//    assert type == operand.type;
-  }
+  private EnumMap<Dialect, StringBuilder> versions = new EnumMap<>(Dialect.class);
 
   private Operand(GenerationDataType type, String operand) {
-    this.type = type;
-    this.operand = new StringBuilder(operand);
+    this(type, operand, operand);
   }
 
-  private Operand makeOperand(GenerationDataType resultType, Table src, int depth) {
+  public Operand(GenerationDataType type, String baseOp, String cmpOp) {
+    this.type = type;
+    versions.put(Config.getBase(), new StringBuilder(baseOp));
+    versions.put(Config.getCmp(), new StringBuilder(cmpOp));
+  }
+
+  private static Operand makeOperand(GenerationDataType resultType, Table src, int depth) {
     if (depth == FunctionDepth.SINGLE) {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
-        return new Operand(resultType, col.get().getNameOrConst());
+        final Column column = col.get();
+        return new Operand(resultType, column.getNameOrConst(Config.getBase()), column.getNameOrConst(Config.getCmp()));
       } else {
         return new Operand(resultType, resultType.randomData());
       }
@@ -53,7 +57,8 @@ public class Operand implements SqlGeneration {
       for (int i = 0; i < nextResultType.length; i++) {
         ops[i] = makeOperand(nextResultType[i], src, depth - 1);
       }
-      return function.apply(ops);
+      function.apply(Config.getBase(), ops);
+      return function.apply(Config.getCmp(), ops);
     }
   }
 
@@ -67,20 +72,19 @@ public class Operand implements SqlGeneration {
    *
    * @param from columns that to choose from
    * @param num  number of operands
-   *
    * @return operand array
    */
-  public static Operand[] randomSameTypeGroupOperand(Table from, int num) {
+  static Operand[] randomSameTypeGroupOperand(Table from, int num) {
     final ArrayList<Column> columns = from.columns();
     ArrayList<Column> same = new ArrayList<>(columns.size());
     GenerationDataType type = getSameTypeGroupCols(from, same);
     return getOperands(from, num, type);
   }
 
-  static Operand[] getOperands(Table src, int num, GenerationDataType resultType) {
+  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = new Operand(resultType, src, Config.getUdfDepth());
+      res[i] = makeOperand(resultType, src, Config.getUdfDepth());
     }
     return res;
   }
@@ -89,7 +93,8 @@ public class Operand implements SqlGeneration {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       GenerationDataType type = TableUtil.randomCol(src).getType();
-      res[i] = new Operand(type, src, Config.getUdfDepth());
+      res[i] = makeOperand(type, src, Config.getUdfDepth());
+      //    assert type == operand.type;
     }
     return res;
   }
@@ -106,9 +111,8 @@ public class Operand implements SqlGeneration {
     return type;
   }
 
-  @Override
-  public StringBuilder sql() {
-    return operand;
+  public StringBuilder sql(Dialect dialect) {
+    return versions.get(dialect);
   }
 
   public void setType(GenerationDataType type) {

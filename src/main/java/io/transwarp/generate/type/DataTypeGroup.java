@@ -1,6 +1,7 @@
 package io.transwarp.generate.type;
 
 import com.google.common.collect.ObjectArrays;
+import io.transwarp.generate.config.Config;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
@@ -26,11 +27,20 @@ public enum DataTypeGroup implements GenerationDataType {
   /**
    * this must be the last group, or same group will always return this group
    */
-  ALL_GROUP(ObjectArrays.concat(DataType.values(), SequenceDataType.values(), GenerationDataType.class));
+  ALL_GROUP(ObjectArrays.concat(DataType.values(), SequenceDataType.values(), GenerationDataType.class)) {
+    @Override
+    public GenerationDataType randomType() {
+      final int rand = random.nextInt(typeCount + 1);
+      if (rand == typeCount) {
+        // make recursive list data type
+        return new ListDataType(randomType(), random.nextInt(Config.getRandomListMaxLen()) + 1);
+      }
+      return types.get(rand);
+    }
+  };
 
   public static final String STRING_DELIMITER = "'";
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
-  private final int typeCount;
 
   public static DataTypeGroup groupOf(GenerationDataType type) {
     if (type instanceof DataTypeGroup) {
@@ -57,7 +67,7 @@ public enum DataTypeGroup implements GenerationDataType {
     return singleSmallerType(type);
   }
 
-  static GenerationDataType singleSmallerType(GenerationDataType group) {
+  private static GenerationDataType singleSmallerType(GenerationDataType group) {
     if (group instanceof DataTypeGroup) {
       return ((DataTypeGroup) group).randomType();
     }
@@ -72,7 +82,8 @@ public enum DataTypeGroup implements GenerationDataType {
     return groupOf(resultType);
   }
 
-  private List<GenerationDataType> types;
+  List<GenerationDataType> types;
+  final int typeCount;
 
   DataTypeGroup(GenerationDataType... types) {
     this.types = Arrays.asList(types);
@@ -95,20 +106,12 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public GenerationDataType randomType() {
-    // TODO 12/16/16 make list type available
     // TODO 12/16/16 whether to keep bit, char, unicode?
     return types.get(random.nextInt(typeCount));
   }
 
   public boolean contains(GenerationDataType type) {
     return types.contains(type);
-  }
-
-  public static boolean contain(GenerationDataType group, GenerationDataType type) {
-    if (group instanceof DataTypeGroup) {
-      return ((DataTypeGroup) group).contains(type);
-    }
-    return group == type;
   }
 
 }

@@ -11,22 +11,6 @@ import java.util.Random;
  */
 public enum DataType implements GenerationDataType {
 
-  BIT {
-    @Override
-    public String randomData() {
-      return random.nextBoolean() ? "1" : "0";
-    }
-
-    @Override
-    public String getMax() {
-      return "1";
-    }
-
-    @Override
-    public String getMin() {
-      return "0";
-    }
-  },
   BOOL {
     public String randomData() {
       return random.nextBoolean() ? "true" : "false";
@@ -51,49 +35,6 @@ public enum DataType implements GenerationDataType {
 
     public String getMin() {
       return "0";
-    }
-  },
-  CHAR {
-    private int count = '~' - ' ';
-
-    public String randomData() {
-      return "" + (char)(MIN_CHAR + random.nextInt(count));
-    }
-
-    /**
-     * @return max possible printable ascii char
-     */
-    public String getMax() {
-      return "~";
-    }
-
-    /**
-     * @return min printable char
-     */
-    public String getMin() {
-      return " ";
-    }
-  },
-  UNICODE {
-    private int count = MAX_PRINTABLE - ' ';
-
-    @Override
-    public String randomData() {
-      return "" + (char)(MIN_CHAR + random.nextInt(count));
-    }
-
-    /**
-     * @return max possible printable utf-16 char
-     */
-    public String getMax() {
-      return "" + MAX_PRINTABLE;
-    }
-
-    /**
-     * @return min printable char
-     */
-    public String getMin() {
-      return " ";
     }
   },
   SHORT {
@@ -221,6 +162,69 @@ public enum DataType implements GenerationDataType {
       return null;
     }
   };
+
+  public enum Meta implements GenerationDataType {
+    BIT {
+      @Override
+      public String randomData() {
+        return random.nextBoolean() ? "1" : "0";
+      }
+
+      @Override
+      public String getMax() {
+        return "1";
+      }
+
+      @Override
+      public String getMin() {
+        return "0";
+      }
+    },
+    CHAR {
+      private int count = '~' - ' ';
+
+      public String randomData() {
+        return "" + (char) (MIN_CHAR + random.nextInt(count));
+      }
+
+      /**
+       * @return max possible printable ascii char
+       */
+      public String getMax() {
+        return "~";
+      }
+
+      /**
+       * @return min printable char
+       */
+      public String getMin() {
+        return " ";
+      }
+    },
+    UNICODE {
+      private int count = MAX_PRINTABLE - ' ';
+
+      @Override
+      public String randomData() {
+        return "" + (char) (MIN_CHAR + random.nextInt(count));
+      }
+
+      /**
+       * @return max possible printable utf-16 char
+       */
+      public String getMax() {
+        return "" + MAX_PRINTABLE;
+      }
+
+      /**
+       * @return min printable char
+       */
+      public String getMin() {
+        return " ";
+      }
+    };
+  }
+
   public static final String HH_MM_SS = "HH:mm:ss";
   public static final String YYYY_MM_DD = "yyyy-MM-dd";
   public static final String YYYY_MM_DD_HH_MM_SS = YYYY_MM_DD + " " + HH_MM_SS;

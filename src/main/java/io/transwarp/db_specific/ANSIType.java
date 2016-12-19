@@ -24,7 +24,7 @@ public enum ANSIType implements DBType {
       if (len == DBType.NO_LEN) {
         return DataType.INT;
       }
-      return new SequenceDataType(DataType.BIT, len);
+      return new SequenceDataType(DataType.Meta.BIT, len);
     }
   };
 }

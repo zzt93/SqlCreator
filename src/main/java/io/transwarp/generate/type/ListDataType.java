@@ -24,7 +24,7 @@ public class ListDataType extends SequenceDataType {
 
   @Override
   CompoundDataType smallerCompoundType() {
-    return new ListDataType(DataTypeGroup.singleSmallerType(getType()), Config.getRandomStrMaxLen());
+    return new ListDataType(DataTypeGroup.smallerType(getType()), getLen());
   }
 
 

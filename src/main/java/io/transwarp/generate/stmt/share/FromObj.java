@@ -1,6 +1,7 @@
 package io.transwarp.generate.stmt.share;
 
 import com.google.common.base.Optional;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.stmt.expression.Condition;
@@ -38,7 +39,7 @@ public class FromObj implements Table {
     return columns;
   }
 
-  public StringBuilder sql() {
+  public StringBuilder sql(Dialect dialect) {
     return sql;
   }
 

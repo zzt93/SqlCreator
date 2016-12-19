@@ -1,11 +1,9 @@
 package io.transwarp.generate.stmt.share;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.stmt.expression.Condition;
-import io.transwarp.generate.stmt.expression.Operand;
-import io.transwarp.generate.type.DataType;
 
 /**
  * Created by zzt on 12/12/16.
@@ -15,6 +13,7 @@ import io.transwarp.generate.type.DataType;
 public class WhereStmt implements SqlGeneration{
 
 
+  private static final String WHERE = " where ";
   private final Condition condition;
 
   public WhereStmt(Table from) {
@@ -22,7 +21,7 @@ public class WhereStmt implements SqlGeneration{
   }
 
   @Override
-  public StringBuilder sql() {
-    return condition.sql().insert(0, " where ");
+  public StringBuilder sql(Dialect dialect) {
+    return new StringBuilder(WHERE).append(condition.sql(dialect));
   }
 }

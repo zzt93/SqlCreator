@@ -23,7 +23,7 @@ public class FunctionMap {
   static void register(Function f, GenerationDataType resultType) {
     reverse.put(f, resultType);
 
-    // TODO 12/14/16 handle type group, list type
+    // TODO 12/14/16 handle list type
     final ArrayList<Function> val;
     if (share.containsKey(resultType)) {
       val = share.get(resultType);
@@ -44,9 +44,9 @@ public class FunctionMap {
    */
   static Function random(GenerationDataType resultType) {
     assert resultType instanceof DataType || resultType instanceof CompoundDataType;
-    // TODO 12/15/16 return function according to db type
     ArrayList<Function> functions = share.get(resultType);
     while (functions == null) {
+      // handle group type
       GenerationDataType larger = DataTypeGroup.largerGroup(resultType);
       functions = share.get(larger);
     }

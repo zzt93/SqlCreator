@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.share;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
 
@@ -10,15 +11,15 @@ import io.transwarp.generate.common.Table;
  */
 public class FromStmt implements SqlGeneration {
 
+  private static final String FROM = " from ";
   private Table fromObj;
-  private StringBuilder sql = new StringBuilder(" from ");
 
   public FromStmt(Table fromObj) {
     this.fromObj = fromObj;
   }
 
   @Override
-  public StringBuilder sql() {
-    return sql.append(fromObj.sql());
+  public StringBuilder sql(Dialect dialect) {
+    return new StringBuilder(FROM).append(fromObj.sql(dialect));
   }
 }

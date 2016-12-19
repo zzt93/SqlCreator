@@ -30,7 +30,7 @@ public class ParenAspect {
     return proceed;
   }
 
-  @Around("execution(* io.transwarp.generate.stmt.select.SelectResult.sql())")
+  @Around("execution(* io.transwarp.generate.stmt.select.SelectResult.sql(..))")
   public Object addParenAndSemicolon(ProceedingJoinPoint pjp) {
     return addParenAround(pjp).append(";");
   }

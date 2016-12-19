@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -12,9 +13,9 @@ public enum LogicalOp implements Function {
   AND(" AND ") , OR(" OR "),
   NOT(" NOT ") {
     @Override
-    public Operand apply(Operand... operands) {
+    public Operand apply(Dialect dialect, Operand... operands) {
       final Operand f = operands[0];
-      f.sql().insert(0, LogicalOp.NOT);
+      f.sql(dialect).insert(0, LogicalOp.NOT);
       return f;
     }
 
@@ -50,10 +51,10 @@ public enum LogicalOp implements Function {
   }
 
   @Override
-  public Operand apply(Operand... operands) {
+  public Operand apply(Dialect dialect, Operand... operands) {
     Operand f = operands[0];
     Operand s = operands[1];
-    f.sql().append(this).append(s.sql());
+    f.sql(dialect).append(this).append(s.sql(dialect));
     return f;
   }
 }
