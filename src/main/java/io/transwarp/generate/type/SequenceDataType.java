@@ -4,6 +4,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import io.transwarp.generate.config.Config;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Created by zzt on 12/7/16.
  * <p>
@@ -31,6 +33,7 @@ public class SequenceDataType extends CompoundDataType {
   private final int len;
 
   public SequenceDataType(GenerationDataType type, int len) {
+    checkNotNull(type);
     this.type = type;
     this.len = len;
   }

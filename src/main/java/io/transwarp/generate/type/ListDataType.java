@@ -11,7 +11,7 @@ import io.transwarp.generate.config.Config;
 public class ListDataType extends SequenceDataType {
   public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, Config.getRandomListMaxLen());
 
-  public ListDataType(GenerationDataType type, int len) {
+  ListDataType(GenerationDataType type, int len) {
     super(type, len);
   }
 

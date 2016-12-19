@@ -24,8 +24,20 @@ public enum DataTypeGroup implements GenerationDataType {
   NUM_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
   STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
   TIME_GROUP(DataType.DATE, DataType.TIME, DataType.TIMESTAMP),
+  LIST_GROUP() {
+    @Override
+    public GenerationDataType randomType() {
+      return new ListDataType(ALL_GROUP.randomType(), random.nextInt(Config.getRandomListMaxLen()) + 1);
+    }
+
+    @Override
+    public boolean contains(GenerationDataType type) {
+      return type instanceof ListDataType;
+    }
+  },
   /**
-   * this must be the last group, or same group will always return this group
+   * <p>this must be the last group, or {@link #groupOf(GenerationDataType)} will always return this group
+   * because others are subset of this group</p>
    */
   ALL_GROUP(ObjectArrays.concat(DataType.values(), SequenceDataType.values(), GenerationDataType.class)) {
     @Override
@@ -33,9 +45,21 @@ public enum DataTypeGroup implements GenerationDataType {
       final int rand = random.nextInt(typeCount + 1);
       if (rand == typeCount) {
         // make recursive list data type
-        return new ListDataType(randomType(), random.nextInt(Config.getRandomListMaxLen()) + 1);
+        return LIST_GROUP.randomType();
       }
       return types.get(rand);
+    }
+
+    /**
+     * <li>this group contains {@link SequenceDataType} && {@link ListDataType}</li>
+     * <li>this group contains all other group</li>
+     *
+     * @see SequenceDataType
+     * @see ListDataType
+     */
+    @Override
+    public boolean contains(GenerationDataType type) {
+      return super.contains(type) || LIST_GROUP.contains(type) || type instanceof DataTypeGroup;
     }
   };
 
@@ -43,10 +67,8 @@ public enum DataTypeGroup implements GenerationDataType {
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   public static DataTypeGroup groupOf(GenerationDataType type) {
-    if (type instanceof DataTypeGroup) {
-      return ALL_GROUP;
-    }
     for (DataTypeGroup dataTypeGroup : values()) {
+      // different group behaviour differently here
       if (dataTypeGroup.contains(type)) {
         return dataTypeGroup;
       }
