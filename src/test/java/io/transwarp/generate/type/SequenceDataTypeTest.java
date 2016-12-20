@@ -12,9 +12,9 @@ import static org.junit.Assert.assertTrue;
 public class SequenceDataTypeTest {
   @Test
   public void equals() throws Exception {
-    final SequenceDataType bits = new SequenceDataType(DataType.Meta.BIT, 12);
-    final SequenceDataType chars = new SequenceDataType(DataType.Meta.CHAR, 12);
-    final SequenceDataType str = new SequenceDataType(DataType.Meta.UNICODE, 12);
+    final SequenceDataType bits = SequenceDataType.sequence(DataType.Meta.BIT, 12);
+    final SequenceDataType chars = SequenceDataType.sequence(DataType.Meta.CHAR, 12);
+    final SequenceDataType str = SequenceDataType.sequence(DataType.Meta.UNICODE, 12);
     assertTrue(DataTypeGroup.groupOf(bits) == DataTypeGroup.NUM_GROUP
             && DataTypeGroup.groupOf(chars) == DataTypeGroup.STRING_GROUP
             && DataTypeGroup.groupOf(str) == DataTypeGroup.STRING_GROUP);

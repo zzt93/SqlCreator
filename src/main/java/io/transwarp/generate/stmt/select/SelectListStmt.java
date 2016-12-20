@@ -26,7 +26,7 @@ public class SelectListStmt implements SqlGeneration {
 
   private SelectListStmt(Table from, Possibility possibility) {
     cols = TableUtil.randomSubCols(from, possibility);
-    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, 0))));
+    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, 1))));
   }
 
   ArrayList<Column> getCols() {

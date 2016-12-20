@@ -18,7 +18,7 @@ public class DDLParserTest {
     final Table parse = getTable();
     assert parse.name().isPresent();
     assert parse.name().get().equals("test");
-    assert parse.columns().size() == 3;
+    assert parse.columns().size() == 5;
   }
 
   public static Table getTable() throws IOException {

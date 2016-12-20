@@ -18,24 +18,30 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class SequenceDataType extends CompoundDataType {
 
-  static final SequenceDataType BITS = new SequenceDataType(DataType.Meta.BIT, Config.getRandomMaxBitLen()) {
-    @Override
-    public String randomData() {
-      return Long.toString(Long.parseLong(getType().randomData(), 2));
-    }
-  };
-
-  public static final SequenceDataType CHARS = new SequenceDataType(DataType.Meta.CHAR, Config.getRandomStrMaxLen());
-  static final SequenceDataType UNICODE_STRING = new SequenceDataType(DataType.Meta.UNICODE, Config.getRandomStrMaxLen());
+  static final SequenceDataType BITS = sequence(DataType.Meta.BIT, Config.getRandomMaxBitLen());
+  public static final SequenceDataType CHARS = sequence(DataType.Meta.CHAR, Config.getRandomStrMaxLen());
+  static final SequenceDataType UNICODE_STRING = sequence(DataType.Meta.UNICODE, Config.getRandomStrMaxLen());
   private static final GenerationDataType[] COMPOUNDS = {BITS, CHARS, UNICODE_STRING};
 
   private final GenerationDataType type;
   private final int len;
 
-  public SequenceDataType(GenerationDataType type, int len) {
+  SequenceDataType(GenerationDataType type, int len) {
     checkNotNull(type);
     this.type = type;
     this.len = len;
+  }
+
+  public static SequenceDataType sequence(GenerationDataType type, int len) {
+    if (type == DataType.Meta.BIT) {
+      return new SequenceDataType(DataType.Meta.BIT, len) {
+        @Override
+        public String randomData() {
+          return Long.toString(Long.parseLong(getType().randomData(), 2));
+        }
+      };
+    }
+    return new SequenceDataType(type, len);
   }
 
   @Override
@@ -85,6 +91,6 @@ public class SequenceDataType extends CompoundDataType {
 
   @Override
   CompoundDataType smallerCompoundType() {
-    return new SequenceDataType(DataTypeGroup.smallerType(getType()), getLen());
+    return sequence(DataTypeGroup.smallerType(getType()), getLen());
   }
 }

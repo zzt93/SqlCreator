@@ -23,7 +23,7 @@ public enum OracleType implements DBType {
       if (len > 4000 || len == NO_LEN) {
         throw new IllegalArgumentException("invalid len for varchar2: " + len);
       }
-      return new SequenceDataType(DataType.Meta.CHAR, len);
+      return SequenceDataType.sequence(DataType.Meta.CHAR, len);
     }
   },
   NVARCHAR {
@@ -32,7 +32,7 @@ public enum OracleType implements DBType {
       if (len > 4000 || len == NO_LEN) {
         throw new IllegalArgumentException("invalid len for nvarchar2: " + len);
       }
-      return new SequenceDataType(DataType.Meta.UNICODE, len);
+      return SequenceDataType.sequence(DataType.Meta.UNICODE, len);
     }
   },
 
@@ -82,7 +82,7 @@ public enum OracleType implements DBType {
       if (len == DBType.NO_LEN) {
         len = 1;
       }
-      return new SequenceDataType(DataType.Meta.CHAR, len);
+      return SequenceDataType.sequence(DataType.Meta.CHAR, len);
     }
   },
   NCHAR {
@@ -94,7 +94,7 @@ public enum OracleType implements DBType {
       if (len == DBType.NO_LEN) {
         len = 1;
       }
-      return new SequenceDataType(DataType.Meta.UNICODE, len);
+      return SequenceDataType.sequence(DataType.Meta.UNICODE, len);
     }
   },
 

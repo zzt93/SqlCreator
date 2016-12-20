@@ -14,7 +14,7 @@ public enum InceptorType implements DBType {
   STRING {
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      return new SequenceDataType(DataType.Meta.CHAR, len);
+      return SequenceDataType.sequence(DataType.Meta.CHAR, len);
     }
   };
 }
