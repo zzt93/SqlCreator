@@ -9,7 +9,10 @@ import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
@@ -58,13 +61,9 @@ public class Operand {
         ops[i] = makeOperand(nextResultType[i], src, depth - 1);
       }
       function.apply(Config.getBase(), ops);
-      return function.apply(Config.getCmp(), ops);
+      return function.apply(Config.getCmp(), ops)
+          .setType(resultType);
     }
-  }
-
-
-  public GenerationDataType getType() {
-    return type;
   }
 
   /**
@@ -115,7 +114,12 @@ public class Operand {
     return versions.get(dialect);
   }
 
-  public void setType(GenerationDataType type) {
+  public GenerationDataType getType() {
+    return type;
+  }
+
+  public Operand setType(GenerationDataType type) {
     this.type = type;
+    return this;
   }
 }

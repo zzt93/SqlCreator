@@ -49,7 +49,7 @@ public class SelectResultTest {
   @Test
   public void columns() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      assert selectResult.columns().size() <= from.columns().size();
+      assert selectResult.columns().size() <= from.columns().size() + Config.getExprInSelect();
     }
   }
 

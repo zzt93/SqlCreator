@@ -3,11 +3,14 @@ package io.transwarp.generate.stmt.expression;
 import io.transwarp.DDLParserTest;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.type.DataType;
-import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.config.Config;
+import io.transwarp.generate.type.*;
 import io.transwarp.parse.sql.DDLParser;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
@@ -17,20 +20,34 @@ import static org.junit.Assert.assertTrue;
  * <p>
  * <h3></h3>
  */
+@RunWith(Parameterized.class)
 public class OperandTest {
+  private final GenerationDataType testType;
+
   @Test
   public void randomSameTypeOperand() throws Exception {
     final Table test = DDLParserTest.getTable();
     for (int i = 0; i < 1000; i++) {
-      final DataType type1 = DataType.BOOL;
-      final Operand[] operands = Operand.getOperands(test, 3, type1);
-      System.out.println(Arrays.toString(operands));
+      final Operand[] operands = Operand.getOperands(test, 3, testType);
       final GenerationDataType type = operands[0].getType();
-      System.out.println(type);
       for (Operand operand : operands) {
+        System.out.println(operand.getType());
+        System.out.println(operand.sql(Config.getBase()));
+        System.out.println(operand.sql(Config.getCmp()));
         assertTrue(operand.getType().equals(type));
       }
     }
   }
 
+  public OperandTest(GenerationDataType type) {
+    this.testType = type;
+  }
+
+  @Parameterized.Parameters
+  public static GenerationDataType[] types() {
+    final ArrayList<GenerationDataType> list = new ArrayList<GenerationDataType>(Arrays.asList(DataType.values()));
+    list.addAll(Arrays.asList(SequenceDataType.values()));
+    list.add(ListDataType.ALL_LIST);
+    return list.toArray(new GenerationDataType[0]);
+  }
 }

@@ -8,7 +8,9 @@
 
     <aop:aspectj-autoproxy/>
 
+
     <!-- Aspect -->
     <bean id="parenAspect" class="io.transwarp.generate.common.ParenAspect"/>
+    <!--<bean id="functionAspect" class="io.transwarp.generate.common.FunctionApplyAspect"/>-->
 
 </beans>

@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
+import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.common.Table;
@@ -26,7 +27,7 @@ public class SelectListStmt implements SqlGeneration {
 
   private SelectListStmt(Table from, Possibility possibility) {
     cols = TableUtil.randomSubCols(from, possibility);
-    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, 1))));
+    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, Config.getExprInSelect()))));
   }
 
   ArrayList<Column> getCols() {

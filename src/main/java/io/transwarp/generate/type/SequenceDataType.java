@@ -85,12 +85,20 @@ public class SequenceDataType extends CompoundDataType {
     return type != null ? type.hashCode() : 0;
   }
 
-  static GenerationDataType[] values() {
+  public static GenerationDataType[] values() {
     return COMPOUNDS;
   }
 
   @Override
   CompoundDataType smallerCompoundType() {
     return sequence(DataTypeGroup.smallerType(getType()), getLen());
+  }
+
+  @Override
+  public String toString() {
+    return "SequenceDataType{" +
+        "type=" + type +
+        ", len=" + len +
+        '}';
   }
 }
