@@ -7,9 +7,14 @@ import io.transwarp.generate.type.GenerationDataType;
 /**
  * Created by zzt on 12/13/16.
  * <p>
- * <h3></h3>
+ * <h3>how to handle function overloading:</h3>
+ * <li>return input type according to result type</li>
+ * <li>for function with default arguments, implement multiple times</li>
+ * <li>for functions with variable args, mark last input type to be variable length</li>
  */
 public interface Function {
+
+  char CLOSE_PAREN = ')';
 
   void register();
 

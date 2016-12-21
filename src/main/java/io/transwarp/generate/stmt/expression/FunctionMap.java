@@ -97,5 +97,14 @@ public class FunctionMap {
     for (ArithOp arithOp : ArithOp.values()) {
       arithOp.register();
     }
+    for (Function function : DateOp.combinedValues()) {
+      function.register();
+    }
+    for (MathOp mathOp : MathOp.values()) {
+      mathOp.register();
+    }
+    for (StringOp stringOp : StringOp.values()) {
+      stringOp.register();
+    }
   }
 }

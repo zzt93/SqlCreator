@@ -7,12 +7,14 @@ import io.transwarp.db_specific.OracleType;
  * Created by zzt on 12/7/16.
  * <p>
  * <h3></h3>
+ *
+ * <p>The order of following dialect determines the choice of string representation of date operator</p>
+ * @see io.transwarp.generate.stmt.expression.DateOp
  */
 public enum Dialect {
 
-  ORACLE(OracleType.values()),
   INCEPTOR(InceptorType.values()),
-  ;
+  ORACLE(OracleType.values()),;
 
   private final DBType[] values;
 

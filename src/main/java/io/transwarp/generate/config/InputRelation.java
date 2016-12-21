@@ -56,6 +56,9 @@ public enum InputRelation {
    * @see io.transwarp.generate.type.DataType
    */
   public GenerationDataType[] refine(GenerationDataType[] original) {
+    if (original.length == 0) {
+      return original;
+    }
     if (allSame(original)) {
       return same(original);
     }

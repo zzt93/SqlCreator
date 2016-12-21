@@ -1,5 +1,7 @@
 package io.transwarp.generate.type;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Random;
@@ -93,14 +95,6 @@ public enum DataType implements GenerationDataType {
     public String randomData() {
       return Double.toString(random.nextDouble());
     }
-
-    public String getMax() {
-      return null;
-    }
-
-    public String getMin() {
-      return null;
-    }
   },
   DECIMAL {
     public String randomData() {
@@ -108,28 +102,18 @@ public enum DataType implements GenerationDataType {
       String decimal = String.valueOf(Math.abs(random.nextInt()));
       return integer + "." + decimal;
     }
-
-    public String getMax() {
-      return null;
-    }
-
-    public String getMin() {
-      return null;
-    }
   },
   DATE {
     public String randomData() {
       long l = Math.abs(random.nextLong());
-      SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD);
+      SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);
       return sdf.format(new Date(l));
     }
-
-    public String getMax() {
-      return null;
-    }
-
-    public String getMin() {
-      return null;
+  },
+  DATE_PATTERN {
+    @Override
+    public String randomData() {
+      return YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)];
     }
   },
   TIME {
@@ -138,14 +122,6 @@ public enum DataType implements GenerationDataType {
       SimpleDateFormat sdf = new SimpleDateFormat(HH_MM_SS);
       return sdf.format(new Date(l));
     }
-
-    public String getMax() {
-      return null;
-    }
-
-    public String getMin() {
-      return null;
-    }
   },
   TIMESTAMP {
     public String randomData() {
@@ -153,15 +129,17 @@ public enum DataType implements GenerationDataType {
       SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
       return sdf.format(new Date(l));
     }
-
-    public String getMax() {
-      return null;
-    }
-
-    public String getMin() {
-      return null;
-    }
   };
+
+  @Override
+  public String getMax() {
+    throw new NotImplementedException();
+  }
+
+  @Override
+  public String getMin() {
+    throw new NotImplementedException();
+  }
 
   public enum Meta implements GenerationDataType {
     BIT {
@@ -226,10 +204,13 @@ public enum DataType implements GenerationDataType {
   }
 
   public static final String HH_MM_SS = "HH:mm:ss";
-  public static final String YYYY_MM_DD = "yyyy-MM-dd";
-  public static final String YYYY_MM_DD_HH_MM_SS = YYYY_MM_DD + " " + HH_MM_SS;
+  public static final String YYYY_MM_DD[] = new String[]{"yyyy-MM-dd", "yyyyMMdd", "yyyy/MM/dd"};
+  public static final String DEFAULT = YYYY_MM_DD[0];
+  public static final String YYYY_MM_DD_HH_MM_SS = DEFAULT + " " + HH_MM_SS;
 
   public static final char MIN_CHAR = ' ';
   public static final char MAX_PRINTABLE = (char) 65533;
   private static final Random random = new Random(12);
+
+
 }

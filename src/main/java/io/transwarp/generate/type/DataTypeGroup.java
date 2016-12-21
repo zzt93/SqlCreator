@@ -22,7 +22,7 @@ public enum DataTypeGroup implements GenerationDataType {
 
   NUM_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
   STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
-  TIME_GROUP(DataType.DATE, DataType.TIME, DataType.TIMESTAMP),
+  DATE_GROUP(DataType.DATE, DataType.TIMESTAMP),
   LIST_GROUP() {
     @Override
     public GenerationDataType randomType() {
