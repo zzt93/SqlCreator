@@ -72,6 +72,7 @@ public class FunctionMap {
    * @see CompoundDataType
    */
   static Function random(GenerationDataType resultType) {
+    // TODO 12/26/16 add some strategy to differ possibility
     checkArgument(resultType instanceof DataType || resultType instanceof CompoundDataType);
     GenerationDataType larger = resultType;
     ArrayList<Function> functions = share.get(larger);
@@ -103,7 +104,7 @@ public class FunctionMap {
     for (MathOp mathOp : MathOp.values()) {
       mathOp.register();
     }
-    for (StringOp stringOp : StringOp.values()) {
+    for (Function stringOp: StringOp.combinedValues()) {
       stringOp.register();
     }
   }

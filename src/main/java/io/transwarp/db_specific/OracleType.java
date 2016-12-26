@@ -35,7 +35,6 @@ public enum OracleType implements DBType {
       return SequenceDataType.sequence(DataType.Meta.UNICODE, len);
     }
   },
-
   NUMBER {
     @Override
     public GenerationDataType mapToGeneration(int len) {
@@ -103,10 +102,16 @@ public enum OracleType implements DBType {
    * ----------------------------------------------------------------------
    * ----------the following is the ansi type that oracle support---------
    */
+  SMALLINT {
+    @Override
+    public GenerationDataType mapToGeneration(int len) {
+      return DataType.SHORT;
+    }
+  },
   INT {
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      return NUMBER.mapToGeneration(len);
+      return ANSIType.INT.mapToGeneration(len);
     }
   },;
 
