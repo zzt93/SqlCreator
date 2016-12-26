@@ -1,6 +1,5 @@
 package io.transwarp.generate.stmt.select;
 
-import com.google.common.base.Joiner;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
@@ -27,7 +26,7 @@ public class SelectListStmt implements SqlGeneration {
 
   private SelectListStmt(Table from, Possibility possibility) {
     cols = TableUtil.randomSubCols(from, possibility);
-    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, Config.getExprInSelect()))));
+    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, Config.getExprNumInSelect()))));
   }
 
   ArrayList<Column> getCols() {
@@ -40,6 +39,7 @@ public class SelectListStmt implements SqlGeneration {
     for (Column col : cols) {
       res.append(col.getName(dialect)).append(", ");
     }
+    res.setLength(res.length() - 2);
     return res;
   }
 }

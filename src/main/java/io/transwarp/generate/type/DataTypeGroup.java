@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public enum DataTypeGroup implements GenerationDataType {
 
+  INT_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG),
   NUM_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
   STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
   DATE_GROUP(DataType.DATE, DataType.TIMESTAMP),
@@ -113,7 +114,7 @@ public enum DataTypeGroup implements GenerationDataType {
 
 
   public String randomData() {
-    throw new NotImplementedException();
+    return randomType().randomData();
   }
 
   @Override

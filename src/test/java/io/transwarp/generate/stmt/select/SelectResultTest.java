@@ -49,7 +49,7 @@ public class SelectResultTest {
   @Test
   public void columns() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      assert selectResult.columns().size() <= from.columns().size() + Config.getExprInSelect();
+      assert selectResult.columns().size() <= from.columns().size() + Config.getExprNumInSelect();
     }
   }
 
@@ -57,6 +57,7 @@ public class SelectResultTest {
   public void sql() throws Exception {
     for (SelectResult selectResult : selectResults) {
       System.out.println(selectResult.sql(Config.getBase()));
+      System.out.println(selectResult.sql(Config.getCmp()));
     }
   }
 

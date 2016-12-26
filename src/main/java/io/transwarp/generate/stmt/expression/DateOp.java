@@ -39,8 +39,8 @@ public enum DateOp implements Function {
   private enum DateArithOp implements Function {
 
     ADD_MONTHS(new String[]{"ADD_MONTHS(", "ADD_MONTHS("}, new String[]{", ", ", "}),
-    DATE_ADD(new String[]{"DATE_ADD(", "to_char("}, new String[]{", ", "+ "}),
-    DATE_SUB(new String[]{"DATE_SUB(", "to_char("}, new String[]{", ", "- "}),;
+    DATE_ADD(new String[]{"DATE_ADD(", "to_char("}, new String[]{", ", " + "}),
+    DATE_SUB(new String[]{"DATE_SUB(", "to_char("}, new String[]{", ", " - "}),;
 
     private final String[] ops;
     private final String[] delims;
@@ -63,7 +63,7 @@ public enum DateOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.DATE_GROUP, DataType.INT};
+      return new GenerationDataType[]{DataTypeGroup.DATE_GROUP, DataTypeGroup.INT_GROUP};
     }
   }
 
@@ -73,7 +73,8 @@ public enum DateOp implements Function {
   private enum CountDateOp implements Function {
     DAY("DAY", "extract(day from "), HOUR("HOUR(", "extract(hour from "),
     MINUTE("MINUTE(", "extract(minute from "), SECOND("SECOND(", "extract(second from "),
-    DAY_OF_YEAR("DAYOFYEAR(", "TO_CHAR(") {
+
+    DAY_OF_YEAR("DAYOFYEAR(", "to_char(") {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
         if (dialect == Dialect.ORACLE) {
@@ -84,9 +85,40 @@ public enum DateOp implements Function {
         return input[0];
       }
     },
-    DAY_OF_WEEK("DAYOFWEEK(", "to_char("),
-    WEEK_OF_YEAR("WEEKOFYEAR(", "to_char("),
-    QUARTER("QUARTER(", "to_char("),
+    DAY_OF_WEEK("DAYOFWEEK(", "to_char(") {
+      @Override
+      public Operand apply(Dialect dialect, Operand... input) {
+        if (dialect == Dialect.ORACLE) {
+          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'FmDay'").append(Function.CLOSE_PAREN);
+        } else {
+          super.apply(dialect, input);
+        }
+        return input[0];
+      }
+    },
+    WEEK_OF_YEAR("WEEKOFYEAR(", "to_char(") {
+      @Override
+      public Operand apply(Dialect dialect, Operand... input) {
+        if (dialect == Dialect.ORACLE) {
+          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'WW'").append(Function.CLOSE_PAREN);
+        } else {
+          super.apply(dialect, input);
+        }
+        return input[0];
+      }
+    },
+    QUARTER("QUARTER(", "to_char("){
+      @Override
+      public Operand apply(Dialect dialect, Operand... input) {
+        if (dialect == Dialect.ORACLE) {
+          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'Q'").append(Function.CLOSE_PAREN);
+        } else {
+          super.apply(dialect, input);
+        }
+        return input[0];
+      }
+    },
+
     DATE_DIFF(", ", " - ") {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
@@ -112,6 +144,7 @@ public enum DateOp implements Function {
     @Override
     public void register() {
       FunctionMap.register(this, DataType.INT);
+      FunctionMap.register(this, DataType.LONG);
     }
 
     @Override

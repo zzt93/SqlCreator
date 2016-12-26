@@ -2,6 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.type.DataType;
+import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**
@@ -20,14 +21,14 @@ public enum MathOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataType.DOUBLE, DataType.INT};
+      return new GenerationDataType[]{DataType.DOUBLE, DataType.BYTE};
     }
   },
   FLOOR("floor("), CEIL("ceil("),
   RAND("rand(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataType.INT};
+      return new GenerationDataType[]{DataTypeGroup.INT_GROUP};
     }
   },
   RAND_0("rand(") {

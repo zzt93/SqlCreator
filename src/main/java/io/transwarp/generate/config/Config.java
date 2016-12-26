@@ -15,9 +15,9 @@ public class Config {
   private static int randomMaxBitLen = 64;
   private static int randomListMaxLen = 10;
   private static int randomStrMaxLen = 100;
-  private static int udfDepth = FunctionDepth.WITH_OPERATOR;
+  private static int udfDepth = 10;
   private static int subQueryDepth = 0;
-  private static int exprInSelect = 1;
+  private static int exprNumInSelect = 1;
   private static InputRelation inputRelation = InputRelation.RANDOM;
   private static Dialect cmp = Dialect.ORACLE;
   private static Dialect base = Dialect.INCEPTOR;
@@ -54,8 +54,8 @@ public class Config {
     return randomStrMaxLen;
   }
 
-  public static int getExprInSelect() {
-    return exprInSelect;
+  public static int getExprNumInSelect() {
+    return exprNumInSelect;
   }
 
   public static class Builder {
