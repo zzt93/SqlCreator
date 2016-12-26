@@ -9,15 +9,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
 /**
  * Created by zzt on 12/12/16.
  * <p>
+ *   java -cp /usr/lib/qa/player-1.0-all.jar io.transwarp.qa.player.SuiteRunner -t case.yml -C conf.xml
  * <h3></h3>
  */
 @RunWith(Parameterized.class)
 public class SelectResultTest {
 
-  private int count = 1000;
+  private int count = 100;
   private SelectResult[] selectResults;
   private Table from;
 
@@ -55,9 +61,11 @@ public class SelectResultTest {
 
   @Test
   public void sql() throws Exception {
+    PrintWriter oracle  = new PrintWriter(new OutputStreamWriter(new FileOutputStream("oracle")));
+    PrintWriter inceptor  = new PrintWriter(new OutputStreamWriter(new FileOutputStream("inceptor")));
     for (SelectResult selectResult : selectResults) {
-      System.out.println(selectResult.sql(Config.getBase()));
-      System.out.println(selectResult.sql(Config.getCmp()));
+      oracle.println(selectResult.sql(Config.getBase()));
+      inceptor.println(selectResult.sql(Config.getCmp()));
     }
   }
 

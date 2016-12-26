@@ -113,7 +113,7 @@ public enum DataType implements GenerationDataType {
   DATE_PATTERN {
     @Override
     public String randomData() {
-      return YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)];
+      return DataTypeGroup.STRING_DELIMITER + YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)] + DataTypeGroup.STRING_DELIMITER;
     }
   },
   TIME {
