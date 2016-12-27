@@ -12,8 +12,8 @@ public enum Possibility {
 
   CERTAIN(1),
   IMPOSSIBLE(0),
-  SELECT_POSSIBILITY(0.75),
-  NAME_CONST_POSSIBILITY(0.95);
+  SELECT_COL_POSSIBILITY(0.25),
+  NAME_CONST_POSSIBILITY(0.7);
 
   private double[] possibility;
 
