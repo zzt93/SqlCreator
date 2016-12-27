@@ -15,7 +15,7 @@ public enum MathOp implements Function {
   ROUND_2("round(") {
     @Override
     public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect).insert(0, op).append(input[1].sql(dialect)).append(CLOSE_PAREN);
+      input[0].sql(dialect).insert(0, op).append(Function.PARAMETER_SPLIT).append(input[1].sql(dialect)).append(CLOSE_PAREN);
       return input[0];
     }
 

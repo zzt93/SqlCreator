@@ -4,6 +4,7 @@ import io.transwarp.DDLParserTest;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.InputRelation;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,8 @@ public class SelectResultTest {
   private int count = 100;
   private SelectResult[] selectResults;
   private Table from;
+  private PrintWriter oracle;
+  private PrintWriter inceptor;
 
   public SelectResultTest(InputRelation relation) {
     new Config.Builder().setInputRelation(relation).build();
@@ -43,6 +46,8 @@ public class SelectResultTest {
     for (int i = 0; i < selectResults.length; i++) {
       selectResults[i] = new SelectResult(Config.getSubQueryDepth(), from);
     }
+    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("first.sql", true)));
+    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("first.sql", true)));
   }
 
   @Test
@@ -61,12 +66,15 @@ public class SelectResultTest {
 
   @Test
   public void sql() throws Exception {
-    PrintWriter oracle  = new PrintWriter(new OutputStreamWriter(new FileOutputStream("oracle")));
-    PrintWriter inceptor  = new PrintWriter(new OutputStreamWriter(new FileOutputStream("inceptor")));
     for (SelectResult selectResult : selectResults) {
       oracle.println(selectResult.sql(Config.getBase()));
       inceptor.println(selectResult.sql(Config.getCmp()));
     }
   }
 
+  @After
+  public void close() {
+    oracle.close();
+    inceptor.close();
+  }
 }

@@ -113,7 +113,7 @@ public enum DataType implements GenerationDataType {
   DATE_PATTERN {
     @Override
     public String randomData() {
-      return DataTypeGroup.STRING_DELIMITER + YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)] + DataTypeGroup.STRING_DELIMITER;
+      return STRING_DELIMITER + YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)] + STRING_DELIMITER;
     }
   },
   TIME {
@@ -130,6 +130,7 @@ public enum DataType implements GenerationDataType {
       return sdf.format(new Date(l));
     }
   };
+  public static final String STRING_DELIMITER = "'";
 
   @Override
   public String getMax() {
@@ -160,9 +161,20 @@ public enum DataType implements GenerationDataType {
     },
     CHAR {
       private int count = '~' - ' ';
+      private char[] special = {'\'', '\\'};
 
       public String randomData() {
-        return "" + (char) (MIN_CHAR + random.nextInt(count));
+        final String s = "" + (char) (MIN_CHAR + random.nextInt(count));
+        return escape(s);
+      }
+
+      private String escape(String s) {
+        for (char c : special) {
+          if (c == s.charAt(0)) {
+            return "\\" + c;
+          }
+        }
+        return s;
       }
 
       /**

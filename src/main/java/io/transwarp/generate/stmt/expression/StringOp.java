@@ -63,7 +63,7 @@ public enum StringOp implements Function {
   public Operand apply(Dialect dialect, Operand... input) {
     final StringBuilder builder = input[0].sql(dialect).insert(0, op);
     for (int i = 1; i < inputTypes(DataTypeGroup.STRING_GROUP).length; i++) {
-      builder.append(", ").append(input[i].sql(dialect));
+      builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
     }
     builder.append(Function.CLOSE_PAREN);
     return input[0];
@@ -101,11 +101,11 @@ public enum StringOp implements Function {
       final StringBuilder builder = input[0].sql(dialect).insert(0, ops);
       final GenerationDataType[] inputs = inputTypes(DataTypeGroup.STRING_GROUP);
       for (int i = 1; i < inputs.length - 1; i++) {
-        builder.append(", ").append(input[i].sql(dialect));
+        builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
       }
       GenerationDataType varType = inputs[inputs.length - 1];
       for (int i = 1; i < inputs.length + random.nextInt(5); i++) {
-        builder.append(", ").append(varType.randomData());
+        builder.append(Function.PARAMETER_SPLIT).append(varType.randomData());
       }
       builder.append(Function.CLOSE_PAREN);
       return input[0];
@@ -141,7 +141,7 @@ public enum StringOp implements Function {
     public Operand apply(Dialect dialect, Operand... input) {
       final StringBuilder builder = input[0].sql(dialect).insert(0, op);
       for (int i = 1; i < inputTypes(DataTypeGroup.STRING_GROUP).length; i++) {
-        builder.append(", ").append(input[i].sql(dialect));
+        builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
       }
       builder.append(Function.CLOSE_PAREN);
       return input[0];

@@ -21,7 +21,7 @@ public class SelectListStmt implements SqlGeneration {
   private ArrayList<Column> cols;
 
   SelectListStmt(Table from) {
-    this(from, Possibility.SELECT_POSSIBILITY);
+    this(from, Possibility.SELECT_COL_POSSIBILITY);
   }
 
   private SelectListStmt(Table from, Possibility possibility) {

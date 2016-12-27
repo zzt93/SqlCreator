@@ -38,6 +38,9 @@ public enum OracleType implements DBType {
   NUMBER {
     @Override
     public GenerationDataType mapToGeneration(int len) {
+      if (len != NO_LEN) {
+        return SequenceDataType.sequence(DataType.Meta.BIT, len);
+      }
       // TODO add precision and scale
       return DataType.DECIMAL;
     }

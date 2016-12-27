@@ -25,7 +25,7 @@ public enum ArithOp implements Function {
 
   @Override
   public void register() {
-    FunctionMap.register(this, DataTypeGroup.ALL_GROUP);
+    FunctionMap.register(this, DataTypeGroup.NUM_GROUP);
   }
 
   @Override

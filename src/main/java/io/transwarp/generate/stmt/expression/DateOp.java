@@ -27,7 +27,7 @@ public enum DateOp implements Function {
 
   @Override
   public Operand apply(Dialect dialect, Operand... input) {
-    input[0].sql(dialect).insert(0, op).append(", ").append(input[1].sql(dialect));
+    input[0].sql(dialect).insert(0, op).append(Function.PARAMETER_SPLIT).append(input[1].sql(dialect));
     return input[0];
   }
 
@@ -38,9 +38,9 @@ public enum DateOp implements Function {
 
   private enum DateArithOp implements Function {
 
-    ADD_MONTHS(new String[]{"ADD_MONTHS(", "ADD_MONTHS("}, new String[]{", ", ", "}),
-    DATE_ADD(new String[]{"DATE_ADD(", "to_char("}, new String[]{", ", " + "}),
-    DATE_SUB(new String[]{"DATE_SUB(", "to_char("}, new String[]{", ", " - "}),;
+    ADD_MONTHS(new String[]{"ADD_MONTHS(", "ADD_MONTHS("}, new String[]{Function.PARAMETER_SPLIT, Function.PARAMETER_SPLIT}),
+    DATE_ADD(new String[]{"DATE_ADD(", "to_char("}, new String[]{Function.PARAMETER_SPLIT, " + "}),
+    DATE_SUB(new String[]{"DATE_SUB(", "to_char("}, new String[]{Function.PARAMETER_SPLIT, " - "}),;
 
     private final String[] ops;
     private final String[] delims;
@@ -119,7 +119,7 @@ public enum DateOp implements Function {
       }
     },
 
-    DATE_DIFF(", ", " - ") {
+    DATE_DIFF(Function.PARAMETER_SPLIT, " - ") {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
         input[0].sql(dialect).append(ops[dialect.ordinal()]).append(input[1].sql(dialect));

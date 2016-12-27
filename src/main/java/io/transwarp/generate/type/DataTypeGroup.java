@@ -63,7 +63,6 @@ public enum DataTypeGroup implements GenerationDataType {
     }
   };
 
-  public static final String STRING_DELIMITER = "'";
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   public static DataTypeGroup groupOf(GenerationDataType type) {

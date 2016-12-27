@@ -15,6 +15,7 @@ import io.transwarp.generate.type.GenerationDataType;
 public interface Function {
 
   char CLOSE_PAREN = ')';
+  String PARAMETER_SPLIT = ", ";
 
   void register();
 
