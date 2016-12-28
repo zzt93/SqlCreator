@@ -62,7 +62,7 @@ public enum StringOp implements Function {
   @Override
   public Operand apply(Dialect dialect, Operand... input) {
     final StringBuilder builder = input[0].sql(dialect).insert(0, op);
-    for (int i = 1; i < inputTypes(DataTypeGroup.STRING_GROUP).length; i++) {
+    for (int i = 1; i < input.length; i++) {
       builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
     }
     builder.append(Function.CLOSE_PAREN);
@@ -140,7 +140,7 @@ public enum StringOp implements Function {
     @Override
     public Operand apply(Dialect dialect, Operand... input) {
       final StringBuilder builder = input[0].sql(dialect).insert(0, op);
-      for (int i = 1; i < inputTypes(DataTypeGroup.STRING_GROUP).length; i++) {
+      for (int i = 1; i < input.length; i++) {
         builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
       }
       builder.append(Function.CLOSE_PAREN);

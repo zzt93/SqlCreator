@@ -107,5 +107,8 @@ public class FunctionMap {
     for (Function stringOp: StringOp.combinedValues()) {
       stringOp.register();
     }
+    for (ConversionOp conversionOp : ConversionOp.values()) {
+      conversionOp.register();
+    }
   }
 }

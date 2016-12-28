@@ -14,10 +14,45 @@ public enum ArithOp implements Function {
   MINUS(" - "),
   MUL(" * "),
   DIV(" / "),
-  MOD(" % "),;
+  MOD(" % "),
+  LOGICAL_AND(" & ") {
+    @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.INT_GROUP);
+    }
+  },
+  LOGICAL_OR(" | ") {
+    @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.INT_GROUP);
+    }
+  },
+  LOGICAL_XOR(" ^ ") {
+    @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.INT_GROUP);
+    }
+  },
+  LOGICAL_NOT("~ ") {
+    @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.INT_GROUP);
+    }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[]{resultType};
+    }
+
+    @Override
+    public Operand apply(Dialect dialect, Operand... input) {
+      input[0].sql(dialect).insert(0, op);
+      return input[0];
+    }
+  },;
 
 
-  private final String op;
+  final String op;
 
   ArithOp(String s) {
     this.op = s;
@@ -36,7 +71,7 @@ public enum ArithOp implements Function {
 
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-    return new GenerationDataType[]{resultType, resultType};
+    return new GenerationDataType[]{resultType, DataTypeGroup.shorterType(resultType)};
   }
 
   @Override

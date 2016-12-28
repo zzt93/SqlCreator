@@ -20,9 +20,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public enum DataTypeGroup implements GenerationDataType {
 
-  INT_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG),
-  NUM_GROUP(SequenceDataType.BITS, DataType.BYTE, DataType.SHORT, DataType.INT, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
-  STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
+  DECIMAL_GROUP(DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  INT_GROUP(DataType.BYTE, DataType.SHORT, DataType.INT, SequenceDataType.BITS, DataType.LONG),
+  NUM_GROUP(DataType.BYTE, DataType.SHORT, DataType.INT, SequenceDataType.BITS, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING, DataType.DATE_PATTERN),
   DATE_GROUP(DataType.DATE, DataType.TIMESTAMP),
   LIST_GROUP() {
     @Override
@@ -103,6 +104,16 @@ public enum DataTypeGroup implements GenerationDataType {
     return groupOf(resultType);
   }
 
+  public static GenerationDataType shorterType(GenerationDataType type) {
+    if (NUM_GROUP.contains(type)) {
+      final int i = NUM_GROUP.types.indexOf(type);
+      if (i == 0) {
+        return type;
+      }
+      NUM_GROUP.types.get(random.nextInt(i));
+    }
+    return type;
+  }
   List<GenerationDataType> types;
   final int typeCount;
 

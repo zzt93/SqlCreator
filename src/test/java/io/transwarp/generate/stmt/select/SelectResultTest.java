@@ -46,8 +46,8 @@ public class SelectResultTest {
     for (int i = 0; i < selectResults.length; i++) {
       selectResults[i] = new SelectResult(Config.getSubQueryDepth(), from);
     }
-    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("first.sql", true)));
-    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("first.sql", true)));
+    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
+    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));
   }
 
   @Test

@@ -161,7 +161,7 @@ public enum DataType implements GenerationDataType {
     },
     CHAR {
       private int count = '~' - ' ';
-      private char[] special = {'\'', '\\'};
+      private char[] special = {'\''};
 
       public String randomData() {
         final String s = "" + (char) (MIN_CHAR + random.nextInt(count));
@@ -171,7 +171,7 @@ public enum DataType implements GenerationDataType {
       private String escape(String s) {
         for (char c : special) {
           if (c == s.charAt(0)) {
-            return "\\" + c;
+            return "\'" + c;
           }
         }
         return s;
