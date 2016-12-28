@@ -17,8 +17,8 @@ public class DDLParserTest {
   public void delimiterTest() throws Exception {
     final Table parse = getTable();
     assert parse.name().isPresent();
-    assert parse.name().get().equals("test");
-    assert parse.columns().size() == 5;
+    assert parse.name().get().equals("test_udf");
+    assert parse.columns().size() == 13;
   }
 
   public static Table getTable() throws IOException {

@@ -42,10 +42,10 @@ public enum CmpOp implements Function {
     @Override
     public Operand apply(Dialect dialect, Operand... input) {
       input[0].sql(dialect)
-              .append(this)
-              .append(input[1].sql(dialect))
-              .append(and)
-              .append(input[2].sql(dialect));
+          .append(this)
+          .append(input[1].sql(dialect))
+          .append(and)
+          .append(input[2].sql(dialect));
       return input[0];
     }
 
@@ -56,6 +56,24 @@ public enum CmpOp implements Function {
 
   },
   IN(" IN ") {
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return IN_OPS;
+    }
+  },
+  EXISTS(" EXISTS ") {
+    @Override
+    public Operand apply(Dialect dialect, Operand... input) {
+      input[0].sql(dialect).insert(0, toString());
+      return input[0];
+    }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[]{ListDataType.ALL_LIST};
+    }
+  },
+  NOT_IN(" NOT IN ") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
       return IN_OPS;
@@ -85,7 +103,7 @@ public enum CmpOp implements Function {
 
   @Override
   public Operand apply(Dialect dialect, Operand... input) {
-    input[0].sql(dialect).append(this).append(input[1].sql(dialect));
+    input[0].sql(dialect).append(operator).append(input[1].sql(dialect));
     return input[0];
   }
 
