@@ -9,10 +9,6 @@ import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumMap;
 

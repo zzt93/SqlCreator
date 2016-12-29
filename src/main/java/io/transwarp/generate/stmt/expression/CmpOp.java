@@ -1,10 +1,7 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.type.DataType;
-import io.transwarp.generate.type.DataTypeGroup;
-import io.transwarp.generate.type.GenerationDataType;
-import io.transwarp.generate.type.ListDataType;
+import io.transwarp.generate.type.*;
 
 /**
  * Created by zzt on 12/6/16.
@@ -70,7 +67,7 @@ public enum CmpOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{ListDataType.ALL_LIST};
+      return new GenerationDataType[]{ListDataType.ALL_ONE_COL_QUERY};
     }
   },
   NOT_IN(" NOT IN ") {

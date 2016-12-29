@@ -45,12 +45,12 @@ public class SequenceDataType extends CompoundDataType {
   }
 
   @Override
-  GenerationDataType getType() {
+  public GenerationDataType getType() {
     return type;
   }
 
   @Override
-  int getLen() {
+  public int getLen() {
     return len;
   }
 

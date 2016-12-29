@@ -29,6 +29,11 @@ public enum DataTypeGroup implements GenerationDataType {
   DATE_GROUP(DataType.DATE, DataType.TIMESTAMP),
   LIST_GROUP() {
     @Override
+    public GenerationDataType randomType() {
+      return new ListDataType(ALL_GROUP.randomType(), random.nextInt(Config.getRandomListMaxLen()) + 1);
+    }
+
+    @Override
     public boolean contains(GenerationDataType type) {
       return type instanceof ListDataType;
     }

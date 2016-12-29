@@ -4,6 +4,9 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.type.ListDataType;
+
+import java.util.Arrays;
 
 /**
  * Created by zzt on 12/20/16.
@@ -59,6 +62,31 @@ public enum ConversionOp implements Function {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
       return new GenerationDataType[]{resultType};
+    }
+  },
+  LIST("(") {
+    @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.LIST_GROUP);
+    }
+
+    @Override
+    public Operand apply(Dialect dialect, Operand... input) {
+      final StringBuilder builder = input[0].sql(dialect).insert(0, op);
+      for (int i = 1; i < input.length; i++) {
+        builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
+      }
+      builder.append(Function.CLOSE_PAREN);
+      return input[0];
+    }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      assert resultType instanceof ListDataType;
+      final GenerationDataType type = ((ListDataType) resultType).getType();
+      final GenerationDataType[] res = new GenerationDataType[((ListDataType) resultType).getLen()];
+      Arrays.fill(res, type);
+      return res;
     }
   };
 

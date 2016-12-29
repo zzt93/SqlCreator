@@ -11,15 +11,22 @@ import io.transwarp.generate.config.Possibility;
  */
 public class ListDataType extends SequenceDataType {
   public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, Config.getRandomListMaxLen());
-  public static final String SUB_QUERY_TO_REPLACE = "sub-query-to-replace";
+  public static final GenerationDataType ALL_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_GROUP, Config.getRandomListMaxLen(), Possibility.IMPOSSIBLE);
+  public static final String SUB_QUERY_TO_REPLACE = "one-column-sub-query-to-replace";
+  private final Possibility listPossibility;
 
-  private ListDataType(GenerationDataType type, int len) {
-    super(type, len);
+  ListDataType(GenerationDataType type, int len) {
+    this(type, len, Possibility.LIST_OR_QUERY);
+  }
+
+  private ListDataType(GenerationDataType type, int randomListMaxLen, Possibility possibility) {
+    super(type, randomListMaxLen);
+    this.listPossibility = possibility;
   }
 
   @Override
   public String randomData() {
-    if (Possibility.LIST_OR_QUERY.chooseFirst(true, false)) {
+    if (listPossibility.chooseFirst(true, false)) {
       final Joiner on = Joiner.on(", ");
       final StringBuilder sql = on.appendTo(new StringBuilder("("), DataTypeUtil.randoms(getType(), getLen()));
       return sql.append(')').toString();
@@ -29,7 +36,7 @@ public class ListDataType extends SequenceDataType {
 
   @Override
   CompoundDataType smallerCompoundType() {
-    return new ListDataType(DataTypeGroup.smallerType(getType()), getLen());
+    return new ListDataType(DataTypeGroup.smallerType(getType()), getLen(), listPossibility);
   }
 
 

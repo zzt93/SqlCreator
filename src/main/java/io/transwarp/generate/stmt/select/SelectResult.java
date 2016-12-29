@@ -50,7 +50,7 @@ public class SelectResult implements Table {
     if (!name().isPresent()) {
       name = Optional.of(TableUtil.nextAlias());
     }
-    // TODO 12/28/16 join: surround '() alias',
+    // TODO 12/28/16 join: surround '() alias', add columns
     return this;
   }
 
@@ -65,7 +65,6 @@ public class SelectResult implements Table {
   /**
    * @param dialect sql dialect
    * @return sql stmt
-   * @see io.transwarp.generate.common.ParenAspect
    */
   public StringBuilder sql(Dialect dialect) {
     return new StringBuilder()
