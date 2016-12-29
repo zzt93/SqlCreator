@@ -10,7 +10,7 @@ import io.transwarp.generate.stmt.select.SelectResult;
  * <h3></h3>
  */
 public enum TableOp {
-  UNION, INTERSECT, MINUS(" EXCEPT ", " MINUS ");
+  UNION(" union ", " union "), INTERSECT(" intersect ", " intersect "), MINUS(" EXCEPT ", " MINUS ");
 
   private final String[] ops;
 
@@ -18,8 +18,9 @@ public enum TableOp {
     this.ops = ops;
   }
 
-  public SelectResult apply(Dialect dialect, SelectResult... input) {
-
+  public SelectResult apply(Dialect dialect, SelectResult input) {
+    // extract input select result type, use it to produce a new similar select result
+    // then merge
     return null;
   }
 

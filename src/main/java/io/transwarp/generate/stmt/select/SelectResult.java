@@ -31,6 +31,7 @@ public class SelectResult implements Table {
     selectListStmt = new SelectListStmt(from);
     fromStmt = new FromStmt(from);
     where = new WhereStmt(from);
+    // TODO 12/29/16 replace subquery; add set operation
   }
 
   private void makeFromTable(int joinTimes, Table[] src) {
