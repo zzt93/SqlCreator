@@ -12,12 +12,26 @@ import io.transwarp.generate.type.GenerationDataType;
  * <h3></h3>
  */
 public enum DateOp implements Function {
-  DATE_FORMAT("DATE_FORMAT("), TO_DATE("TO_DATE("), TDH_TO_DATE("TDH_TO_DATE("),;
+  DATE_FORMAT("DATE_FORMAT(", "to_char(") {
+    @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.DATE_STRING_GROUP);
+    }
 
-  private final String op;
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return DATE_WITH_PATTERN;
+    }
+  },
 
-  DateOp(String s) {
-    this.op = s;
+  TO_DATE("TO_DATE(", "to_date("), TDH_TO_DATE("TDH_TODATE(", "to_date("),;
+
+  public static final GenerationDataType[] DATE = {DataTypeGroup.DATE_GROUP};
+  public static final GenerationDataType[] DATE_WITH_PATTERN = {DataTypeGroup.DATE_GROUP, DataType.DATE_PATTERN};
+  private final String[] ops;
+
+  DateOp(String... s) {
+    this.ops = s;
   }
 
   @Override
@@ -27,13 +41,16 @@ public enum DateOp implements Function {
 
   @Override
   public Operand apply(Dialect dialect, Operand... input) {
-    input[0].sql(dialect).insert(0, op).append(Function.PARAMETER_SPLIT).append(input[1].sql(dialect));
+    input[0].sql(dialect).insert(0, ops[dialect.ordinal()])
+        .append(Function.PARAMETER_SPLIT)
+        .append(input[1].sql(dialect))
+        .append(Function.CLOSE_PAREN);
     return input[0];
   }
 
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-    return new GenerationDataType[]{DataTypeGroup.DATE_GROUP, DataType.DATE_PATTERN};
+    return new GenerationDataType[]{DataTypeGroup.DATE_STRING_GROUP, DataType.DATE_PATTERN};
   }
 
   private enum DateArithOp implements Function {
@@ -52,12 +69,15 @@ public enum DateOp implements Function {
 
     @Override
     public void register() {
-      FunctionMap.register(this, DataTypeGroup.DATE_GROUP);
+      FunctionMap.register(this, DataTypeGroup.DATE_STRING_GROUP);
     }
 
     @Override
     public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(delims[dialect.ordinal()]).append(input[1].sql(dialect));
+      input[0].sql(dialect).insert(0, ops[dialect.ordinal()])
+          .append(delims[dialect.ordinal()])
+          .append(input[1].sql(dialect))
+          .append(Function.CLOSE_PAREN);
       return input[0];
     }
 
@@ -71,7 +91,7 @@ public enum DateOp implements Function {
    * @see Dialect : notice the mapping between order of dialect and following function name
    */
   private enum CountDateOp implements Function {
-    DAY("DAY", "extract(day from "), HOUR("HOUR(", "extract(hour from "),
+    DAY("DAY(", "extract(day from "), HOUR("HOUR(", "extract(hour from "),
     MINUTE("MINUTE(", "extract(minute from "), SECOND("SECOND(", "extract(second from "),
 
     DAY_OF_YEAR("DAYOFYEAR(", "to_char(") {
@@ -107,7 +127,7 @@ public enum DateOp implements Function {
         return input[0];
       }
     },
-    QUARTER("QUARTER(", "to_char("){
+    QUARTER("QUARTER(", "to_char(") {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
         if (dialect == Dialect.ORACLE) {
@@ -124,7 +144,7 @@ public enum DateOp implements Function {
       public Operand apply(Dialect dialect, Operand... input) {
         input[0].sql(dialect).append(ops[dialect.ordinal()]).append(input[1].sql(dialect));
         if (dialect == Dialect.INCEPTOR) {
-          input[0].sql(dialect).insert(0, "DATE_DIFF(").append(')');
+          input[0].sql(dialect).insert(0, "DATE_DIFF(").append(Function.CLOSE_PAREN);
         }
         return input[0];
       }
@@ -155,7 +175,7 @@ public enum DateOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.DATE_GROUP};
+      return DATE;
     }
   }
 

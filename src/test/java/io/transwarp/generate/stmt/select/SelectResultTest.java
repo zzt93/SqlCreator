@@ -44,7 +44,7 @@ public class SelectResultTest {
     from = DDLParserTest.getTable();
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
-      selectResults[i] = new SelectResult(Config.getSubQueryDepth(), from);
+      selectResults[i] = new SelectResult(Config.getJoinTimes(), Config.getSubQueryDepth(), from);
     }
     oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));
@@ -67,8 +67,8 @@ public class SelectResultTest {
   @Test
   public void sql() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      oracle.println(selectResult.sql(Config.getBase()));
-      inceptor.println(selectResult.sql(Config.getCmp()));
+      inceptor.println(selectResult.sql(Config.getBase()));
+      oracle.println(selectResult.sql(Config.getCmp()));
     }
   }
 

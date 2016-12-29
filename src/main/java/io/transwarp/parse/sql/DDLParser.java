@@ -3,8 +3,8 @@ package io.transwarp.parse.sql;
 import io.transwarp.db_specific.base.DBType;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
-import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.io.IOException;
@@ -101,5 +101,23 @@ public class DDLParser {
     } catch (NumberFormatException e) {
       return DBType.NO_LEN;
     }
+  }
+
+  private static class TableLoader {
+    static {
+      DDLParser ddlParser = null;
+      try {
+        ddlParser = new DDLParser("src/main/resources/default.sql", Dialect.ORACLE);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      table = ddlParser.parse();
+    }
+
+    private static final Table table;
+  }
+
+  public static Table getTable() throws IOException {
+    return TableLoader.table;
   }
 }

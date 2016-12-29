@@ -19,23 +19,25 @@ import java.util.ArrayList;
  */
 public class SelectResult implements Table {
 
+  private Optional<String> name = Optional.absent();
   private Table from;
   private final SelectListStmt selectListStmt;
   private final FromStmt fromStmt;
   private final WhereStmt where;
 
-  SelectResult(int subQueryDepth, Table... src) {
-    makeFromTable(subQueryDepth, src);
+  SelectResult(int joinTimes, int subQueryDepth, Table... src) {
+    // TODO 12/29/16 join with sub-query
+    makeFromTable(joinTimes, src);
     selectListStmt = new SelectListStmt(from);
     fromStmt = new FromStmt(from);
     where = new WhereStmt(from);
   }
 
-  private void makeFromTable(int subQueryDepth, Table[] src) {
-    if (subQueryDepth == 0) {
+  private void makeFromTable(int joinTimes, Table[] src) {
+    if (joinTimes == 0) {
       this.from = TableUtil.randomTable(src);
     } else {
-      makeFromTable(subQueryDepth - 1, src);
+      makeFromTable(joinTimes - 1, src);
       // TODO 12/13/16 add join condition
 //      from = from.join(TableUtil.randomTable(src), );
     }
@@ -44,11 +46,16 @@ public class SelectResult implements Table {
 
   @Override
   public Table join(Table table, Condition condition) {
+    assert table.name().isPresent();
+    if (!name().isPresent()) {
+      name = Optional.of(TableUtil.nextAlias());
+    }
+    // TODO 12/28/16 join: surround '() alias',
     return this;
   }
 
   public Optional<String> name() {
-    return Optional.absent();
+    return name;
   }
 
   public ArrayList<Column> columns() {
@@ -56,20 +63,18 @@ public class SelectResult implements Table {
   }
 
   /**
-   * surround with '()' and append a ';' when invoke -- implement by aop,
-   * so this method should only invoke once for a SelectResult
-   *
-   * @return sql stmt
-   *
-   * @see io.transwarp.generate.common.ParenAspect
    * @param dialect sql dialect
+   * @return sql stmt
+   * @see io.transwarp.generate.common.ParenAspect
    */
   public StringBuilder sql(Dialect dialect) {
     return new StringBuilder()
         .append(selectListStmt.sql(dialect))
         .append(fromStmt.sql(dialect))
-        .append(where.sql(dialect));
+        .append(where.sql(dialect))
+        .append(";");
   }
+
 
   // TODO 12/12/16 conversion to operand when only one row one column and requested
   // TODO 12/12/16 conversion to list when only one column and requested

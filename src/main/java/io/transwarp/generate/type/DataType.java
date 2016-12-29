@@ -2,9 +2,10 @@ package io.transwarp.generate.type;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 12/2/16.
@@ -28,6 +29,11 @@ public enum DataType implements GenerationDataType {
   },
   BYTE {
     public String randomData() {
+      return "" + (random.nextInt(0xff) - 0x80);
+    }
+  },
+  U_BYTE {
+    public String randomData() {
       return "" + random.nextInt(256);
     }
 
@@ -41,7 +47,7 @@ public enum DataType implements GenerationDataType {
   },
   SHORT {
     public String randomData() {
-      return Short.toString((short) random.nextInt(Short.MAX_VALUE));
+      return Short.toString((short) (random.nextInt(0xffff) + Short.MIN_VALUE));
     }
 
     public String getMax() {
@@ -50,6 +56,11 @@ public enum DataType implements GenerationDataType {
 
     public String getMin() {
       return Short.toString(Short.MIN_VALUE);
+    }
+  },
+  U_SHORT {
+    public String randomData() {
+      return Short.toString((short) random.nextInt(0xffff));
     }
   },
   INT {
@@ -64,6 +75,12 @@ public enum DataType implements GenerationDataType {
     public String getMin() {
       return Integer.toString(Integer.MIN_VALUE);
     }
+  },
+  U_INT {
+    public String randomData() {
+      return Long.toString(random.nextInt(Integer.MAX_VALUE));
+    }
+
   },
   LONG {
     public String randomData() {
@@ -107,7 +124,14 @@ public enum DataType implements GenerationDataType {
     public String randomData() {
       long l = Math.abs(random.nextLong());
       SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);
-      return sdf.format(new Date(l));
+      return name() + STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
+    }
+  },
+  DATE_STRING {
+    public String randomData() {
+      long l = Math.abs(random.nextLong());
+      SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);
+      return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
   },
   DATE_PATTERN {
@@ -116,20 +140,28 @@ public enum DataType implements GenerationDataType {
       return STRING_DELIMITER + YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)] + STRING_DELIMITER;
     }
   },
-  TIME {
+  TIME_STRING {
     public String randomData() {
       long l = Math.abs(random.nextLong());
       SimpleDateFormat sdf = new SimpleDateFormat(HH_MM_SS);
-      return sdf.format(new Date(l));
+      return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
   },
   TIMESTAMP {
     public String randomData() {
       long l = Math.abs(random.nextLong());
       SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
-      return sdf.format(new Date(l));
+      return name() + STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
+    }
+  },
+  TIMESTAMP_STRING {
+    public String randomData() {
+      long l = Math.abs(random.nextLong());
+      SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
+      return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
   };
+
   public static final String STRING_DELIMITER = "'";
 
   @Override
@@ -161,20 +193,10 @@ public enum DataType implements GenerationDataType {
     },
     CHAR {
       private int count = '~' - ' ';
-      private char[] special = {'\''};
 
       public String randomData() {
         final String s = "" + (char) (MIN_CHAR + random.nextInt(count));
         return escape(s);
-      }
-
-      private String escape(String s) {
-        for (char c : special) {
-          if (c == s.charAt(0)) {
-            return "\'" + c;
-          }
-        }
-        return s;
       }
 
       /**
@@ -196,7 +218,8 @@ public enum DataType implements GenerationDataType {
 
       @Override
       public String randomData() {
-        return "" + (char) (MIN_CHAR + random.nextInt(count));
+        final String s = "" + (char) (MIN_CHAR + random.nextInt(count));
+        return Meta.escape(s);
       }
 
       /**
@@ -213,6 +236,16 @@ public enum DataType implements GenerationDataType {
         return " ";
       }
     };
+    private static char[] special = {'\''};
+
+    private static String escape(String s) {
+      for (char c : special) {
+        if (c == s.charAt(0)) {
+          return "\'" + c;
+        }
+      }
+      return s;
+    }
   }
 
   public static final String HH_MM_SS = "HH:mm:ss";
@@ -222,7 +255,7 @@ public enum DataType implements GenerationDataType {
 
   public static final char MIN_CHAR = ' ';
   public static final char MAX_PRINTABLE = (char) 65533;
-  private static final Random random = new Random(12);
+  private static final Random random = ThreadLocalRandom.current();
 
 
 }

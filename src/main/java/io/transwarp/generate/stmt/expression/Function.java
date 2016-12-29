@@ -11,6 +11,15 @@ import io.transwarp.generate.type.GenerationDataType;
  * <li>return input type according to result type</li>
  * <li>for function with default arguments, implement multiple times</li>
  * <li>for functions with variable args, mark last input type to be variable length</li>
+ * <p>
+ * <h3>work flow</h3>
+ * <li>result type (specific type is more easy to be found)</li>
+ * <li>function</li>
+ * <li>input types (more choice is better; different types is better)</li>
+ *
+ * @see FunctionMap#random(GenerationDataType)
+ * @see io.transwarp.generate.config.InputRelation#refine(GenerationDataType[])
+ * @see Operand#makeOperand(GenerationDataType, Table, int)
  */
 public interface Function {
 

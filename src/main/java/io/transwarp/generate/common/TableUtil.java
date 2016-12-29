@@ -6,6 +6,7 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by zzt on 12/12/16.
@@ -30,13 +31,7 @@ public class TableUtil {
   }
 
   public static ArrayList<Column> randomSubCols(Table table, Possibility possibility) {
-    final ArrayList<Column> res = new ArrayList<>();
-    for (Column column : table.columns()) {
-      if (possibility.chooseFirst(true, false)) {
-        res.add(column);
-      }
-    }
-    return res;
+    return randomSubCols(table, possibility, Integer.MAX_VALUE);
   }
 
   public static ArrayList<Column> sameTypeSubCols(Table table, GenerationDataType type) {
@@ -51,5 +46,23 @@ public class TableUtil {
 
   public static Table randomTable(Table[] src) {
     return src[random.nextInt(src.length)];
+  }
+
+  private static AtomicLong atomicLong = new AtomicLong(0);
+  public static String nextAlias() {
+    return "alias" + atomicLong.getAndAdd(1);
+  }
+
+  public static ArrayList<Column> randomSubCols(Table from, Possibility possibility, int colLimit) {
+    final ArrayList<Column> res = new ArrayList<>();
+    for (Column column : from.columns()) {
+      if (possibility.chooseFirst(true, false)) {
+        res.add(column);
+      }
+      if (res.size() >= colLimit) {
+        break;
+      }
+    }
+    return res;
   }
 }

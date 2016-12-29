@@ -84,10 +84,5 @@ public enum InceptorType implements DBType {
       return DataType.TIMESTAMP;
     }
   },
-  TIME {
-    @Override
-    public GenerationDataType mapToGeneration(int len) {
-      return DataType.TIME;
-    }
-  };
+  ;
 }

@@ -18,27 +18,27 @@ public enum StringOp implements Function {
   REPEAT("REPEAT(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataType.INT};
+      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.UINT_GROUP};
     }
   },
   REVERSE("REVERSE("),
   LPAD("LPAD(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataType.INT, DataTypeGroup.STRING_GROUP};
+      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.UINT_GROUP, DataTypeGroup.STRING_GROUP};
     }
   },
   RPAD("RPAD(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataType.INT, DataTypeGroup.STRING_GROUP};
+      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.UINT_GROUP, DataTypeGroup.STRING_GROUP};
     }
   },
   RTRIM("RTRIM("),
   SPACE("SPACE(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataType.INT};
+      return new GenerationDataType[]{DataTypeGroup.UINT_GROUP};
     }
   },
   SPLIT("SPLIT(") {
@@ -75,7 +75,14 @@ public enum StringOp implements Function {
   }
 
   private enum VarStringOp implements Function {
-    CONCAT("CONCAT("), CONCAT_WS("CONCAT_WS("), PRINTF("PRINTF(") {
+    CONCAT("CONCAT("),
+    CONCAT_WS("CONCAT_WS(") {
+      @Override
+      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+        return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
+      }
+    },
+    PRINTF("PRINTF(") {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
         // TODO 12/23/16 not fully implemented
@@ -134,7 +141,7 @@ public enum StringOp implements Function {
 
     @Override
     public void register() {
-      FunctionMap.register(this, DataType.INT);
+      FunctionMap.register(this, DataTypeGroup.UINT_GROUP);
     }
 
     @Override

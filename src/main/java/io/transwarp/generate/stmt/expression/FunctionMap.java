@@ -36,13 +36,13 @@ public class FunctionMap {
       val = new ArrayList<>(30);
       share.put(resultType, val);
     }
-    val.add(new FunctionWrapper(f));
+    val.add(f);
   }
 
-  private static class FunctionWrapper implements Function {
+  public static class FunctionWrapper implements Function {
     private Function f;
 
-    public FunctionWrapper(Function f) {
+    FunctionWrapper(Function f) {
       this.f = f;
     }
 

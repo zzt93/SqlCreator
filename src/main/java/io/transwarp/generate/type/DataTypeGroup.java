@@ -21,16 +21,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public enum DataTypeGroup implements GenerationDataType {
 
   DECIMAL_GROUP(DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  UINT_GROUP(DataType.U_BYTE, DataType.U_SHORT, DataType.U_INT),
   INT_GROUP(DataType.BYTE, DataType.SHORT, DataType.INT, SequenceDataType.BITS, DataType.LONG),
-  NUM_GROUP(DataType.BYTE, DataType.SHORT, DataType.INT, SequenceDataType.BITS, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  NUM_GROUP(DataType.BYTE, DataType.U_BYTE, DataType.SHORT, DataType.U_SHORT, DataType.INT, DataType.U_INT, SequenceDataType.BITS, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  DATE_STRING_GROUP(DataType.DATE_STRING, DataType.TIMESTAMP_STRING),
   STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING, DataType.DATE_PATTERN),
   DATE_GROUP(DataType.DATE, DataType.TIMESTAMP),
   LIST_GROUP() {
-    @Override
-    public GenerationDataType randomType() {
-      return new ListDataType(ALL_GROUP.randomType(), random.nextInt(Config.getRandomListMaxLen()) + 1);
-    }
-
     @Override
     public boolean contains(GenerationDataType type) {
       return type instanceof ListDataType;
@@ -41,14 +38,13 @@ public enum DataTypeGroup implements GenerationDataType {
    * because others are subset of this group</p>
    */
   ALL_GROUP(ObjectArrays.concat(DataType.values(), SequenceDataType.values(), GenerationDataType.class)) {
+    /**
+     * Because the sql parser doesn't accept recursive list type, here we can't produce list type
+     * @return not produce list type, only return simple type and strings
+     */
     @Override
     public GenerationDataType randomType() {
-      final int rand = random.nextInt(typeCount + 1);
-      if (rand == typeCount) {
-        // make recursive list data type
-        return LIST_GROUP.randomType();
-      }
-      return types.get(rand);
+      return types.get(random.nextInt(typeCount));
     }
 
     /**
@@ -114,6 +110,7 @@ public enum DataTypeGroup implements GenerationDataType {
     }
     return type;
   }
+
   List<GenerationDataType> types;
   final int typeCount;
 

@@ -15,7 +15,7 @@ public class DataTypeUtil {
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   static List<String> randoms(GenerationDataType type, int max) {
-    int times = random.nextInt(max);
+    int times = random.nextInt(max) + 1;
     List<String> res = new ArrayList<>(times);
     for (int i = 0; i < times; i++) {
       res.add(type.randomData());
