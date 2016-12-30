@@ -2,7 +2,7 @@ package io.transwarp.generate.common;
 
 import com.google.common.base.Optional;
 import io.transwarp.generate.SqlGeneration;
-import io.transwarp.generate.stmt.expression.Condition;
+import io.transwarp.generate.stmt.share.Condition;
 
 import java.util.ArrayList;
 

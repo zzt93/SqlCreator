@@ -66,7 +66,7 @@ public class Operand implements ContainSubQuery {
     }
   }
 
-  static Operand[] getOperands(Table src, int num, GenerationDataType resultType, int subQueryDepth) {
+  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, int subQueryDepth) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       res[i] = makeOperand(resultType, src, Config.getUdfDepth(), subQueryDepth == 0);

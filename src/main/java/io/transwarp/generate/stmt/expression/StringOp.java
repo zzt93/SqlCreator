@@ -2,9 +2,9 @@ package io.transwarp.generate.stmt.expression;
 
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.util.Strings;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -75,14 +75,14 @@ public enum StringOp implements Function {
   }
 
   private enum VarStringOp implements Function {
-    CONCAT("CONCAT("),
-    CONCAT_WS("CONCAT_WS(") {
+    CONCAT(Strings.of("CONCAT(", "("), Strings.of(", ", " || ")),
+    CONCAT_WS(Strings.of("CONCAT_WS(", "("), Strings.of(", ", " || ")) {
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {
         return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
       }
     },
-    PRINTF("PRINTF(") {
+    PRINTF("PRINTF(", "(") {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
         // TODO 12/23/16 not fully implemented
@@ -91,11 +91,18 @@ public enum StringOp implements Function {
       }
     };
 
-    final String ops;
+    final String[] ops;
     final ThreadLocalRandom random = ThreadLocalRandom.current();
+    private String[] delims;
 
-    VarStringOp(String s) {
+    VarStringOp(String... s) {
       ops = s;
+    }
+
+
+    VarStringOp(String[] ops, String[] delims) {
+      this.ops = ops;
+      this.delims = delims;
     }
 
     @Override
@@ -108,11 +115,11 @@ public enum StringOp implements Function {
       final StringBuilder builder = input[0].sql(dialect).insert(0, ops);
       final GenerationDataType[] inputs = inputTypes(DataTypeGroup.STRING_GROUP);
       for (int i = 1; i < inputs.length - 1; i++) {
-        builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
+        builder.append(delims[dialect.ordinal()]).append(input[i].sql(dialect));
       }
       GenerationDataType varType = inputs[inputs.length - 1];
       for (int i = 1; i < inputs.length + random.nextInt(5); i++) {
-        builder.append(Function.PARAMETER_SPLIT).append(varType.randomData());
+        builder.append(delims[dialect.ordinal()]).append(varType.randomData());
       }
       builder.append(Function.CLOSE_PAREN);
       return input[0];

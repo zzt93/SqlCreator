@@ -2,6 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.UDFChooseOption;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**

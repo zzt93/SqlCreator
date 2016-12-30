@@ -15,41 +15,7 @@ public enum ArithOp implements Function {
   MUL(" * "),
   DIV(" / "),
   MOD(" % "),
-  LOGICAL_AND(" & ") {
-    @Override
-    public void register() {
-      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
-    }
-  },
-  LOGICAL_OR(" | ") {
-    @Override
-    public void register() {
-      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
-    }
-  },
-  LOGICAL_XOR(" ^ ") {
-    @Override
-    public void register() {
-      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
-    }
-  },
-  LOGICAL_NOT("~ ") {
-    @Override
-    public void register() {
-      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
-    }
-
-    @Override
-    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{resultType};
-    }
-
-    @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect).insert(0, op);
-      return input[0];
-    }
-  },;
+  ;
 
 
   final String op;

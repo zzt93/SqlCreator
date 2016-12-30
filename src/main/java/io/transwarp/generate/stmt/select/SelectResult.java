@@ -6,7 +6,7 @@ import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
-import io.transwarp.generate.stmt.expression.Condition;
+import io.transwarp.generate.stmt.share.Condition;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
 import io.transwarp.parse.sql.DDLParser;

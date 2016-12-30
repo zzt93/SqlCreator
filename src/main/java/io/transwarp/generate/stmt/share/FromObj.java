@@ -5,7 +5,6 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Config;
-import io.transwarp.generate.stmt.expression.Condition;
 
 import java.util.ArrayList;
 

@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.generate.config.UDFChooseOption;
 import io.transwarp.generate.type.CompoundDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;

@@ -1,7 +1,6 @@
 package io.transwarp.generate.config;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.stmt.expression.UDFChooseOption;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -17,7 +16,7 @@ public class Config {
   private static int randomListMaxLen = 10;
   private static int randomStrMaxLen = 100;
 
-  private static int udfDepth = 2;
+  private static int udfDepth = FunctionDepth.SMALL;
   private static int subQueryDepth = 0;
   private static int joinTimes = 0;
   private static final int MAX_COLS = 20;
