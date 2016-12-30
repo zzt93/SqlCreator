@@ -3,11 +3,11 @@ package io.transwarp.generate.stmt.select;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
+import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
-import io.transwarp.generate.common.Table;
-import io.transwarp.generate.common.TableUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +27,8 @@ public class SelectListStmt implements SqlGeneration {
   SelectListStmt(Table from, int colLimit) {
     cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
     if (cols.size() < colLimit) {
-      cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, colLimit - cols.size()))));
+      final int num = Math.min(colLimit - cols.size(), Config.getExprNumInSelect());
+      cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, num))));
     }
   }
 

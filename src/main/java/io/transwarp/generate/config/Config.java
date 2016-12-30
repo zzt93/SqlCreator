@@ -1,6 +1,7 @@
 package io.transwarp.generate.config;
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.stmt.expression.UDFChooseOption;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -15,15 +16,21 @@ public class Config {
   private static int randomMaxBitLen = 64;
   private static int randomListMaxLen = 10;
   private static int randomStrMaxLen = 100;
+
   private static int udfDepth = 2;
   private static int subQueryDepth = 0;
   private static int joinTimes = 0;
-  private static final int MAX_COLS = 100;
+  private static final int MAX_COLS = 20;
   private static int selectColMax = MAX_COLS;
   private static int exprNumInSelect = 1;
   private static InputRelation inputRelation = InputRelation.RANDOM;
-  private static Dialect cmp = Dialect.ORACLE;
-  private static Dialect base = Dialect.INCEPTOR;
+  private static Dialect cmp = Dialect.INCEPTOR;
+  private static Dialect base = Dialect.ORACLE;
+  private static final UDFChooseOption UDF_CHOOSE_OPTION = new UDFChooseOption();
+
+  public static UDFChooseOption getUdfChooseOption() {
+    return UDF_CHOOSE_OPTION;
+  }
 
   public static int getUdfDepth() {
     return udfDepth;
@@ -67,6 +74,10 @@ public class Config {
 
   public static int getExprNumInSelect() {
     return exprNumInSelect;
+  }
+
+  public static Dialect[] getBaseCmp() {
+    return new Dialect[]{getBase(), getCmp()};
   }
 
 
@@ -129,6 +140,9 @@ public class Config {
     public void build() {
       if (cmp == base) {
         throw new IllegalArgumentException();
+      }
+      if (exprNumInSelect > selectColMax) {
+        throw new IllegalArgumentException("exprNumInSelect > selectColMax");
       }
     }
   }

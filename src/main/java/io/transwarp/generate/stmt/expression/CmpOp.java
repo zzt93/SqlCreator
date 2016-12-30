@@ -1,7 +1,10 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.type.*;
+import io.transwarp.generate.type.DataType;
+import io.transwarp.generate.type.DataTypeGroup;
+import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.type.ListDataType;
 
 /**
  * Created by zzt on 12/6/16.
@@ -60,6 +63,10 @@ public enum CmpOp implements Function {
   },
   EXISTS(" EXISTS ") {
     @Override
+    public void register() {
+    }
+
+    @Override
     public Operand apply(Dialect dialect, Operand... input) {
       input[0].sql(dialect).insert(0, toString());
       return input[0];
@@ -95,7 +102,7 @@ public enum CmpOp implements Function {
 
   @Override
   public void register() {
-    FunctionMap.register(new FunctionMap.FunctionWrapper(this), DataType.BOOL);
+    FunctionMap.register(new ParenWrapper(this), DataType.BOOL);
   }
 
   @Override

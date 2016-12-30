@@ -9,6 +9,7 @@ import io.transwarp.generate.config.Config;
 import io.transwarp.generate.stmt.expression.Condition;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
+import io.transwarp.parse.sql.DDLParser;
 
 import java.util.ArrayList;
 
@@ -23,16 +24,33 @@ public class SelectResult implements Table {
   private Table from;
   private final SelectListStmt selectListStmt;
   private final FromStmt fromStmt;
-  private final WhereStmt where;
+  private final WhereStmt whereStmt;
 
-  SelectResult(int joinTimes, int subQueryDepth, Table... src) {
+  private SelectResult(int colLimit, int joinTimes, int subQueryDepth, Table... src) {
     // TODO 12/29/16 join with sub-query
     makeFromTable(joinTimes, src);
-    selectListStmt = new SelectListStmt(from);
-    fromStmt = new FromStmt(from);
-    where = new WhereStmt(from);
-    // TODO 12/29/16 replace subquery; add set operation
+    selectListStmt = new SelectListStmt(from, colLimit);
+    fromStmt = new FromStmt(from, subQueryDepth - 1);
+    whereStmt = new WhereStmt(from, subQueryDepth - 1);
+    // TODO 12/29/16 replace sub-query; add set operation
+    addSetOp();
   }
+
+  static SelectResult selectResult(int joinTimes, int subQueryDepth, Table... src) {
+    return new SelectResult(Config.getSelectColMax(), joinTimes, subQueryDepth, src);
+  }
+
+  public static SelectResult selectResult() {
+    return selectResult(Config.getJoinTimes(), Config.getSubQueryDepth(), DDLParser.getTable());
+  }
+
+  public static SelectResult simpleQuery(int colLimit, int subQueryDepth) {
+    return new SelectResult(colLimit, Config.getJoinTimes(), subQueryDepth, DDLParser.getTable());
+  }
+
+  private void addSetOp() {
+  }
+
 
   private void makeFromTable(int joinTimes, Table[] src) {
     if (joinTimes == 0) {
@@ -71,7 +89,7 @@ public class SelectResult implements Table {
     return new StringBuilder()
         .append(selectListStmt.sql(dialect))
         .append(fromStmt.sql(dialect))
-        .append(where.sql(dialect))
+        .append(whereStmt.sql(dialect))
         .append(";");
   }
 

@@ -1,5 +1,6 @@
 package io.transwarp.parse.sql;
 
+import com.google.common.base.Optional;
 import io.transwarp.db_specific.base.DBType;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
@@ -52,27 +53,31 @@ public class DDLParser {
    *
    * @return the object defined by ddl
    */
-  public Table parse() {
+  public Table[] parse() {
     final StmtIterator it = createSql();
+    ArrayList<Table> tables = new ArrayList<>();
     while (it.hasNext()) {
       final String stmt = it.next();
-      final String name = extractTableName(stmt);
+      final Optional<String> name = extractTableName(stmt);
+      if (!name.isPresent()) {
+        continue;
+      }
       final Matcher matcher = columns.matcher(stmt);
       if (matcher.find()) {
         final String group = matcher.group();
         final String[] cols = group.substring(1, group.length() - 1).split(",");
         ArrayList<Column> columns = new ArrayList<>();
-        final Table table = new FromObj(name, columns);
+        final Table table = new FromObj(name.get(), columns);
         for (String col : cols) {
           columns.add(extractCol(col, table));
         }
         // TODO how to require join column
-        return table;
+        tables.add(table);
       } else {
         throw new IllegalArgumentException("Can't find create stmt:" + stmt);
       }
     }
-    return null;
+    return tables.toArray(new Table[]{});
   }
 
   private Column extractCol(String col, Table table) {
@@ -86,13 +91,16 @@ public class DDLParser {
     return new Column(cname, mapping, table);
   }
 
-  private String extractTableName(String stmt) {
+  private Optional<String> extractTableName(String stmt) {
     int table = stmt.indexOf(TABLE);
     if (table == -1) {
       table = stmt.indexOf(TABLE.toLowerCase());
     }
+    if (table == -1) {
+      return Optional.absent();
+    }
     final int beginIndex = table + TABLE.length();
-    return stmt.substring(beginIndex, stmt.indexOf('(', beginIndex)).trim();
+    return Optional.of(stmt.substring(beginIndex, stmt.indexOf('(', beginIndex)).trim());
   }
 
   private int extractLen(String type) {
@@ -107,17 +115,17 @@ public class DDLParser {
     static {
       DDLParser ddlParser = null;
       try {
-        ddlParser = new DDLParser("src/main/resources/default.sql", Dialect.ORACLE);
+        ddlParser = new DDLParser("src/main/resources/default_oracle.sql", Dialect.ORACLE);
       } catch (IOException e) {
         e.printStackTrace();
       }
       table = ddlParser.parse();
     }
 
-    private static final Table table;
+    private static final Table[] table;
   }
 
-  public static Table getTable() throws IOException {
+  public static Table[] getTable() {
     return TableLoader.table;
   }
 }

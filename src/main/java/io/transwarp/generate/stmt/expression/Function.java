@@ -17,7 +17,7 @@ import io.transwarp.generate.type.GenerationDataType;
  * <li>function</li>
  * <li>input types (more choice is better; different types is better)</li>
  *
- * @see FunctionMap#random(GenerationDataType)
+ * @see FunctionMap#random(GenerationDataType, UDFChooseOption)
  * @see io.transwarp.generate.config.InputRelation#refine(GenerationDataType[])
  * @see Operand#makeOperand(GenerationDataType, Table, int)
  */
@@ -35,7 +35,7 @@ public interface Function {
    * @param dialect used when different dialect has different ways to apply
    * @param input   parameter
    * @return result
-   * @see io.transwarp.generate.stmt.expression.FunctionMap.FunctionWrapper
+   * @see ParenWrapper
    */
   Operand apply(Dialect dialect, Operand... input);
 

@@ -7,8 +7,12 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
+import io.transwarp.generate.stmt.ContainSubQuery;
+import io.transwarp.generate.stmt.select.SelectResIter;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.type.ListDataType;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 
@@ -20,7 +24,7 @@ import java.util.EnumMap;
  * <br>operation</br>
  * <br>result</br>
  */
-public class Operand {
+public class Operand implements ContainSubQuery {
   /**
    * use @see DataTypeGeneration for this type is for generation
    * and should isolate from the specific sql dialect
@@ -39,7 +43,7 @@ public class Operand {
     versions.put(Config.getCmp(), new StringBuilder(cmpOp));
   }
 
-  private static Operand makeOperand(GenerationDataType resultType, Table src, int depth) {
+  private static Operand makeOperand(GenerationDataType resultType, Table src, int depth, boolean moreSubQuery) {
     if (depth == FunctionDepth.SINGLE) {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
@@ -49,12 +53,12 @@ public class Operand {
         return new Operand(resultType, resultType.randomData());
       }
     } else {
-      final Function function = FunctionMap.random(resultType);
+      final Function function = FunctionMap.random(resultType, Config.getUdfChooseOption().setMoreSubQuery(moreSubQuery));
       final GenerationDataType[] inputs = function.inputTypes(resultType);
       Operand[] ops = new Operand[inputs.length];
       final GenerationDataType[] nextResultType = Config.getInputRelation().refine(inputs);
       for (int i = 0; i < nextResultType.length; i++) {
-        ops[i] = makeOperand(nextResultType[i], src, depth - 1);
+        ops[i] = makeOperand(nextResultType[i], src, depth - 1, moreSubQuery);
       }
       function.apply(Config.getBase(), ops);
       return function.apply(Config.getCmp(), ops)
@@ -62,24 +66,10 @@ public class Operand {
     }
   }
 
-  /**
-   * Assume all operands for this generation are of same type group
-   *
-   * @param from columns that to choose from
-   * @param num  number of operands
-   * @return operand array
-   */
-  static Operand[] randomSameTypeGroupOperand(Table from, int num) {
-    final ArrayList<Column> columns = from.columns();
-    ArrayList<Column> same = new ArrayList<>(columns.size());
-    GenerationDataType type = getSameTypeGroupCols(from, same);
-    return getOperands(from, num, type);
-  }
-
-  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType) {
+  static Operand[] getOperands(Table src, int num, GenerationDataType resultType, int subQueryDepth) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = makeOperand(resultType, src, Config.getUdfDepth());
+      res[i] = makeOperand(resultType, src, Config.getUdfDepth(), subQueryDepth == 0);
     }
     return res;
   }
@@ -88,8 +78,8 @@ public class Operand {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       GenerationDataType type = TableUtil.randomCol(src).getType();
-      res[i] = makeOperand(type, src, Config.getUdfDepth());
-      //    assert type == operand.type;
+      res[i] = makeOperand(type, src, Config.getUdfDepth(), false);
+      assert type == res[i].type;
     }
     return res;
   }
@@ -118,4 +108,25 @@ public class Operand {
     this.type = type;
     return this;
   }
+
+  @Override
+  public void replaceWithSimpleQuery(int subQueryDepth) {
+    final SelectResIter resIter = new SelectResIter(subQueryDepth);
+    for (Dialect dialect : Config.getBaseCmp()) {
+      replaceAll(dialect, ListDataType.SUB_QUERY_TO_REPLACE, resIter);
+      resIter.reset();
+    }
+  }
+
+  private void replaceAll(Dialect dialect, String from, SelectResIter to) {
+    final StringBuilder builder = versions.get(dialect);
+    int index = builder.indexOf(from);
+    while (index != -1) {
+      final String next = to.next(1, dialect);
+      builder.replace(index, index + from.length(), next);
+      index += next.length(); // Move to the end of the replacement
+      index = builder.indexOf(from, index);
+    }
+  }
+
 }

@@ -42,7 +42,7 @@ public enum LogicalOp implements Function {
 
   @Override
   public void register() {
-    FunctionMap.register(new FunctionMap.FunctionWrapper(this), DataType.BOOL);
+    FunctionMap.register(new ParenWrapper(this), DataType.BOOL);
   }
 
   @Override

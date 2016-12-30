@@ -1,8 +1,5 @@
 package io.transwarp.generate.stmt.expression;
 
-import com.google.common.base.Preconditions;
-import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.Config;
 import io.transwarp.generate.type.CompoundDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
@@ -39,39 +36,16 @@ public class FunctionMap {
     val.add(f);
   }
 
-  public static class FunctionWrapper implements Function {
-    private Function f;
-
-    FunctionWrapper(Function f) {
-      this.f = f;
-    }
-
-    @Override
-    public void register() {
-      f.register();
-    }
-
-    @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      final Operand apply = f.apply(dialect, input);
-      apply.sql(dialect).insert(0, '(').append(')');
-      return apply;
-    }
-
-    @Override
-    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return f.inputTypes(resultType);
-    }
-  }
   /**
    * find exact data type's conversion function
    * @param resultType a {@link DataType} or {@link CompoundDataType}
+   * @param udfChooseOption option to prefer some udf
    * @return conversion function
    *
    * @see DataType
    * @see CompoundDataType
    */
-  static Function random(GenerationDataType resultType) {
+  static Function random(GenerationDataType resultType, UDFChooseOption udfChooseOption) {
     // TODO 12/26/16 add some strategy to differ possibility
     checkArgument(resultType instanceof DataType || resultType instanceof CompoundDataType);
     GenerationDataType larger = resultType;

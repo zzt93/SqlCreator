@@ -18,25 +18,25 @@ public enum ArithOp implements Function {
   LOGICAL_AND(" & ") {
     @Override
     public void register() {
-      FunctionMap.register(new FunctionMap.FunctionWrapper(this), DataTypeGroup.INT_GROUP);
+      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
     }
   },
   LOGICAL_OR(" | ") {
     @Override
     public void register() {
-      FunctionMap.register(new FunctionMap.FunctionWrapper(this), DataTypeGroup.INT_GROUP);
+      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
     }
   },
   LOGICAL_XOR(" ^ ") {
     @Override
     public void register() {
-      FunctionMap.register(new FunctionMap.FunctionWrapper(this), DataTypeGroup.INT_GROUP);
+      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
     }
   },
   LOGICAL_NOT("~ ") {
     @Override
     public void register() {
-      FunctionMap.register(new FunctionMap.FunctionWrapper(this), DataTypeGroup.INT_GROUP);
+      FunctionMap.register(new ParenWrapper(this), DataTypeGroup.INT_GROUP);
     }
 
     @Override
@@ -60,7 +60,7 @@ public enum ArithOp implements Function {
 
   @Override
   public void register() {
-    FunctionMap.register(new FunctionMap.FunctionWrapper(this), DataTypeGroup.NUM_GROUP);
+    FunctionMap.register(new ParenWrapper(this), DataTypeGroup.NUM_GROUP);
   }
 
   @Override

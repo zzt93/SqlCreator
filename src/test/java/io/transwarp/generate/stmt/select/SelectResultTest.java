@@ -1,16 +1,16 @@
 package io.transwarp.generate.stmt.select;
 
-import io.transwarp.DDLParserTest;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.InputRelation;
+import io.transwarp.parse.sql.DDLParser;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 /**
  * Created by zzt on 12/12/16.
  * <p>
- *   java -cp /usr/lib/qa/player-1.0-all.jar io.transwarp.qa.player.SuiteRunner -t case.yml -C conf.xml
+ * java -cp /usr/lib/qa/player-1.0-all.jar io.transwarp.qa.player.SuiteRunner -t case.yml -C conf.xml
  * <h3></h3>
  */
 @RunWith(Parameterized.class)
@@ -41,13 +41,21 @@ public class SelectResultTest {
 
   @Before
   public void setUp() throws Exception {
-    from = DDLParserTest.getTable();
+    from = DDLParser.getTable()[0];
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
-      selectResults[i] = new SelectResult(Config.getJoinTimes(), Config.getSubQueryDepth(), from);
+      selectResults[i] = SelectResult.selectResult(Config.getJoinTimes(), Config.getSubQueryDepth(), from);
     }
     oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));
+  }
+
+  @Test
+  public void selectResult() throws Exception {
+    for (int i = 1; i < 10; i++) {
+      final SelectResult selectResult = SelectResult.simpleQuery(i, Config.getSubQueryDepth());
+      Assert.assertTrue(selectResult.columns().size() <= i);
+    }
   }
 
   @Test
