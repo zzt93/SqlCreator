@@ -26,12 +26,12 @@ public class SelectResult implements Table {
   private final FromStmt fromStmt;
   private final WhereStmt whereStmt;
 
-  private SelectResult(int colLimit, int joinTimes, int subQueryDepth, Table... src) {
+  private SelectResult(int colLimit, int joinTimes, int queryDepth, Table... src) {
     // TODO 12/29/16 join with sub-query
     makeFromTable(joinTimes, src);
     selectListStmt = new SelectListStmt(from, colLimit);
-    fromStmt = new FromStmt(from, subQueryDepth - 1);
-    whereStmt = new WhereStmt(from, subQueryDepth - 1);
+    fromStmt = new FromStmt(from, queryDepth - 1);
+    whereStmt = new WhereStmt(from, queryDepth - 1);
     // TODO 12/29/16 replace sub-query; add set operation
     addSetOp();
   }
@@ -41,7 +41,7 @@ public class SelectResult implements Table {
   }
 
   public static SelectResult selectResult() {
-    return selectResult(Config.getJoinTimes(), Config.getSubQueryDepth(), DDLParser.getTable());
+    return selectResult(Config.getJoinTimes(), Config.getQueryDepth(), DDLParser.getTable());
   }
 
   public static SelectResult simpleQuery(int colLimit, int subQueryDepth) {

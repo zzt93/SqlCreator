@@ -16,9 +16,9 @@ public class WhereStmt implements SqlGeneration, ContainSubQuery {
   private static final String WHERE = " where ";
   private final Condition condition;
 
-  public WhereStmt(Table from, int subQueryDepth) {
-    condition = new Condition(from, subQueryDepth);
-    replaceWithSimpleQuery(subQueryDepth);
+  public WhereStmt(Table from, int queryDepth) {
+    condition = new Condition(from, queryDepth);
+    replaceWithSimpleQuery(queryDepth);
   }
 
   @Override
@@ -27,7 +27,7 @@ public class WhereStmt implements SqlGeneration, ContainSubQuery {
   }
 
   @Override
-  public void replaceWithSimpleQuery(int subQueryDepth) {
-    condition.replaceWithSimpleQuery(subQueryDepth);
+  public void replaceWithSimpleQuery(int queryDepth) {
+    condition.replaceWithSimpleQuery(queryDepth);
   }
 }

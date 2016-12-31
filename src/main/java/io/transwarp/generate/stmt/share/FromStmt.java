@@ -15,7 +15,7 @@ public class FromStmt implements SqlGeneration, ContainSubQuery {
   private static final String FROM = " from ";
   private Table fromObj;
 
-  public FromStmt(Table fromObj, int subQueryDepth) {
+  public FromStmt(Table fromObj, int queryDepth) {
     this.fromObj = fromObj;
   }
 

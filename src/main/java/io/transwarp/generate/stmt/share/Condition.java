@@ -18,8 +18,8 @@ public class Condition implements SqlGeneration, ContainSubQuery {
   private static final GenerationDataType type = DataType.BOOL;
   private final Operand condition;
 
-  public Condition(Table from, int subQueryDepth) {
-    final Operand[] operands = Operand.getOperands(from, 1, DataType.BOOL, subQueryDepth);
+  public Condition(Table from, int queryDepth) {
+    final Operand[] operands = Operand.getOperands(from, 1, DataType.BOOL, queryDepth);
     condition = operands[0];
   }
 
@@ -29,7 +29,7 @@ public class Condition implements SqlGeneration, ContainSubQuery {
   }
 
   @Override
-  public void replaceWithSimpleQuery(int subQueryDepth) {
-    condition.replaceWithSimpleQuery(subQueryDepth);
+  public void replaceWithSimpleQuery(int queryDepth) {
+    condition.replaceWithSimpleQuery(queryDepth);
   }
 }

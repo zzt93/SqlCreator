@@ -66,10 +66,10 @@ public class Operand implements ContainSubQuery {
     }
   }
 
-  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, int subQueryDepth) {
+  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, int queryDepth) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = makeOperand(resultType, src, Config.getUdfDepth(), subQueryDepth == 0);
+      res[i] = makeOperand(resultType, src, Config.getUdfDepth(), queryDepth > 0);
     }
     return res;
   }
@@ -110,8 +110,8 @@ public class Operand implements ContainSubQuery {
   }
 
   @Override
-  public void replaceWithSimpleQuery(int subQueryDepth) {
-    final SelectResIter resIter = new SelectResIter(subQueryDepth);
+  public void replaceWithSimpleQuery(int queryDepth) {
+    final SelectResIter resIter = new SelectResIter(queryDepth);
     for (Dialect dialect : Config.getBaseCmp()) {
       replaceAll(dialect, ListDataType.SUB_QUERY_TO_REPLACE, resIter);
       resIter.reset();

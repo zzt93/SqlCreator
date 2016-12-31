@@ -12,15 +12,15 @@ import java.util.ArrayList;
 public class SelectResIter {
   private int index = 0;
   private ArrayList<SelectResult> results = new ArrayList<>();
-  private int subQueryDepth;
+  private int queryDepth;
 
-  public SelectResIter(int subQueryDepth) {
-    this.subQueryDepth = subQueryDepth;
+  public SelectResIter(int queryDepth) {
+    this.queryDepth = queryDepth;
   }
 
   public String next(int colLimit, Dialect dialect) {
     if (index >= results.size()) {
-      final SelectResult result = SelectResult.simpleQuery(colLimit, subQueryDepth);
+      final SelectResult result = SelectResult.simpleQuery(colLimit, queryDepth);
       results.add(result);
     }
     assert index < results.size();

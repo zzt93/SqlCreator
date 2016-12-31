@@ -17,7 +17,7 @@ public class Config {
   private static int randomStrMaxLen = 100;
 
   private static int udfDepth = FunctionDepth.SMALL;
-  private static int subQueryDepth = 0;
+  private static int queryDepth = 1;
   private static int joinTimes = 0;
   private static final int MAX_COLS = 20;
   private static int selectColMax = MAX_COLS;
@@ -35,8 +35,8 @@ public class Config {
     return udfDepth;
   }
 
-  public static int getSubQueryDepth() {
-    return subQueryDepth;
+  public static int getQueryDepth() {
+    return queryDepth;
   }
 
   public static int getJoinTimes() {
@@ -114,7 +114,7 @@ public class Config {
 
     public Builder setSubQueryDepth(int subQueryDepth) {
       checkArgument(subQueryDepth >= 0 && subQueryDepth < 10);
-      Config.subQueryDepth = subQueryDepth;
+      Config.queryDepth = subQueryDepth;
       return this;
     }
 

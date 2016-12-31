@@ -29,7 +29,7 @@ public class OperandTest {
   public void randomSameTypeOperand() throws Exception {
     final Table test = DDLParser.getTable()[0];
     for (int i = 0; i < 1000; i++) {
-      final Operand[] operands = Operand.getOperands(test, 3, testType, Config.getSubQueryDepth());
+      final Operand[] operands = Operand.getOperands(test, 3, testType, Config.getQueryDepth());
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
         System.out.println(operand.getType());
