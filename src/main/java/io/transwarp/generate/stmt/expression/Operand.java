@@ -37,10 +37,10 @@ public class Operand implements ContainSubQuery {
     this(type, operand, operand);
   }
 
-  public Operand(GenerationDataType type, String baseOp, String cmpOp) {
+  public Operand(GenerationDataType type, String... ops) {
     this.type = type;
-    versions.put(Config.getBase(), new StringBuilder(baseOp));
-    versions.put(Config.getCmp(), new StringBuilder(cmpOp));
+    versions.put(Config.getBase(), new StringBuilder(ops[0]));
+    versions.put(Config.getCmp(), new StringBuilder(ops[1]));
   }
 
   private static Operand makeOperand(GenerationDataType resultType, Table src, int depth, boolean moreSubQuery) {
@@ -48,7 +48,7 @@ public class Operand implements ContainSubQuery {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
         final Column column = col.get();
-        return new Operand(resultType, column.getNameOrConst(Config.getBase()), column.getNameOrConst(Config.getCmp()));
+        return new Operand(resultType, column.getNameOrConst(Config.getBaseCmp()));
       } else {
         return new Operand(resultType, resultType.randomData());
       }
@@ -98,6 +98,15 @@ public class Operand implements ContainSubQuery {
 
   public StringBuilder sql(Dialect dialect) {
     return versions.get(dialect);
+  }
+
+  public String[] sqls() {
+    String[] res = new String[versions.size()];
+    int i = 0;
+    for (Dialect dialect : versions.keySet()) {
+      res[i++] = sql(dialect).toString();
+    }
+    return res;
   }
 
   public GenerationDataType getType() {

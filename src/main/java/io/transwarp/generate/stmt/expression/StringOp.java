@@ -86,7 +86,7 @@ public enum StringOp implements Function {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
         // TODO 12/23/16 not fully implemented
-        input[0].sql(dialect).insert(0, ops).append(Function.CLOSE_PAREN);
+        input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(Function.CLOSE_PAREN);
         return input[0];
       }
     };
@@ -112,7 +112,7 @@ public enum StringOp implements Function {
 
     @Override
     public Operand apply(Dialect dialect, Operand... input) {
-      final StringBuilder builder = input[0].sql(dialect).insert(0, ops);
+      final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
       final GenerationDataType[] inputs = inputTypes(DataTypeGroup.STRING_GROUP);
       for (int i = 1; i < inputs.length - 1; i++) {
         builder.append(delims[dialect.ordinal()]).append(input[i].sql(dialect));
@@ -132,7 +132,14 @@ public enum StringOp implements Function {
   }
 
   private enum StringToIntOp implements Function {
-    ASCII("ASCII("), INSTR("INSTR("), LENGTH("LENGTH("),
+    ASCII("ASCII("),
+    INSTR("INSTR(") {
+      @Override
+      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+        return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
+      }
+    },
+    LENGTH("LENGTH("),
     LOCATE("LOCATE(") {
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {

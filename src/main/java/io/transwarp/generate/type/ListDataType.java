@@ -28,7 +28,7 @@ public class ListDataType extends SequenceDataType {
   public String randomData() {
     if (listPossibility.chooseFirst(true, false)) {
       final Joiner on = Joiner.on(", ");
-      final StringBuilder sql = on.appendTo(new StringBuilder("("), DataTypeUtil.randoms(getType(), getLen()));
+      final StringBuilder sql = on.appendTo(new StringBuilder("("), DataTypeUtil.randomSize(getType(), getLen()));
       return sql.append(')').toString();
     }
     return "(" + SUB_QUERY_TO_REPLACE + ")";

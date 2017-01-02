@@ -57,7 +57,7 @@ public class SequenceDataType extends CompoundDataType {
   @Override
   public String randomData() {
     final Joiner on = Joiner.on("");
-    return DataType.STRING_DELIMITER + on.join(DataTypeUtil.randoms(type, len)) + DataType.STRING_DELIMITER;
+    return DataType.STRING_DELIMITER + on.join(DataTypeUtil.randomSize(type, len)) + DataType.STRING_DELIMITER;
   }
 
   @Override

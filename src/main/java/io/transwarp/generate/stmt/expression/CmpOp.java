@@ -86,7 +86,7 @@ public enum CmpOp implements Function {
 
   private static final GenerationDataType[] Thr_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
   private static final GenerationDataType[] TWO_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
-  private static final GenerationDataType[] IN_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_LIST};
+  public static final GenerationDataType[] IN_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_LIST};
   private static final GenerationDataType[] ONE_ALL_OPS = {DataTypeGroup.ALL_GROUP};
 
   private final String operator;

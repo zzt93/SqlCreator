@@ -36,6 +36,7 @@ public class SelectResultTest {
 
   @Parameterized.Parameters
   public static InputRelation[] data() {
+//    return InputRelation.values();
     return new InputRelation[]{InputRelation.SAME};
   }
 

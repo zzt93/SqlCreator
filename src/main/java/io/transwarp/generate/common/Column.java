@@ -3,6 +3,7 @@ package io.transwarp.generate.common;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
+import io.transwarp.generate.type.DataTypeUtil;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**
@@ -32,8 +33,11 @@ public class Column {
     this(table.name().isPresent() ? table.name().get() + "." + name : name, type);
   }
 
-  public String getNameOrConst(Dialect dialect) {
-    return poss.chooseFirst(operand.sql(dialect).toString(), operand.getType().randomData());
+  public String[] getNameOrConst(Dialect[] dialects) {
+    if (poss.chooseFirst(true, false)) {
+      return operand.sqls();
+    }
+    return DataTypeUtil.randoms(operand.getType(), dialects.length);
   }
 
   public GenerationDataType getType() {

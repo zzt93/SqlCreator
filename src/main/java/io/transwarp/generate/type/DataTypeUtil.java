@@ -14,11 +14,19 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DataTypeUtil {
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
-  static List<String> randoms(GenerationDataType type, int max) {
-    int times = random.nextInt(max) + 1;
+  static List<String> randomSize(GenerationDataType type, int maxSize) {
+    int times = random.nextInt(maxSize) + 1;
     List<String> res = new ArrayList<>(times);
     for (int i = 0; i < times; i++) {
       res.add(type.randomData());
+    }
+    return res;
+  }
+
+  public static String[] randoms(GenerationDataType type, int size) {
+    String[] res = new String[size];
+    for (int i = 0; i < size; i++) {
+      res[i] = type.randomData();
     }
     return res;
   }

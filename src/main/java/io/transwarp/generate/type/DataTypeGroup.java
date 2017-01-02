@@ -67,6 +67,10 @@ public enum DataTypeGroup implements GenerationDataType {
 
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
+  public static GenerationDataType sameGroupRandom(GenerationDataType type) {
+    return groupOf(type).randomType();
+  }
+
   public static DataTypeGroup groupOf(GenerationDataType type) {
     for (DataTypeGroup dataTypeGroup : values()) {
       // different group behaviour differently here
@@ -111,7 +115,14 @@ public enum DataTypeGroup implements GenerationDataType {
       if (i == 0) {
         return type;
       }
-      NUM_GROUP.types.get(random.nextInt(i));
+      NUM_GROUP.types.get(random.nextInt(i + 1));
+    }
+    return type;
+  }
+
+  public static GenerationDataType extractRawType(GenerationDataType type) {
+    if (LIST_GROUP.contains(type)) {
+      return ((ListDataType) type).getType();
     }
     return type;
   }
@@ -140,7 +151,6 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public GenerationDataType randomType() {
-    // TODO 12/16/16 whether to keep bit, char, unicode?
     return types.get(random.nextInt(typeCount));
   }
 

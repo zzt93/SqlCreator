@@ -20,7 +20,7 @@ import io.transwarp.generate.type.GenerationDataType;
  *
  * @see FunctionMap#random(GenerationDataType, UDFChooseOption)
  * @see io.transwarp.generate.config.InputRelation#refine(GenerationDataType[])
- * @see Operand#makeOperand(GenerationDataType, Table, int)
+ * @see Operand#makeOperand(GenerationDataType, Table, int, boolean)
  */
 public interface Function {
 
@@ -31,7 +31,7 @@ public interface Function {
 
   /**
    * <li> update sql</li>
-   * <li> update type -- set at {@link Operand#makeOperand(GenerationDataType, Table, int)}</li>
+   * <li> update type -- set at {@link Operand#makeOperand(GenerationDataType, Table, int, boolean)}</li>
    *
    * @param dialect used when different dialect has different ways to apply
    * @param input   parameter
@@ -41,11 +41,13 @@ public interface Function {
   Operand apply(Dialect dialect, Operand... input);
 
   /**
+   * todo may change return type to add the restriction between inputs, i.e. specify input relation for each function
    * sometimes, the result type depend on input type, like {@link ArithOp},
    * by using the parameter, we can avoid overloading manually
    *
    * @return the input types that can produce result type
    * @see ArithOp
+   * @see io.transwarp.generate.config.InputRelation
    */
   GenerationDataType[] inputTypes(GenerationDataType resultType);
 }

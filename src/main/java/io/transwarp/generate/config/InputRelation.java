@@ -1,5 +1,6 @@
 package io.transwarp.generate.config;
 
+import io.transwarp.generate.stmt.expression.CmpOp;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -16,21 +17,45 @@ public enum InputRelation {
   SAME {
     @Override
     GenerationDataType[] same(GenerationDataType[] original) {
-      GenerationDataType[] res  = new GenerationDataType[original.length];
+      GenerationDataType[] res = new GenerationDataType[original.length];
       final GenerationDataType type = DataTypeGroup.smallerType(original[0]);
       Arrays.fill(res, type);
       return res;
     }
+
+    @Override
+    GenerationDataType[] diff(GenerationDataType[] original) {
+      if (original == CmpOp.IN_OPS) {
+        final GenerationDataType smallList = DataTypeGroup.smallerType(original[1]);
+        return new GenerationDataType[]{DataTypeGroup.extractRawType(smallList), smallList};
+      } else {
+        return super.diff(original);
+      }
+    }
+
   },
   GROUP {
     @Override
     GenerationDataType[] same(GenerationDataType[] original) {
       final GenerationDataType[] res = new GenerationDataType[original.length];
+      // TODO 1/2/17 special handle for ListGroup?
       final DataTypeGroup group = DataTypeGroup.smallerGroup(original[0]);
       for (int i = 0; i < res.length; i++) {
         res[i] = group.randomType();
       }
       return res;
+    }
+
+    @Override
+    GenerationDataType[] diff(GenerationDataType[] original) {
+      if (original == CmpOp.IN_OPS) {
+        final GenerationDataType smallList = DataTypeGroup.smallerType(original[1]);
+        return new GenerationDataType[]{
+            DataTypeGroup.sameGroupRandom(DataTypeGroup.extractRawType(smallList)),
+            smallList};
+      } else {
+        return super.diff(original);
+      }
     }
   },
   RANDOM {
@@ -42,6 +67,11 @@ public enum InputRelation {
       }
       return res;
     }
+
+    @Override
+    GenerationDataType[] diff(GenerationDataType[] original) {
+      return same(original);
+    }
   };
 
 
@@ -49,9 +79,9 @@ public enum InputRelation {
 
   /**
    * make original group type into compound type or meta data type
+   *
    * @param original may be group type
    * @return exact type
-   *
    * @see io.transwarp.generate.type.CompoundDataType
    * @see io.transwarp.generate.type.DataType
    */
@@ -65,7 +95,7 @@ public enum InputRelation {
     return diff(original);
   }
 
-  private GenerationDataType[] diff(GenerationDataType[] original) {
+  GenerationDataType[] diff(GenerationDataType[] original) {
     GenerationDataType[] res = new GenerationDataType[original.length];
     for (int i = 0; i < original.length; i++) {
       res[i] = DataTypeGroup.smallerType(original[i]);
@@ -73,7 +103,7 @@ public enum InputRelation {
     return res;
   }
 
-  boolean allSame(GenerationDataType[] types) {
+  private boolean allSame(GenerationDataType[] types) {
     for (GenerationDataType type : types) {
       if (!type.equals(types[0])) {
         return false;
