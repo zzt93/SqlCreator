@@ -8,7 +8,7 @@ import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.stmt.ContainSubQuery;
-import io.transwarp.generate.stmt.select.SelectResIter;
+import io.transwarp.generate.stmt.select.QueryGenerator;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
@@ -111,21 +111,9 @@ public class Operand implements ContainSubQuery {
 
   @Override
   public void replaceWithSimpleQuery(int queryDepth) {
-    final SelectResIter resIter = new SelectResIter(queryDepth);
+    final QueryGenerator generator = new QueryGenerator(queryDepth, 1);
     for (Dialect dialect : Config.getBaseCmp()) {
-      replaceAll(dialect, ListDataType.SUB_QUERY_TO_REPLACE, resIter);
-      resIter.reset();
-    }
-  }
-
-  private void replaceAll(Dialect dialect, String from, SelectResIter to) {
-    final StringBuilder builder = versions.get(dialect);
-    int index = builder.indexOf(from);
-    while (index != -1) {
-      final String next = to.next(1, dialect);
-      builder.replace(index, index + from.length(), next);
-      index += next.length(); // Move to the end of the replacement
-      index = builder.indexOf(from, index);
+      generator.replaceAll(versions.get(dialect), dialect, ListDataType.SUB_QUERY_TO_REPLACE);
     }
   }
 
