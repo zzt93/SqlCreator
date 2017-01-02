@@ -75,7 +75,7 @@ public enum InceptorType implements DBType {
   DATE {
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      return DataType.DATE;
+      return DataType.UNIX_DATE;
     }
   },
   TIMESTAMP {

@@ -164,7 +164,7 @@ public enum DateOp implements Function {
     @Override
     public void register() {
       FunctionMap.register(this, DataType.INT);
-      FunctionMap.register(this, DataType.LONG);
+      FunctionMap.register(this, DataTypeGroup.INT_GROUP);
     }
 
     @Override

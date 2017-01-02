@@ -17,7 +17,7 @@ public class TableUtilTest {
   public void randomCol() throws Exception {
     final Table table = DDLParser.getTable()[0];
     assertTrue(TableUtil.sameTypeRandomCol(table, DataType.DECIMAL).isPresent());
-    assertTrue(TableUtil.sameTypeRandomCol(table, DataType.DATE).isPresent());
+    assertTrue(TableUtil.sameTypeRandomCol(table, DataType.UNIX_DATE).isPresent());
     assertTrue(TableUtil.sameTypeRandomCol(table, SequenceDataType.CHARS).isPresent());
     assertTrue(!TableUtil.sameTypeRandomCol(table, DataType.BOOL).isPresent());
   }

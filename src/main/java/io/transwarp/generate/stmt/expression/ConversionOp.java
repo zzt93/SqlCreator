@@ -43,7 +43,7 @@ public enum ConversionOp implements Function {
         case LIST_GROUP:
 
         case DATE_GROUP:
-          input = (resultType == DataType.DATE ? DataType.TIMESTAMP : DataType.DATE);
+          input = (resultType == DataType.UNIX_DATE ? DataType.TIMESTAMP : DataType.UNIX_DATE);
           break;
         case ALL_GROUP:
         case NUM_GROUP:

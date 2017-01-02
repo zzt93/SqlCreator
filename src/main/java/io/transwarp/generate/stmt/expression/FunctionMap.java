@@ -53,6 +53,7 @@ public class FunctionMap {
     ArrayList<Function> functions = share.get(larger);
     while (functions == null) {
       // handle group type
+      // TODO 1/2/17 not right to use larger group, should use smaller
       larger = DataTypeGroup.largerGroup(larger);
       functions = share.get(larger);
     }

@@ -1,9 +1,9 @@
 package io.transwarp.db_specific;
 
 import io.transwarp.db_specific.base.DBType;
-import io.transwarp.generate.type.SequenceDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.type.SequenceDataType;
 
 /**
  * Created by zzt on 12/7/16.
@@ -51,10 +51,13 @@ public enum OracleType implements DBType {
       return DataType.LONG;
     }
   },
+  /**
+   * (full) year must be between -4713 and +9999, and not be 0
+   */
   DATE {
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      return DataType.DATE;
+      return DataType.UNIX_DATE;
     }
   },
   BINARY_FLOAT {

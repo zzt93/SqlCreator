@@ -76,8 +76,8 @@ public class SelectResultTest {
   @Test
   public void sql() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      inceptor.println(selectResult.sql(Config.getBase()));
-      oracle.println(selectResult.sql(Config.getCmp()));
+      oracle.println(selectResult.sql(Config.getBase()));
+      inceptor.println(selectResult.sql(Config.getCmp()));
     }
   }
 

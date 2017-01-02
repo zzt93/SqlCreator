@@ -3,8 +3,9 @@ package io.transwarp.generate.type;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
+import java.util.GregorianCalendar;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -120,16 +121,16 @@ public enum DataType implements GenerationDataType {
       return integer + "." + decimal;
     }
   },
-  DATE {
+  UNIX_DATE {
     public String randomData() {
-      long l = Math.abs(random.nextLong());
+      long l = random.nextLong(DATE_MIN, DATE_MAX);
       SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);
-      return name() + STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
+      return "DATE" + STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
   },
-  DATE_STRING {
+  UNIX_DATE_STRING {
     public String randomData() {
-      long l = Math.abs(random.nextLong());
+      long l = random.nextLong(DATE_MIN, DATE_MAX);
       SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);
       return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
@@ -142,21 +143,21 @@ public enum DataType implements GenerationDataType {
   },
   TIME_STRING {
     public String randomData() {
-      long l = Math.abs(random.nextLong());
+      long l = random.nextInt();
       SimpleDateFormat sdf = new SimpleDateFormat(HH_MM_SS);
       return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
   },
   TIMESTAMP {
     public String randomData() {
-      long l = Math.abs(random.nextLong());
+      long l = random.nextLong(DATE_MIN, DATE_MAX);
       SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
       return name() + STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
   },
   TIMESTAMP_STRING {
     public String randomData() {
-      long l = Math.abs(random.nextLong());
+      long l = random.nextLong(DATE_MIN, DATE_MAX);
       SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
       return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
     }
@@ -252,10 +253,12 @@ public enum DataType implements GenerationDataType {
   public static final String YYYY_MM_DD[] = new String[]{"yyyy-MM-dd", "yyyyMMdd", "yyyy/MM/dd"};
   public static final String DEFAULT = YYYY_MM_DD[0];
   public static final String YYYY_MM_DD_HH_MM_SS = DEFAULT + " " + HH_MM_SS;
+  public static final long DATE_MAX = new GregorianCalendar(9999, Calendar.DECEMBER, 31).getTimeInMillis();
+  public static final long DATE_MIN = new GregorianCalendar(0, Calendar.JANUARY, 1).getTimeInMillis();
 
   public static final char MIN_CHAR = ' ';
   public static final char MAX_PRINTABLE = (char) 65533;
-  private static final Random random = ThreadLocalRandom.current();
+  private static final ThreadLocalRandom random = ThreadLocalRandom.current();
 
 
 }
