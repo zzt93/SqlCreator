@@ -1,6 +1,5 @@
 package io.transwarp.generate.config;
 
-import io.transwarp.generate.stmt.expression.CmpOp;
 import io.transwarp.generate.stmt.expression.Function;
 
 import java.util.HashMap;
@@ -11,9 +10,8 @@ import java.util.Map;
  * <p>
  * <h3></h3>
  */
-public class UDFFilter {
+public class UdfFilter {
 
-  private boolean moreSubQuery;
   /**
    * used to implement:
    * <li>differences between select list generation and where condition generation: aggregate function</li>
@@ -21,27 +19,13 @@ public class UDFFilter {
    */
   private Map<Function, Possibility> preference = new HashMap<>();
 
-  public UDFFilter addPreference(Function f, Possibility p) {
+  public UdfFilter addPreference(Function f, Possibility p) {
     preference.put(f, p);
     return this;
   }
 
-  public UDFFilter removePreference(Function f) {
+  UdfFilter removePreference(Function f) {
     preference.remove(f);
-    return this;
-  }
-
-  public UDFFilter subQuery(boolean moreSubQuery) {
-    if (moreSubQuery != this.moreSubQuery) {
-      if (!moreSubQuery) {
-        addPreference(CmpOp.IN, Possibility.DENY)
-            .addPreference(CmpOp.NOT_IN, Possibility.DENY)
-            .addPreference(CmpOp.EXISTS, Possibility.DENY);
-      } else {
-        removePreference(CmpOp.IN).removePreference(CmpOp.NOT_IN).removePreference(CmpOp.EXISTS);
-      }
-      this.moreSubQuery = moreSubQuery;
-    }
     return this;
   }
 

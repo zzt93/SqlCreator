@@ -1,6 +1,6 @@
 package io.transwarp.generate.stmt.expression;
 
-import io.transwarp.generate.config.UDFFilter;
+import io.transwarp.generate.config.UdfFilter;
 import io.transwarp.generate.type.CompoundDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
@@ -45,7 +45,7 @@ public class FunctionMap {
    * @see DataType
    * @see CompoundDataType
    */
-  static Function random(GenerationDataType resultType, UDFFilter udfFilter) {
+  static Function random(GenerationDataType resultType, UdfFilter udfFilter) {
     checkArgument(resultType instanceof DataType || resultType instanceof CompoundDataType);
     GenerationDataType larger = resultType;
     Functions functions = getFilteredFunctions(udfFilter, larger);
@@ -58,8 +58,12 @@ public class FunctionMap {
     return functions.get(random.nextInt(functions.size()));
   }
 
-  private static Functions getFilteredFunctions(UDFFilter udfFilter, GenerationDataType type) {
-    return share.get(type).filter(udfFilter);
+  private static Functions getFilteredFunctions(UdfFilter udfFilter, GenerationDataType type) {
+    final Functions functions = share.get(type);
+    if (functions == null) {
+      return Functions.EMPTY;
+    }
+    return functions.filter(udfFilter);
   }
 
   public static GenerationDataType resultType(Function f) {

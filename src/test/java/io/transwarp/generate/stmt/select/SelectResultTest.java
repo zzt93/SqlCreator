@@ -3,6 +3,7 @@ package io.transwarp.generate.stmt.select;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.InputRelation;
+import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.parse.sql.DDLParser;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,9 +30,10 @@ public class SelectResultTest {
   private Table from;
   private PrintWriter oracle;
   private PrintWriter inceptor;
+  private final PerGenerationConfig config;
 
   public SelectResultTest(InputRelation relation) {
-    new GlobalConfig.Builder().setInputRelation(relation).build();
+    config = new PerGenerationConfig.Builder().setInputRelation(relation).create();
   }
 
   @Parameterized.Parameters
@@ -45,7 +47,7 @@ public class SelectResultTest {
     from = DDLParser.getTable()[0];
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
-      selectResults[i] = SelectResult.selectResult();
+      selectResults[i] = SelectResult.selectResult(new PerGenerationConfig.Builder().create(), DDLParser.getTable());
     }
     oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));
@@ -54,7 +56,7 @@ public class SelectResultTest {
   @Test
   public void selectResult() throws Exception {
     for (int i = 1; i < 10; i++) {
-      final SelectResult selectResult = SelectResult.simpleQuery(i, GlobalConfig.getQueryDepth());
+      final SelectResult selectResult = SelectResult.simpleQuery(i, config.getQueryDepth());
       Assert.assertTrue(selectResult.columns().size() <= i);
     }
   }
@@ -69,7 +71,7 @@ public class SelectResultTest {
   @Test
   public void columns() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      assert selectResult.columns().size() <= from.columns().size() + GlobalConfig.getExprNumInSelect();
+      assert selectResult.columns().size() <= from.columns().size() + config.getExprNumInSelect();
     }
   }
 

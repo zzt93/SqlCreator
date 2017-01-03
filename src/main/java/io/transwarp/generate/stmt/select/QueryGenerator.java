@@ -33,6 +33,11 @@ public class QueryGenerator {
     index = 0;
   }
 
+  /**
+   * replace all `aim` in `src` with query
+   * @param src builder src
+   * @param aim string aim
+   */
   public void replaceAll(StringBuilder src, Dialect dialect, String aim) {
     int index = src.indexOf(aim);
     while (index != -1) {

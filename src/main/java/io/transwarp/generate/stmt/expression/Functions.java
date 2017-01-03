@@ -1,9 +1,8 @@
 package io.transwarp.generate.stmt.expression;
 
-import io.transwarp.generate.config.UDFFilter;
+import io.transwarp.generate.config.UdfFilter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Created by zzt on 1/3/17.
@@ -12,10 +11,16 @@ import java.util.Iterator;
  */
 public class Functions {
 
+  public static final Functions EMPTY = new Functions(0);
+
   private ArrayList<Function> functions;
 
   Functions(int i) {
     functions = new ArrayList<>(i);
+  }
+
+  private Functions(ArrayList<Function> fs) {
+    functions = fs;
   }
 
   int size() {
@@ -30,14 +35,14 @@ public class Functions {
     return functions.get(i);
   }
 
-  Functions filter(UDFFilter udfFilter) {
-    for (Iterator<Function> it = functions.iterator(); it.hasNext(); ) {
-      Function next = it.next();
-      if (!udfFilter.want(next)) {
-        it.remove();
+  Functions filter(UdfFilter udfFilter) {
+    ArrayList<Function> fs = new ArrayList<>(functions.size());
+    for (Function function : functions) {
+      if (udfFilter.want(function)) {
+        fs.add(function);
       }
     }
-    return this;
+    return new Functions(fs);
   }
 
   public boolean isEmpty() {

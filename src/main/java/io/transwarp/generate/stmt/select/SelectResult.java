@@ -5,7 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.stmt.share.Condition;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
@@ -26,26 +26,24 @@ public class SelectResult implements Table {
   private final FromStmt fromStmt;
   private final WhereStmt whereStmt;
 
-  private SelectResult(int colLimit, int joinTimes, int queryDepth, Table... src) {
-    // TODO 12/29/16 join with sub-query
-    makeFromTable(joinTimes, src);
-    selectListStmt = new SelectListStmt(from, colLimit);
-    fromStmt = new FromStmt(from, queryDepth - 1);
-    whereStmt = new WhereStmt(from, queryDepth - 1);
+
+  private SelectResult(PerGenerationConfig config, Table[] src) {
+    makeFromTable(config.getJoinTimes(), src);
+    selectListStmt = new SelectListStmt(from, config);
+    final PerGenerationConfig config1 = config.decrementQueryDepth();
+    fromStmt = new FromStmt(from, config1);
+    whereStmt = new WhereStmt(from, config1);
     // TODO 12/29/16 replace sub-query; add set operation
     addSetOp();
   }
 
-  static SelectResult selectResult(int joinTimes, int subQueryDepth, Table... src) {
-    return new SelectResult(GlobalConfig.getSelectColMax(), joinTimes, subQueryDepth, src);
-  }
-
-  public static SelectResult selectResult() {
-    return selectResult(GlobalConfig.getJoinTimes(), GlobalConfig.getQueryDepth(), DDLParser.getTable());
+  static SelectResult selectResult(PerGenerationConfig config, Table... src) {
+    return new SelectResult(config, src);
   }
 
   public static SelectResult simpleQuery(int colLimit, int subQueryDepth) {
-    return new SelectResult(colLimit, GlobalConfig.getJoinTimes(), subQueryDepth, DDLParser.getTable());
+    final PerGenerationConfig config = new PerGenerationConfig.Builder().setSelectColMax(colLimit).setQueryDepth(subQueryDepth).create();
+    return new SelectResult(config, DDLParser.getTable());
   }
 
   private void addSetOp() {
@@ -58,6 +56,7 @@ public class SelectResult implements Table {
     } else {
       makeFromTable(joinTimes - 1, src);
       // TODO 12/13/16 add join condition
+      // TODO 12/29/16 join with sub-query
 //      from = from.join(TableUtil.randomTable(src), );
     }
   }

@@ -28,7 +28,9 @@
 
     <test>
         <sql type="select">
-            <join type="non-equal"/>
+            <join>
+                <condition>=</condition>
+            </join>
         </sql>
     </test>
 

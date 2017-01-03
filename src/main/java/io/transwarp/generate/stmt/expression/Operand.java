@@ -7,6 +7,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.stmt.ContainSubQuery;
 import io.transwarp.generate.stmt.select.QueryGenerator;
 import io.transwarp.generate.type.DataTypeGroup;
@@ -43,7 +44,8 @@ public class Operand implements ContainSubQuery {
     versions.put(GlobalConfig.getCmp(), new StringBuilder(ops[1]));
   }
 
-  private static Operand makeOperand(GenerationDataType resultType, Table src, int depth, boolean moreSubQuery) {
+  private static Operand makeOperand(GenerationDataType resultType, Table src, PerGenerationConfig config) {
+    int depth = config.getUdfDepth();
     if (depth == FunctionDepth.SINGLE) {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
@@ -53,12 +55,12 @@ public class Operand implements ContainSubQuery {
         return new Operand(resultType, resultType.randomData());
       }
     } else {
-      final Function function = FunctionMap.random(resultType, GlobalConfig.getUdfChooseOption().subQuery(moreSubQuery));
+      final Function function = FunctionMap.random(resultType, config.getUdfFilter());
       final GenerationDataType[] inputs = function.inputTypes(resultType);
       Operand[] ops = new Operand[inputs.length];
-      final GenerationDataType[] nextResultType = GlobalConfig.getInputRelation().refine(inputs);
+      final GenerationDataType[] nextResultType = config.getInputRelation().refine(inputs);
       for (int i = 0; i < nextResultType.length; i++) {
-        ops[i] = makeOperand(nextResultType[i], src, depth - 1, moreSubQuery);
+        ops[i] = makeOperand(nextResultType[i], src, config.decrementUdfDepth());
       }
       function.apply(GlobalConfig.getBase(), ops);
       return function.apply(GlobalConfig.getCmp(), ops)
@@ -66,19 +68,19 @@ public class Operand implements ContainSubQuery {
     }
   }
 
-  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, int queryDepth) {
+  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, PerGenerationConfig config) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = makeOperand(resultType, src, GlobalConfig.getUdfDepth(), queryDepth > 0);
+      res[i] = makeOperand(resultType, src, config);
     }
     return res;
   }
 
-  public static Operand[] randomOperand(Table src, int num) {
+  public static Operand[] randomOperand(Table src, int num, PerGenerationConfig config) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       GenerationDataType type = TableUtil.randomCol(src).getType();
-      res[i] = makeOperand(type, src, GlobalConfig.getUdfDepth(), false);
+      res[i] = makeOperand(type, src, config);
       assert type == res[i].type;
     }
     return res;

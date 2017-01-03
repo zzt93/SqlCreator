@@ -2,7 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.UDFFilter;
+import io.transwarp.generate.config.UdfFilter;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**
@@ -18,7 +18,7 @@ import io.transwarp.generate.type.GenerationDataType;
  * <li>function</li>
  * <li>input types (more choice is better; different types is better)</li>
  *
- * @see FunctionMap#random(GenerationDataType, UDFFilter)
+ * @see FunctionMap#random(GenerationDataType, UdfFilter)
  * @see io.transwarp.generate.config.InputRelation#refine(GenerationDataType[])
  * @see Operand#makeOperand(GenerationDataType, Table, int, boolean)
  */
