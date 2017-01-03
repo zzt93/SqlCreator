@@ -63,10 +63,6 @@ public enum CmpOp implements Function {
   },
   EXISTS(" EXISTS ") {
     @Override
-    public void register() {
-    }
-
-    @Override
     public Operand apply(Dialect dialect, Operand... input) {
       input[0].sql(dialect).insert(0, toString());
       return input[0];

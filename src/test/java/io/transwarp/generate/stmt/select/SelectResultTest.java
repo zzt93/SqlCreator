@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 @RunWith(Parameterized.class)
 public class SelectResultTest {
 
-  private int count = 100;
+  private int count = 10;
   private SelectResult[] selectResults;
   private Table from;
   private PrintWriter oracle;
@@ -47,7 +47,7 @@ public class SelectResultTest {
     from = DDLParser.getTable()[0];
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
-      selectResults[i] = SelectResult.selectResult(new PerGenerationConfig.Builder().create(), DDLParser.getTable());
+      selectResults[i] = SelectResult.selectResult(config, DDLParser.getTable());
     }
     oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));

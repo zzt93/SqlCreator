@@ -70,7 +70,7 @@ public enum InputRelation {
 
     @Override
     GenerationDataType[] diff(GenerationDataType[] original) {
-      return same(original);
+      return super.diff(original);
     }
   };
 

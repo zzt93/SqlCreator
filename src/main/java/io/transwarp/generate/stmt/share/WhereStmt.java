@@ -19,7 +19,9 @@ public class WhereStmt implements SqlGeneration, ContainSubQuery {
 
   public WhereStmt(Table from, PerGenerationConfig config) {
     condition = new Condition(from, config);
-    replaceWithSimpleQuery(config.getQueryDepth());
+    if (config.hasSubQuery()) {
+      replaceWithSimpleQuery(config.getQueryDepth());
+    }
   }
 
   @Override

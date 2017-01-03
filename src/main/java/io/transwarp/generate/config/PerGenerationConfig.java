@@ -67,13 +67,17 @@ public class PerGenerationConfig {
   public PerGenerationConfig decrementQueryDepth() {
     final PerGenerationConfig config = new Builder().setQueryDepth(queryDepth - 1).create();
 
-    if (config.getQueryDepth() == 0) {
+    if (!config.hasSubQuery()) {
       config.getUdfFilter()
-          .addPreference(CmpOp.IN, Possibility.DENY)
-          .addPreference(CmpOp.NOT_IN, Possibility.DENY)
-          .addPreference(CmpOp.EXISTS, Possibility.DENY);
+          .addPreference(CmpOp.IN, Possibility.IMPOSSIBLE)
+          .addPreference(CmpOp.NOT_IN, Possibility.IMPOSSIBLE)
+          .addPreference(CmpOp.EXISTS, Possibility.IMPOSSIBLE);
     }
     return config;
+  }
+
+  public boolean hasSubQuery() {
+    return queryDepth > 0;
   }
 
   public static class Builder {
@@ -81,7 +85,7 @@ public class PerGenerationConfig {
 
     private int udfDepth = FunctionDepth.SMALL;
     private int queryDepth = 1;
-    private InputRelation inputRelation = InputRelation.RANDOM;
+    private InputRelation inputRelation = InputRelation.SAME;
     private int joinTimes = 0;
     private int selectColMax = Builder.MAX_COLS;
     private int exprNumInSelect = 1;

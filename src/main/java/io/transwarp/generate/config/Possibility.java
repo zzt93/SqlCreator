@@ -13,12 +13,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class Possibility {
 
   public static final Possibility CERTAIN = new Possibility(1);
-  public static final Possibility PREFER = new Possibility(0.90);
+  public static final Possibility PREFER = new Possibility(0.95);
   public static final Possibility NORMAL = new Possibility(0.75);
   public static final Possibility DENY = new Possibility(0.5);
   public static final Possibility IMPOSSIBLE = new Possibility(0);
 
-  public static final Possibility LIST_OR_QUERY = new Possibility(1);
+  public static final Possibility LIST_OR_QUERY = new Possibility(0.5);
   public static final Possibility SELECT_COL_POSSIBILITY = new Possibility(0.05);
   public static final Possibility NAME_CONST_POSSIBILITY = new Possibility(0.7);
 
