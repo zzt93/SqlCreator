@@ -1,7 +1,7 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
@@ -29,12 +29,12 @@ public class OperandTest {
   public void randomSameTypeOperand() throws Exception {
     final Table test = DDLParser.getTable()[0];
     for (int i = 0; i < 1000; i++) {
-      final Operand[] operands = Operand.getOperands(test, 3, testType, Config.getQueryDepth());
+      final Operand[] operands = Operand.getOperands(test, 3, testType, GlobalConfig.getQueryDepth());
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
         System.out.println(operand.getType());
-        System.out.println(operand.sql(Config.getBase()));
-        System.out.println(operand.sql(Config.getCmp()));
+        System.out.println(operand.sql(GlobalConfig.getBase()));
+        System.out.println(operand.sql(GlobalConfig.getCmp()));
         assertTrue(operand.getType().equals(type));
       }
     }

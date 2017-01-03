@@ -1,6 +1,6 @@
 package io.transwarp.parse;
 
-import io.transwarp.generate.config.*;
+import io.transwarp.generate.config.GlobalConfig;
 
 import java.io.IOException;
 
@@ -11,5 +11,5 @@ import java.io.IOException;
  */
 public interface ConfigParser {
 
-  Config parse(ParserSource source) throws ParseException, IOException;
+  GlobalConfig parse(ParserSource source) throws ParseException, IOException;
 }

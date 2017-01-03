@@ -56,7 +56,7 @@ public class TableUtil {
   public static ArrayList<Column> randomSubCols(Table from, Possibility possibility, int colLimit) {
     final ArrayList<Column> res = new ArrayList<>();
     for (Column column : from.columns()) {
-      if (possibility.chooseFirst(true, false)) {
+      if (possibility.chooseFirstOrRandom(true, false)) {
         res.add(column);
       }
       if (res.size() >= colLimit) {

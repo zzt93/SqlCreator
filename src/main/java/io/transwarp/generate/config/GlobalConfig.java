@@ -10,11 +10,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>
  * <h3></h3>
  */
-public class Config {
+public class GlobalConfig {
 
   private static int randomMaxBitLen = 64;
   private static int randomListMaxLen = 10;
   private static int randomStrMaxLen = 100;
+
+  private static Dialect cmp = Dialect.INCEPTOR;
+  private static Dialect base = Dialect.ORACLE;
 
   private static int udfDepth = FunctionDepth.SMALL;
   private static int queryDepth = 1;
@@ -23,11 +26,9 @@ public class Config {
   private static int selectColMax = MAX_COLS;
   private static int exprNumInSelect = 1;
   private static InputRelation inputRelation = InputRelation.RANDOM;
-  private static Dialect cmp = Dialect.INCEPTOR;
-  private static Dialect base = Dialect.ORACLE;
-  private static final UDFChooseOption UDF_CHOOSE_OPTION = new UDFChooseOption();
+  private static final UDFFilter UDF_CHOOSE_OPTION = new UDFFilter();
 
-  public static UDFChooseOption getUdfChooseOption() {
+  public static UDFFilter getUdfChooseOption() {
     return UDF_CHOOSE_OPTION;
   }
 
@@ -84,55 +85,55 @@ public class Config {
 
     public Builder setSelectColMax(int selectColMax) {
       checkArgument(selectColMax <= MAX_COLS);
-      Config.selectColMax = selectColMax;
+      GlobalConfig.selectColMax = selectColMax;
       return this;
     }
 
     public Builder setRandomMaxBitLen(int randomMaxBitLen) {
       checkArgument(randomMaxBitLen < 64 && randomMaxBitLen > 0);
-      Config.randomMaxBitLen = randomMaxBitLen;
+      GlobalConfig.randomMaxBitLen = randomMaxBitLen;
       return this;
     }
 
     public Builder setRandomListMaxLen(int randomListMaxLen) {
       checkArgument(randomListMaxLen > 0);
-      Config.randomListMaxLen = randomListMaxLen;
+      GlobalConfig.randomListMaxLen = randomListMaxLen;
       return this;
     }
 
     public Builder setRandomStrMaxLen(int randomStrMaxLen) {
       checkArgument(randomStrMaxLen > 0);
-      Config.randomStrMaxLen = randomStrMaxLen;
+      GlobalConfig.randomStrMaxLen = randomStrMaxLen;
       return this;
     }
 
     public Builder setUdfDepth(int udfDepth) {
       checkArgument(udfDepth >= 0 && udfDepth < 10);
-      Config.udfDepth = udfDepth;
+      GlobalConfig.udfDepth = udfDepth;
       return this;
     }
 
     public Builder setSubQueryDepth(int subQueryDepth) {
       checkArgument(subQueryDepth >= 0 && subQueryDepth < 10);
-      Config.queryDepth = subQueryDepth;
+      GlobalConfig.queryDepth = subQueryDepth;
       return this;
     }
 
     public Builder setInputRelation(InputRelation inputRelation) {
       checkNotNull(inputRelation);
-      Config.inputRelation = inputRelation;
+      GlobalConfig.inputRelation = inputRelation;
       return this;
     }
 
     public Builder setDialect(Dialect dialect) {
       checkNotNull(dialect);
-      Config.cmp = dialect;
+      GlobalConfig.cmp = dialect;
       return this;
     }
 
     public Builder setBase(Dialect base) {
       checkNotNull(base);
-      Config.base = base;
+      GlobalConfig.base = base;
       return this;
     }
 

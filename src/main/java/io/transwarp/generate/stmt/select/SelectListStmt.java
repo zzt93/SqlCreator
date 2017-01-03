@@ -5,7 +5,7 @@ import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
 
@@ -27,14 +27,14 @@ public class SelectListStmt implements SqlGeneration {
   SelectListStmt(Table from, int colLimit) {
     cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
     if (cols.size() < colLimit) {
-      final int num = Math.min(colLimit - cols.size(), Config.getExprNumInSelect());
+      final int num = Math.min(colLimit - cols.size(), GlobalConfig.getExprNumInSelect());
       cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, num))));
     }
   }
 
   private SelectListStmt(Table from, Possibility possibility) {
     cols = TableUtil.randomSubCols(from, possibility);
-    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, Config.getExprNumInSelect()))));
+    cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, GlobalConfig.getExprNumInSelect()))));
   }
 
   ArrayList<Column> getCols() {

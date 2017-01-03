@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.GlobalConfig;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class FromObj implements Table {
       // update columns
       columns.addAll(table.columns());
       // update sql
-      final Dialect base = Config.getBase();
+      final Dialect base = GlobalConfig.getBase();
       sql(base)
           .append(" join ")
           .append(table.sql(base))

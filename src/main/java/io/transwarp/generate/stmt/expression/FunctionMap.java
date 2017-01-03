@@ -1,12 +1,11 @@
 package io.transwarp.generate.stmt.expression;
 
-import io.transwarp.generate.config.UDFChooseOption;
+import io.transwarp.generate.config.UDFFilter;
 import io.transwarp.generate.type.CompoundDataType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class FunctionMap {
 
-  private static final ConcurrentHashMap<GenerationDataType, ArrayList<Function>> share = new ConcurrentHashMap<>(20);
+  private static final ConcurrentHashMap<GenerationDataType, Functions> share = new ConcurrentHashMap<>(20);
   private static final ConcurrentHashMap<Function, GenerationDataType> reverse = new ConcurrentHashMap<>(200);
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
@@ -27,11 +26,11 @@ public class FunctionMap {
     reverse.put(f, resultType);
 
     // TODO 12/14/16 handle list type
-    final ArrayList<Function> val;
+    final Functions val;
     if (share.containsKey(resultType)) {
       val = share.get(resultType);
     } else {
-      val = new ArrayList<>(30);
+      val = new Functions(30);
       share.put(resultType, val);
     }
     val.add(f);
@@ -40,24 +39,27 @@ public class FunctionMap {
   /**
    * find exact data type's conversion function
    * @param resultType a {@link DataType} or {@link CompoundDataType}
-   * @param udfChooseOption option to prefer some udf
+   * @param udfFilter options to prefer some udf
    * @return conversion function
    *
    * @see DataType
    * @see CompoundDataType
    */
-  static Function random(GenerationDataType resultType, UDFChooseOption udfChooseOption) {
-    // TODO 12/26/16 add some strategy to differ possibility
+  static Function random(GenerationDataType resultType, UDFFilter udfFilter) {
     checkArgument(resultType instanceof DataType || resultType instanceof CompoundDataType);
     GenerationDataType larger = resultType;
-    ArrayList<Function> functions = share.get(larger);
-    while (functions == null) {
+    Functions functions = getFilteredFunctions(udfFilter, larger);
+    while (functions.isEmpty()) {
       // handle group type
       // TODO 1/2/17 not right to use larger group, should use smaller
       larger = DataTypeGroup.largerGroup(larger);
-      functions = share.get(larger);
+      functions = getFilteredFunctions(udfFilter, larger);
     }
     return functions.get(random.nextInt(functions.size()));
+  }
+
+  private static Functions getFilteredFunctions(UDFFilter udfFilter, GenerationDataType type) {
+    return share.get(type).filter(udfFilter);
   }
 
   public static GenerationDataType resultType(Function f) {

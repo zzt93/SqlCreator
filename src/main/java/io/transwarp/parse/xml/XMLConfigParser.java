@@ -1,6 +1,6 @@
 package io.transwarp.parse.xml;
 
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.parse.ConfigParser;
 import io.transwarp.parse.ParseException;
 import io.transwarp.parse.ParserSource;
@@ -71,7 +71,7 @@ public class XMLConfigParser implements ConfigParser {
   }
 
   @Override
-  public Config parse(ParserSource source) throws ParseException, IOException {
+  public GlobalConfig parse(ParserSource source) throws ParseException, IOException {
     parseXML(source.getSource());
     return null;
   }

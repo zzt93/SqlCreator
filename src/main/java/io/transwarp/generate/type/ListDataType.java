@@ -1,7 +1,7 @@
 package io.transwarp.generate.type;
 
 import com.google.common.base.Joiner;
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.Possibility;
 
 /**
@@ -10,8 +10,8 @@ import io.transwarp.generate.config.Possibility;
  * <h3></h3>
  */
 public class ListDataType extends SequenceDataType {
-  public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, Config.getRandomListMaxLen());
-  public static final GenerationDataType ALL_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_GROUP, Config.getRandomListMaxLen(), Possibility.IMPOSSIBLE);
+  public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, GlobalConfig.getRandomListMaxLen());
+  public static final GenerationDataType ALL_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_GROUP, GlobalConfig.getRandomListMaxLen(), Possibility.IMPOSSIBLE);
   public static final String SUB_QUERY_TO_REPLACE = "one-column-sub-query-to-replace";
   private final Possibility listPossibility;
 
@@ -26,7 +26,7 @@ public class ListDataType extends SequenceDataType {
 
   @Override
   public String randomData() {
-    if (listPossibility.chooseFirst(true, false)) {
+    if (listPossibility.chooseFirstOrRandom(true, false)) {
       final Joiner on = Joiner.on(", ");
       final StringBuilder sql = on.appendTo(new StringBuilder("("), DataTypeUtil.randomSize(getType(), getLen()));
       return sql.append(')').toString();

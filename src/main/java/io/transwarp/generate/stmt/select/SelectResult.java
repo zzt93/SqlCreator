@@ -5,7 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.stmt.share.Condition;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
@@ -37,15 +37,15 @@ public class SelectResult implements Table {
   }
 
   static SelectResult selectResult(int joinTimes, int subQueryDepth, Table... src) {
-    return new SelectResult(Config.getSelectColMax(), joinTimes, subQueryDepth, src);
+    return new SelectResult(GlobalConfig.getSelectColMax(), joinTimes, subQueryDepth, src);
   }
 
   public static SelectResult selectResult() {
-    return selectResult(Config.getJoinTimes(), Config.getQueryDepth(), DDLParser.getTable());
+    return selectResult(GlobalConfig.getJoinTimes(), GlobalConfig.getQueryDepth(), DDLParser.getTable());
   }
 
   public static SelectResult simpleQuery(int colLimit, int subQueryDepth) {
-    return new SelectResult(colLimit, Config.getJoinTimes(), subQueryDepth, DDLParser.getTable());
+    return new SelectResult(colLimit, GlobalConfig.getJoinTimes(), subQueryDepth, DDLParser.getTable());
   }
 
   private void addSetOp() {

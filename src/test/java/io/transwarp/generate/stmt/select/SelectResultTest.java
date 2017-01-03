@@ -1,7 +1,7 @@
 package io.transwarp.generate.stmt.select;
 
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.Config;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.InputRelation;
 import io.transwarp.parse.sql.DDLParser;
 import org.junit.After;
@@ -31,7 +31,7 @@ public class SelectResultTest {
   private PrintWriter inceptor;
 
   public SelectResultTest(InputRelation relation) {
-    new Config.Builder().setInputRelation(relation).build();
+    new GlobalConfig.Builder().setInputRelation(relation).build();
   }
 
   @Parameterized.Parameters
@@ -54,7 +54,7 @@ public class SelectResultTest {
   @Test
   public void selectResult() throws Exception {
     for (int i = 1; i < 10; i++) {
-      final SelectResult selectResult = SelectResult.simpleQuery(i, Config.getQueryDepth());
+      final SelectResult selectResult = SelectResult.simpleQuery(i, GlobalConfig.getQueryDepth());
       Assert.assertTrue(selectResult.columns().size() <= i);
     }
   }
@@ -69,15 +69,15 @@ public class SelectResultTest {
   @Test
   public void columns() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      assert selectResult.columns().size() <= from.columns().size() + Config.getExprNumInSelect();
+      assert selectResult.columns().size() <= from.columns().size() + GlobalConfig.getExprNumInSelect();
     }
   }
 
   @Test
   public void sql() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      oracle.println(selectResult.sql(Config.getBase()));
-      inceptor.println(selectResult.sql(Config.getCmp()));
+      oracle.println(selectResult.sql(GlobalConfig.getBase()));
+      inceptor.println(selectResult.sql(GlobalConfig.getCmp()));
     }
   }
 

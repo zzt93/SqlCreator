@@ -34,7 +34,7 @@ public class Column {
   }
 
   public String[] getNameOrConst(Dialect[] dialects) {
-    if (poss.chooseFirst(true, false)) {
+    if (poss.chooseFirstOrRandom(true, false)) {
       return operand.sqls();
     }
     return DataTypeUtil.randoms(operand.getType(), dialects.length);

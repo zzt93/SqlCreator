@@ -5,8 +5,8 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.Config;
 import io.transwarp.generate.config.FunctionDepth;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.stmt.ContainSubQuery;
 import io.transwarp.generate.stmt.select.QueryGenerator;
 import io.transwarp.generate.type.DataTypeGroup;
@@ -39,8 +39,8 @@ public class Operand implements ContainSubQuery {
 
   public Operand(GenerationDataType type, String... ops) {
     this.type = type;
-    versions.put(Config.getBase(), new StringBuilder(ops[0]));
-    versions.put(Config.getCmp(), new StringBuilder(ops[1]));
+    versions.put(GlobalConfig.getBase(), new StringBuilder(ops[0]));
+    versions.put(GlobalConfig.getCmp(), new StringBuilder(ops[1]));
   }
 
   private static Operand makeOperand(GenerationDataType resultType, Table src, int depth, boolean moreSubQuery) {
@@ -48,20 +48,20 @@ public class Operand implements ContainSubQuery {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
         final Column column = col.get();
-        return new Operand(resultType, column.getNameOrConst(Config.getBaseCmp()));
+        return new Operand(resultType, column.getNameOrConst(GlobalConfig.getBaseCmp()));
       } else {
         return new Operand(resultType, resultType.randomData());
       }
     } else {
-      final Function function = FunctionMap.random(resultType, Config.getUdfChooseOption().setMoreSubQuery(moreSubQuery));
+      final Function function = FunctionMap.random(resultType, GlobalConfig.getUdfChooseOption().subQuery(moreSubQuery));
       final GenerationDataType[] inputs = function.inputTypes(resultType);
       Operand[] ops = new Operand[inputs.length];
-      final GenerationDataType[] nextResultType = Config.getInputRelation().refine(inputs);
+      final GenerationDataType[] nextResultType = GlobalConfig.getInputRelation().refine(inputs);
       for (int i = 0; i < nextResultType.length; i++) {
         ops[i] = makeOperand(nextResultType[i], src, depth - 1, moreSubQuery);
       }
-      function.apply(Config.getBase(), ops);
-      return function.apply(Config.getCmp(), ops)
+      function.apply(GlobalConfig.getBase(), ops);
+      return function.apply(GlobalConfig.getCmp(), ops)
           .setType(resultType);
     }
   }
@@ -69,7 +69,7 @@ public class Operand implements ContainSubQuery {
   public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, int queryDepth) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = makeOperand(resultType, src, Config.getUdfDepth(), queryDepth > 0);
+      res[i] = makeOperand(resultType, src, GlobalConfig.getUdfDepth(), queryDepth > 0);
     }
     return res;
   }
@@ -78,7 +78,7 @@ public class Operand implements ContainSubQuery {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       GenerationDataType type = TableUtil.randomCol(src).getType();
-      res[i] = makeOperand(type, src, Config.getUdfDepth(), false);
+      res[i] = makeOperand(type, src, GlobalConfig.getUdfDepth(), false);
       assert type == res[i].type;
     }
     return res;
@@ -121,7 +121,7 @@ public class Operand implements ContainSubQuery {
   @Override
   public void replaceWithSimpleQuery(int queryDepth) {
     final QueryGenerator generator = new QueryGenerator(queryDepth, 1);
-    for (Dialect dialect : Config.getBaseCmp()) {
+    for (Dialect dialect : GlobalConfig.getBaseCmp()) {
       generator.replaceAll(versions.get(dialect), dialect, ListDataType.SUB_QUERY_TO_REPLACE);
     }
   }
