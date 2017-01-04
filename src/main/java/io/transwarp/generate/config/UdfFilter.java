@@ -17,9 +17,16 @@ public class UdfFilter {
    * <li>differences between select list generation and where condition generation: aggregate function</li>
    * <li>specific function requirement: non-equal join; no sub-query</li>
    */
-  private Map<Function, Possibility> preference = new HashMap<>();
+  private final Map<Function, Possibility> preference = new HashMap<>();
 
-  public UdfFilter addPreference(Function f, Possibility p) {
+  UdfFilter(UdfFilter udfFilter) {
+    preference.putAll(udfFilter.preference);
+  }
+
+  UdfFilter() {
+  }
+
+  UdfFilter addPreference(Function f, Possibility p) {
     preference.put(f, p);
     return this;
   }

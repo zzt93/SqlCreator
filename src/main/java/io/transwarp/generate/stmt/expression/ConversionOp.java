@@ -67,7 +67,7 @@ public enum ConversionOp implements Function {
   LIST("(") {
     @Override
     public void register() {
-      FunctionMap.register(this, DataTypeGroup.LIST_GROUP);
+      FunctionMap.register(this, ListDataType.ALL_LIST);
     }
 
     @Override
@@ -88,7 +88,23 @@ public enum ConversionOp implements Function {
       Arrays.fill(res, type);
       return res;
     }
-  };
+  },
+  SUB_QUERY("(") {
+    @Override
+    public void register() {
+      FunctionMap.register(this, ListDataType.ALL_ONE_COL_QUERY);
+    }
+
+    @Override
+    public Operand apply(Dialect dialect, Operand... input) {
+      return input[0];
+    }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[]{ListDataType.ALL_ONE_COL_QUERY};
+    }
+  },;
 
 
   final String op;

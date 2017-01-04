@@ -21,4 +21,8 @@ public abstract class CompoundDataType implements GenerationDataType {
   public abstract String getMin();
 
   abstract CompoundDataType smallerCompoundType();
-}
+
+  public abstract boolean equals(Object o);
+  public abstract int hashCode();
+
+  }

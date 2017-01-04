@@ -8,8 +8,6 @@ import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.PerGenerationConfig;
-import io.transwarp.generate.stmt.ContainSubQuery;
-import io.transwarp.generate.stmt.select.QueryGenerator;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
@@ -25,7 +23,7 @@ import java.util.EnumMap;
  * <br>operation</br>
  * <br>result</br>
  */
-public class Operand implements ContainSubQuery {
+public class Operand {
   /**
    * use @see DataTypeGeneration for this type is for generation
    * and should isolate from the specific sql dialect
@@ -52,6 +50,9 @@ public class Operand implements ContainSubQuery {
         final Column column = col.get();
         return new Operand(resultType, column.getNameOrConst(GlobalConfig.getBaseCmp()));
       } else {
+        if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
+          return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getBaseCmp(), resultType));
+        }
         return new Operand(resultType, resultType.randomData());
       }
     } else {
@@ -118,14 +119,6 @@ public class Operand implements ContainSubQuery {
   public Operand setType(GenerationDataType type) {
     this.type = type;
     return this;
-  }
-
-  @Override
-  public void replaceWithSimpleQuery(int queryDepth) {
-    final QueryGenerator generator = new QueryGenerator(queryDepth, 1);
-    for (Dialect dialect : GlobalConfig.getBaseCmp()) {
-      generator.replaceAll(versions.get(dialect), dialect, ListDataType.SUB_QUERY_TO_REPLACE);
-    }
   }
 
 }

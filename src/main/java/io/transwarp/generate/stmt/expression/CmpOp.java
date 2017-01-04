@@ -55,10 +55,16 @@ public enum CmpOp implements Function {
     }
 
   },
-  IN(" IN ") {
+  IN_LIST(" IN ") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return IN_OPS;
+      return IN_LIST_OPS;
+    }
+  },
+  IN_QUERY(" IN ") {
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return IN_QUERY_OPS;
     }
   },
   EXISTS(" EXISTS ") {
@@ -73,16 +79,23 @@ public enum CmpOp implements Function {
       return new GenerationDataType[]{ListDataType.ALL_ONE_COL_QUERY};
     }
   },
-  NOT_IN(" NOT IN ") {
+  NOT_IN_LIST(" NOT IN ") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return IN_OPS;
+      return IN_LIST_OPS;
+    }
+  },
+  NOT_IN_QUERY(" NOT IN ") {
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return IN_QUERY_OPS;
     }
   };
 
   private static final GenerationDataType[] Thr_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
   private static final GenerationDataType[] TWO_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
-  public static final GenerationDataType[] IN_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_LIST};
+  public static final GenerationDataType[] IN_LIST_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_LIST};
+  public static final GenerationDataType[] IN_QUERY_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_ONE_COL_QUERY};
   private static final GenerationDataType[] ONE_ALL_OPS = {DataTypeGroup.ALL_GROUP};
 
   private final String operator;

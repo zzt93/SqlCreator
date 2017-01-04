@@ -9,7 +9,6 @@ import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.stmt.share.Condition;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
-import io.transwarp.parse.sql.DDLParser;
 
 import java.util.ArrayList;
 
@@ -27,23 +26,22 @@ public class SelectResult implements Table {
   private final WhereStmt whereStmt;
 
 
-  private SelectResult(PerGenerationConfig config, Table[] src) {
-    makeFromTable(config.getJoinTimes(), src);
-    selectListStmt = new SelectListStmt(from, config);
-    final PerGenerationConfig config1 = config.decrementQueryDepth();
-    fromStmt = new FromStmt(from, config1);
-    whereStmt = new WhereStmt(from, config1);
+  private SelectResult(PerGenerationConfig config) {
+    makeFromTable(config.getJoinTimes(), config.getSrc());
+    final PerGenerationConfig newConfig = config.decrementQueryDepth();
+    selectListStmt = new SelectListStmt(from, newConfig);
+    fromStmt = new FromStmt(from, newConfig);
+    whereStmt = new WhereStmt(from, newConfig);
     // TODO 12/29/16 replace sub-query; add set operation
     addSetOp();
   }
 
   static SelectResult selectResult(PerGenerationConfig config, Table... src) {
-    return new SelectResult(config, src);
+    return new SelectResult(config);
   }
 
-  public static SelectResult simpleQuery(int colLimit, int subQueryDepth) {
-    final PerGenerationConfig config = new PerGenerationConfig.Builder().setSelectColMax(colLimit).setQueryDepth(subQueryDepth).create();
-    return new SelectResult(config, DDLParser.getTable());
+  public static SelectResult simpleQuery(PerGenerationConfig config) {
+    return new SelectResult(config);
   }
 
   private void addSetOp() {
@@ -92,8 +90,15 @@ public class SelectResult implements Table {
         .append(";");
   }
 
+  public String[] sqls(Dialect[] dialects) {
+    String[] res = new String[dialects.length];
+    for (int i = 0; i < res.length; i++) {
+      res[i] = sql(dialects[i]).toString();
+    }
+    return res;
+  }
+
 
   // TODO 12/12/16 conversion to operand when only one row one column and requested
-  // TODO 12/12/16 conversion to list when only one column and requested
 
 }

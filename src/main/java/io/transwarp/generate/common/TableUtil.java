@@ -30,8 +30,12 @@ public class TableUtil {
     return Optional.of(cols.get(random.nextInt(cols.size())));
   }
 
-  public static ArrayList<Column> randomSubCols(Table table, Possibility possibility) {
-    return randomSubCols(table, possibility, Integer.MAX_VALUE);
+  public static ArrayList<Column> randomSubCols(Table table, int size) {
+    final ArrayList<Column> res = new ArrayList<>(size);
+    while (res.size() < size) {
+      res.add(randomCol(table));
+    }
+    return res;
   }
 
   public static ArrayList<Column> sameTypeSubCols(Table table, GenerationDataType type) {
@@ -49,6 +53,7 @@ public class TableUtil {
   }
 
   private static AtomicLong atomicLong = new AtomicLong(0);
+
   public static String nextAlias() {
     return "alias" + atomicLong.getAndAdd(1);
   }

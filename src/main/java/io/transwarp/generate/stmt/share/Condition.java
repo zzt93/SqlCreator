@@ -4,7 +4,6 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.PerGenerationConfig;
-import io.transwarp.generate.stmt.ContainSubQuery;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
@@ -14,7 +13,7 @@ import io.transwarp.generate.type.GenerationDataType;
  * <p>
  * <h3></h3>
  */
-public class Condition implements SqlGeneration, ContainSubQuery {
+public class Condition implements SqlGeneration {
 
   private static final GenerationDataType type = DataType.BOOL;
   private final Operand condition;
@@ -29,8 +28,4 @@ public class Condition implements SqlGeneration, ContainSubQuery {
     return condition.sql(dialect);
   }
 
-  @Override
-  public void replaceWithSimpleQuery(int queryDepth) {
-    condition.replaceWithSimpleQuery(queryDepth);
-  }
 }

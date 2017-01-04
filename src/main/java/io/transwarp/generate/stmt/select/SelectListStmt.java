@@ -8,6 +8,7 @@ import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
+import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,13 +21,22 @@ import java.util.Arrays;
 public class SelectListStmt implements SqlGeneration {
   private ArrayList<Column> cols;
 
-   SelectListStmt(Table from, PerGenerationConfig config) {
-     final int colLimit = config.getSelectColMax();
-     cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
+  SelectListStmt(Table from, PerGenerationConfig config) {
+    final int colLimit = config.getSelectColMax();
+    if (config.hasResultLimit()) {
+      final GenerationDataType[] results = config.getResults();
+      cols = new ArrayList<>(config.getSelectColMax());
+      for (GenerationDataType result : results) {
+        cols.addAll(Arrays.asList(Column.fromOperand(Operand.getOperands(from, 1, result, config))));
+      }
+      cols.addAll(TableUtil.randomSubCols(from, config.getSelectColMax() - results.length));
+    } else {
+      cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {
         final int num = Math.min(colLimit - cols.size(), config.getExprNumInSelect());
         cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, num, config))));
       }
+    }
   }
 
 

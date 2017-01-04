@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 @RunWith(Parameterized.class)
 public class SelectResultTest {
 
-  private int count = 10;
+  private int count = 1000;
   private SelectResult[] selectResults;
   private Table from;
   private PrintWriter oracle;
@@ -56,7 +56,7 @@ public class SelectResultTest {
   @Test
   public void selectResult() throws Exception {
     for (int i = 1; i < 10; i++) {
-      final SelectResult selectResult = SelectResult.simpleQuery(i, config.getQueryDepth());
+      final SelectResult selectResult = SelectResult.simpleQuery(config);
       Assert.assertTrue(selectResult.columns().size() <= i);
     }
   }

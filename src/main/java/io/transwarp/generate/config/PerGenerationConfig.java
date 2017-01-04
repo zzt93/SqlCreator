@@ -1,6 +1,11 @@
 package io.transwarp.generate.config;
 
+import io.transwarp.generate.common.Table;
 import io.transwarp.generate.stmt.expression.CmpOp;
+import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.parse.sql.DDLParser;
+
+import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -16,20 +21,29 @@ public class PerGenerationConfig {
   private int udfDepth;
   private int queryDepth;
   private InputRelation inputRelation;
-  private final UdfFilter udfFilter = new UdfFilter();
+  private UdfFilter udfFilter;
   // from
   private int joinTimes;
+  private Table[] src;
   // select
   private int selectColMax;
   private int exprNumInSelect;
+  private GenerationDataType[] results;
 
-  private PerGenerationConfig(int udfDepth, int queryDepth, int joinTimes, int selectColMax, int exprNumInSelect, InputRelation inputRelation) {
+
+  private PerGenerationConfig(int udfDepth, int queryDepth, int joinTimes,
+                              int selectColMax, int exprNumInSelect,
+                              InputRelation inputRelation, UdfFilter udfFilter,
+                              Table[] src,
+                              GenerationDataType[] results) {
     this.udfDepth = udfDepth;
     this.queryDepth = queryDepth;
     this.joinTimes = joinTimes;
     this.selectColMax = selectColMax;
     this.exprNumInSelect = exprNumInSelect;
     this.inputRelation = inputRelation;
+    this.udfFilter = udfFilter;
+    this.results = results;
   }
 
   public int getUdfDepth() {
@@ -61,23 +75,35 @@ public class PerGenerationConfig {
   }
 
   public PerGenerationConfig decrementUdfDepth() {
-    return new Builder().setUdfDepth(udfDepth - 1).create();
+    return new Builder(this).setUdfDepth(udfDepth - 1).create();
   }
 
   public PerGenerationConfig decrementQueryDepth() {
-    final PerGenerationConfig config = new Builder().setQueryDepth(queryDepth - 1).create();
+    final PerGenerationConfig config = new Builder(this).setQueryDepth(queryDepth - 1).create();
 
     if (!config.hasSubQuery()) {
       config.getUdfFilter()
-          .addPreference(CmpOp.IN, Possibility.IMPOSSIBLE)
-          .addPreference(CmpOp.NOT_IN, Possibility.IMPOSSIBLE)
+          .addPreference(CmpOp.IN_QUERY, Possibility.IMPOSSIBLE)
+          .addPreference(CmpOp.NOT_IN_QUERY, Possibility.IMPOSSIBLE)
           .addPreference(CmpOp.EXISTS, Possibility.IMPOSSIBLE);
     }
     return config;
   }
 
-  public boolean hasSubQuery() {
+  private boolean hasSubQuery() {
     return queryDepth > 0;
+  }
+
+  public Table[] getSrc() {
+    return src;
+  }
+
+  public GenerationDataType[] getResults() {
+    return results;
+  }
+
+  public boolean hasResultLimit() {
+    return results.length > 0;
   }
 
   public static class Builder {
@@ -89,6 +115,24 @@ public class PerGenerationConfig {
     private int joinTimes = 0;
     private int selectColMax = Builder.MAX_COLS;
     private int exprNumInSelect = 1;
+    private UdfFilter udfFilter = new UdfFilter();
+    private GenerationDataType[] results = new GenerationDataType[0];
+    private Table[] src = new Table[0];
+
+    public Builder() {
+    }
+
+    public Builder(PerGenerationConfig config) {
+      udfDepth = config.udfDepth;
+      queryDepth = config.queryDepth;
+      inputRelation = config.inputRelation;
+      joinTimes = config.joinTimes;
+      selectColMax = config.selectColMax;
+      exprNumInSelect = config.exprNumInSelect;
+      udfFilter = new UdfFilter(config.udfFilter);
+      src = Arrays.copyOf(config.src, config.src.length);
+      results = Arrays.copyOf(config.results, config.results.length);
+    }
 
     public Builder setUdfDepth(int udfDepth) {
       checkArgument(udfDepth >= 0 && udfDepth < 10);
@@ -124,9 +168,31 @@ public class PerGenerationConfig {
       return this;
     }
 
+    public Builder setUdfFilter(UdfFilter udfFilter) {
+      this.udfFilter = udfFilter;
+      return this;
+    }
+
+    public Builder setResults(GenerationDataType... results) {
+      this.results = results;
+      return this;
+    }
+
+    public Builder setSrc(Table... src) {
+      this.src = src;
+      return this;
+    }
+
     public PerGenerationConfig create() {
       checkArgument(exprNumInSelect <= selectColMax, "exprNumInSelect > selectColMax");
-      return new PerGenerationConfig(udfDepth, queryDepth, joinTimes, selectColMax, exprNumInSelect, inputRelation);
+      checkArgument(results.length <= selectColMax, "results type count > selectColMax");
+      if (src.length == 0) {
+        src = DDLParser.getTable();
+      }
+      return new PerGenerationConfig(udfDepth, queryDepth, joinTimes,
+          selectColMax, exprNumInSelect,
+          inputRelation, udfFilter,
+          src, results);
     }
   }
 }
