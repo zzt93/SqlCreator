@@ -1,5 +1,6 @@
 package io.transwarp.generate.type;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 
 import java.util.ArrayList;
@@ -14,22 +15,21 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DataTypeUtil {
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
-  static List<String> randomSize(GenerationDataType type, int maxSize) {
+  static List<String>[] randomSize(GenerationDataType type, int maxSize, Dialect[] dialects) {
     int times = random.nextInt(maxSize) + 1;
-    List<String> res = new ArrayList<>(times);
+    List<String>[] res = new List[dialects.length];
+    for (int k = 0; k < dialects.length; k++) {
+      res[k] = new ArrayList<>(times);
+    }
     for (int i = 0; i < times; i++) {
-      res.add(type.randomData());
+      final String[] strings = type.randomData(dialects);
+      for (int k = 0; k < dialects.length; k++) {
+        res[k].add(strings[k]);
+      }
     }
     return res;
   }
 
-  public static String[] randoms(GenerationDataType type, int size) {
-    String[] res = new String[size];
-    for (int i = 0; i < size; i++) {
-      res[i] = type.randomData();
-    }
-    return res;
-  }
 
   public static GenerationDataType[] extract(ArrayList<Column> columns) {
     final GenerationDataType[] res = new GenerationDataType[columns.size()];

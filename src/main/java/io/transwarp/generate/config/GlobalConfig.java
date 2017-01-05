@@ -9,6 +9,7 @@ import io.transwarp.db_specific.base.Dialect;
  */
 public class GlobalConfig {
 
+  public static final int VAR_ARGS_MAX_LEN = 5;
   private static final int randomMaxBitLen = 64;
   private static final int randomListMaxLen = 10;
   private static final int randomStrMaxLen = 100;

@@ -31,6 +31,13 @@ public class UdfFilter {
     return this;
   }
 
+  UdfFilter addPreference(Function[] f, Possibility p) {
+    for (Function function : f) {
+      addPreference(function, p);
+    }
+    return this;
+  }
+
   UdfFilter removePreference(Function f) {
     preference.remove(f);
     return this;

@@ -1,5 +1,8 @@
 package io.transwarp.generate.type;
 
+import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.config.GlobalConfig;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
@@ -27,10 +30,23 @@ public class DataTypeTest {
     SimpleDateFormat dateFormat = new SimpleDateFormat(DataType.YYYY_MM_DD_HH_MM_SS);
     System.out.println(dateFormat.format(new Date(Integer.MAX_VALUE)));
 
-//    for (int i = 0; i < 1000; i++) {
-//      final String s = DataType.UNIX_DATE_STRING.randomData();
-//
-//    }
+    Dialect[] dialects = GlobalConfig.getBaseCmp();
+    String maxDate = "9999-12-31";
+    String minDate = "0001-01-01";
+    for (int i = 0; i < 1000; i++) {
+      final String s = DataType.UNIX_DATE_STRING.randomData(dialects)[0];
+      Assert.assertTrue(s.compareTo(maxDate) <= 0
+          && s.compareTo(minDate) <= 0);
+    }
+  }
+
+  @Test
+  public void dataDialectMatchTest() {
+    Dialect[] dialects = GlobalConfig.getBaseCmp();
+    Assert.assertTrue(
+        dialects[0] == Dialect.ORACLE
+            && dialects[1] == Dialect.INCEPTOR
+            && dialects.length == 2);
   }
 
 }

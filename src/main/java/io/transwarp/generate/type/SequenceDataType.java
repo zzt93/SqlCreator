@@ -2,7 +2,9 @@ package io.transwarp.generate.type;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.util.Strs;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -36,8 +38,9 @@ public class SequenceDataType extends CompoundDataType {
     if (type == DataType.Meta.BIT) {
       return new SequenceDataType(DataType.Meta.BIT, len) {
         @Override
-        public String randomData() {
-          return Long.toString(Long.parseLong(getType().randomData(), 2));
+        public String[] randomData(Dialect[] dialects) {
+          final String s = Long.toString(Long.parseLong(getType().randomData(dialects)[0], 2));
+          return Strs.of(s, dialects.length);
         }
       };
     }
@@ -55,9 +58,10 @@ public class SequenceDataType extends CompoundDataType {
   }
 
   @Override
-  public String randomData() {
+  public String[] randomData(Dialect[] dialects) {
     final Joiner on = Joiner.on("");
-    return DataType.STRING_DELIMITER + on.join(DataTypeUtil.randomSize(type, len)) + DataType.STRING_DELIMITER;
+    final String s = DataType.STRING_DELIMITER + on.join(DataTypeUtil.randomSize(type, len, dialects)[0]) + DataType.STRING_DELIMITER;
+    return Strs.of(s, dialects.length);
   }
 
   @Override

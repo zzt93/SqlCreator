@@ -1,5 +1,7 @@
 package io.transwarp.generate.type;
 
+import io.transwarp.db_specific.base.Dialect;
+
 /**
  * Created by zzt on 12/16/16.
  * <p>
@@ -12,7 +14,7 @@ public abstract class CompoundDataType implements GenerationDataType {
   abstract int getLen();
 
   @Override
-  public abstract String randomData();
+  public abstract String[] randomData(Dialect[] dialects);
 
   @Override
   public abstract String getMax();

@@ -38,8 +38,11 @@ public class Operand {
 
   public Operand(GenerationDataType type, String... ops) {
     this.type = type;
-    versions.put(GlobalConfig.getBase(), new StringBuilder(ops[0]));
-    versions.put(GlobalConfig.getCmp(), new StringBuilder(ops[1]));
+    final Dialect[] dialects = GlobalConfig.getBaseCmp();
+    assert ops.length == dialects.length;
+    for (int i = 0; i < dialects.length; i++) {
+      versions.put(dialects[i], new StringBuilder(ops[i]));
+    }
   }
 
   private static Operand makeOperand(GenerationDataType resultType, Table src, PerGenerationConfig config, int depth) {
@@ -50,9 +53,9 @@ public class Operand {
         return new Operand(resultType, column.getNameOrConst(GlobalConfig.getBaseCmp()));
       } else {
         if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
-          return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getBaseCmp(), resultType));
+          return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getBaseCmp()));
         }
-        return new Operand(resultType, resultType.randomData());
+        return new Operand(resultType, resultType.randomData(GlobalConfig.getBaseCmp()));
       }
     } else {
       final Function function = FunctionMap.random(resultType, config.getUdfFilter());
@@ -102,7 +105,8 @@ public class Operand {
     return versions.get(dialect);
   }
 
-  public String[] sqls() {
+  public String[] sqls(Dialect[] dialects) {
+    assert dialects.length == versions.size();
     String[] res = new String[versions.size()];
     int i = 0;
     for (Dialect dialect : versions.keySet()) {

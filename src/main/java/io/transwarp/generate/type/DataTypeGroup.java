@@ -1,6 +1,7 @@
 package io.transwarp.generate.type;
 
 import com.google.common.collect.ObjectArrays;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -136,8 +137,8 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
 
-  public String randomData() {
-    return randomType().randomData();
+  public String[] randomData(Dialect[] dialects) {
+    return randomType().randomData(dialects);
   }
 
   @Override

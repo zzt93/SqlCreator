@@ -3,7 +3,7 @@ package io.transwarp.generate.stmt.expression;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
-import io.transwarp.generate.util.Strings;
+import io.transwarp.generate.util.Strs;
 
 /**
  * Created by zzt on 12/30/16.
@@ -11,7 +11,7 @@ import io.transwarp.generate.util.Strings;
  * <h3></h3>
  */
 public enum BitOp implements Function {
-  LOGICAL_AND(Strings.of("(", "bitand("), Strings.of(" & ", ", ")),;
+  LOGICAL_AND(Strs.of("(", "bitand("), Strs.of(" & ", ", ")),;
 
   private final String[] ops;
   private final String[] delim;

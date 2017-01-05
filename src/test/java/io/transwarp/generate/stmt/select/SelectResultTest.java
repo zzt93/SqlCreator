@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 @RunWith(Parameterized.class)
 public class SelectResultTest {
 
-  private int count = 1000;
+  private int count = 10;
   private SelectResult[] selectResults;
   private Table from;
   private PrintWriter oracle;

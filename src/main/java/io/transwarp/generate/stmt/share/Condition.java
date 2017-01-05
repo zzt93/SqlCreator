@@ -6,7 +6,6 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.type.DataType;
-import io.transwarp.generate.type.GenerationDataType;
 
 /**
  * Created by zzt on 12/14/16.
@@ -15,7 +14,6 @@ import io.transwarp.generate.type.GenerationDataType;
  */
 public class Condition implements SqlGeneration {
 
-  private static final GenerationDataType type = DataType.BOOL;
   private final Operand condition;
 
   public Condition(Table from, PerGenerationConfig config) {

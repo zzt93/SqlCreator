@@ -1,6 +1,7 @@
 package io.transwarp.generate.config;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.stmt.expression.AggregateOp;
 import io.transwarp.generate.stmt.expression.CmpOp;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.parse.sql.DDLParser;
@@ -75,10 +76,6 @@ public class PerGenerationConfig {
     return udfFilter;
   }
 
-  public PerGenerationConfig decrementUdfDepth() {
-    return new Builder(this).setUdfDepth(udfDepth - 1).create();
-  }
-
   public PerGenerationConfig decrementQueryDepth() {
     final PerGenerationConfig config = new Builder(this).setQueryDepth(queryDepth - 1).create();
 
@@ -105,6 +102,18 @@ public class PerGenerationConfig {
 
   public boolean hasResultLimit() {
     return results.length > 0;
+  }
+
+  public PerGenerationConfig addSelectListFilter() {
+    final PerGenerationConfig config = new Builder(this).create();
+    config.getUdfFilter().addPreference(CmpOp.values(), Possibility.IMPOSSIBLE);
+    return config;
+  }
+
+  public PerGenerationConfig addWhereFilter() {
+    final PerGenerationConfig config = new Builder(this).create();
+    config.getUdfFilter().addPreference(AggregateOp.values(), Possibility.IMPOSSIBLE);
+    return config;
   }
 
   public static class Builder {

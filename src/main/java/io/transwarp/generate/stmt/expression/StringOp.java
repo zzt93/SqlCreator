@@ -2,10 +2,12 @@ package io.transwarp.generate.stmt.expression;
 
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
-import io.transwarp.generate.util.Strings;
+import io.transwarp.generate.util.Strs;
 
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -35,12 +37,7 @@ public enum StringOp implements Function {
     }
   },
   RTRIM("RTRIM("),
-  SPACE("SPACE(") {
-    @Override
-    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.UINT_GROUP};
-    }
-  },
+
   SPLIT("SPLIT(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
@@ -75,10 +72,10 @@ public enum StringOp implements Function {
   }
 
   private enum VarStringOp implements Function {
-    CONCAT(Strings.of("CONCAT(", "("), Strings.of(", ", " || ")),
-    CONCAT_WS(Strings.of("CONCAT_WS(", "("), Strings.of(", ", " || ")) {
+    CONCAT(Strs.of("CONCAT(", "("), Strs.of(", ", " || ")),
+    CONCAT_WS(Strs.of("CONCAT_WS(", "("), Strs.of(", ", " || ")) {
       @Override
-      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      GenerationDataType[] base() {
         return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
       }
     },
@@ -111,46 +108,64 @@ public enum StringOp implements Function {
     }
 
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
-      final GenerationDataType[] inputs = inputTypes(DataTypeGroup.STRING_GROUP);
+    public Operand apply(Dialect dialect, Operand... inputs) {
+      final StringBuilder builder = inputs[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
       for (int i = 1; i < inputs.length - 1; i++) {
-        builder.append(delims[dialect.ordinal()]).append(input[i].sql(dialect));
-      }
-      GenerationDataType varType = inputs[inputs.length - 1];
-      for (int i = 1; i < inputs.length + random.nextInt(5); i++) {
-        builder.append(delims[dialect.ordinal()]).append(varType.randomData());
+        builder.append(delims[dialect.ordinal()]).append(inputs[i].sql(dialect));
       }
       builder.append(Function.CLOSE_PAREN);
-      return input[0];
+      return inputs[0];
     }
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      final GenerationDataType[] base = base();
+      final int len = base.length;
+      assert len >= 1;
+      final GenerationDataType varType = base[0];
+      final GenerationDataType[] res = new GenerationDataType[random.nextInt(GlobalConfig.VAR_ARGS_MAX_LEN) + len];
+      Arrays.fill(res, varType);
+      System.arraycopy(base, 0, res, 0, len);
+      return res;
+    }
+
+    GenerationDataType[] base() {
       return new GenerationDataType[]{DataTypeGroup.STRING_GROUP};
     }
   }
 
   private enum StringToIntOp implements Function {
-    ASCII("ASCII("),
-    INSTR("INSTR(") {
+    ASCII("ASCII(", "ASCII("),
+    INSTR("INSTR(", "instr") {
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {
         return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
       }
     },
-    LENGTH("LENGTH("),
-    LOCATE("LOCATE(") {
+    LENGTH("LENGTH(", "length("),
+    LOCATE("LOCATE(", "instr(") {
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-        return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
+        return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP, DataTypeGroup.INT_GROUP};
       }
-    };
+    },
 
-    private final String op;
+    SPACE("SPACE(", "rpad('', ") {
+      @Override
+      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+        return new GenerationDataType[]{DataTypeGroup.UINT_GROUP};
+      }
 
-    StringToIntOp(String s) {
-      op = s;
+      @Override
+      public void register() {
+        FunctionMap.register(this, DataTypeGroup.STRING_GROUP);
+      }
+    },;
+
+    private final String[] ops;
+
+    StringToIntOp(String... s) {
+      ops = s;
     }
 
     @Override
@@ -160,7 +175,7 @@ public enum StringOp implements Function {
 
     @Override
     public Operand apply(Dialect dialect, Operand... input) {
-      final StringBuilder builder = input[0].sql(dialect).insert(0, op);
+      final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
       for (int i = 1; i < input.length; i++) {
         builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
       }

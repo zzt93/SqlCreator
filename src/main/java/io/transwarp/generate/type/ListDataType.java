@@ -6,7 +6,8 @@ import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.select.SelectResult;
-import io.transwarp.generate.util.Strings;
+
+import java.util.List;
 
 /**
  * Created by zzt on 12/14/16.
@@ -28,12 +29,16 @@ public class ListDataType extends SequenceDataType {
     this.listPossibility = possibility;
   }
 
-  public String[] listOrQuery(PerGenerationConfig config, Dialect[] dialects, GenerationDataType resultType) {
+  public String[] listOrQuery(PerGenerationConfig config, Dialect[] dialects) {
     if (listPossibility.chooseFirstOrRandom(true, false)) {
       final Joiner on = Joiner.on(", ");
-      final StringBuilder sql = on.appendTo(new StringBuilder("("), DataTypeUtil.randomSize(getType(), getLen()));
-      final String s = sql.append(')').toString();
-      return Strings.of(s, dialects.length);
+      String[] res = new String[dialects.length];
+      final List<String>[] parts = DataTypeUtil.randomSize(getType(), getLen(), dialects);
+      for (int i = 0; i < dialects.length; i++) {
+        final StringBuilder sql = on.appendTo(new StringBuilder("("), parts[i]);
+        res[i] = sql.append(')').toString();
+      }
+      return res;
     }
     final SelectResult selectResult = SelectResult.simpleQuery(
         new PerGenerationConfig.Builder(config)
