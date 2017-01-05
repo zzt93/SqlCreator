@@ -49,4 +49,10 @@ public class DataTypeTest {
             && dialects.length == 2);
   }
 
+  @Test
+  public void ensureBoolDataOrder() {
+    final String[] strings = DataType.BOOL.randomData(GlobalConfig.getBaseCmp());
+    Assert.assertTrue(strings[0].equals("true") || strings[0].equals("false"));
+  }
+
 }
