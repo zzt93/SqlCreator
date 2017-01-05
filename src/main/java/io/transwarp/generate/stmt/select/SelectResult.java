@@ -83,17 +83,21 @@ public class SelectResult implements Table {
    * @return sql stmt
    */
   public StringBuilder sql(Dialect dialect) {
-    return new StringBuilder()
-        .append(selectListStmt.sql(dialect))
-        .append(fromStmt.sql(dialect))
-        .append(whereStmt.sql(dialect))
+    return subQuery(dialect)
         .append(";");
   }
 
-  public String[] sqls(Dialect[] dialects) {
+  private StringBuilder subQuery(Dialect dialect) {
+    return new StringBuilder()
+        .append(selectListStmt.sql(dialect))
+        .append(fromStmt.sql(dialect))
+        .append(whereStmt.sql(dialect));
+  }
+
+  public String[] subQueries(Dialect[] dialects) {
     String[] res = new String[dialects.length];
     for (int i = 0; i < res.length; i++) {
-      res[i] = sql(dialects[i]).toString();
+      res[i] = subQuery(dialects[i]).insert(0, '(').append(')').toString();
     }
     return res;
   }

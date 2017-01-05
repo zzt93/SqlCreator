@@ -38,9 +38,9 @@ public class ListDataType extends SequenceDataType {
     final SelectResult selectResult = SelectResult.simpleQuery(
         new PerGenerationConfig.Builder(config)
             .setSelectColMax(1)
-            .setResults(resultType)
+            .setResults(getType())
             .create());
-    return selectResult.sqls(dialects);
+    return selectResult.subQueries(dialects);
   }
 
 

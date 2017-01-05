@@ -34,7 +34,6 @@ public interface Function {
    * <li> update sql</li>
    * <li> update type -- set at {@link Operand#makeOperand(GenerationDataType, Table, PerGenerationConfig)}</li>
    *
-   *
    * @param dialect used when different dialect has different ways to apply
    * @param input   parameter
    * @return result

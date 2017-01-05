@@ -56,7 +56,7 @@ public class SelectResultTest {
   @Test
   public void selectResult() throws Exception {
     for (int i = 1; i < 10; i++) {
-      final SelectResult selectResult = SelectResult.simpleQuery(config);
+      final SelectResult selectResult = SelectResult.simpleQuery(new PerGenerationConfig.Builder(config).setSelectColMax(i).create());
       Assert.assertTrue(selectResult.columns().size() <= i);
     }
   }

@@ -26,7 +26,7 @@ public enum DateOp implements Function {
 
   TO_DATE("TO_DATE(", "to_date("), TDH_TO_DATE("TDH_TODATE(", "to_date("),;
 
-  public static final GenerationDataType[] DATE = {DataTypeGroup.DATE_GROUP};
+  public static final GenerationDataType[] DATE_GROUP_ARRAY = {DataTypeGroup.DATE_GROUP};
   public static final GenerationDataType[] DATE_WITH_PATTERN = {DataTypeGroup.DATE_GROUP, DataType.DATE_PATTERN};
   private final String[] ops;
 
@@ -91,8 +91,25 @@ public enum DateOp implements Function {
    * @see Dialect : notice the mapping between order of dialect and following function name
    */
   private enum CountDateOp implements Function {
-    DAY("DAY(", "extract(day from "), HOUR("HOUR(", "extract(hour from "),
-    MINUTE("MINUTE(", "extract(minute from "), SECOND("SECOND(", "extract(second from "),
+    DAY("DAY(", "extract(day from "),
+    HOUR("HOUR(", "extract(hour from ") {
+      @Override
+      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+        return new GenerationDataType[]{DataType.TIMESTAMP};
+      }
+    },
+    MINUTE("MINUTE(", "extract(minute from ") {
+      @Override
+      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+        return new GenerationDataType[]{DataType.TIMESTAMP};
+      }
+    },
+    SECOND("SECOND(", "extract(second from ") {
+      @Override
+      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+        return new GenerationDataType[]{DataType.TIMESTAMP};
+      }
+    },
 
     DAY_OF_YEAR("DAYOFYEAR(", "to_char(") {
       @Override
@@ -175,7 +192,7 @@ public enum DateOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return DATE;
+      return DATE_GROUP_ARRAY;
     }
   }
 

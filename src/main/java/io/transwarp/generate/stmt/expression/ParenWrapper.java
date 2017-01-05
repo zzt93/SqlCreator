@@ -31,4 +31,21 @@ public class ParenWrapper implements Function {
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
     return f.inputTypes(resultType);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    else if (o instanceof Function) return f.equals(o);
+    else if (getClass() != o.getClass()) return false;
+
+    ParenWrapper that = (ParenWrapper) o;
+
+    return f != null ? f.equals(that.f) : that.f == null;
+  }
+
+  @Override
+  public int hashCode() {
+    return f != null ? f.hashCode() : 0;
+  }
 }

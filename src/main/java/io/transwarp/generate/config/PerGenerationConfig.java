@@ -44,6 +44,7 @@ public class PerGenerationConfig {
     this.inputRelation = inputRelation;
     this.udfFilter = udfFilter;
     this.results = results;
+    this.src = src;
   }
 
   public int getUdfDepth() {
@@ -110,7 +111,7 @@ public class PerGenerationConfig {
     private static final int MAX_COLS = 20;
 
     private int udfDepth = FunctionDepth.SMALL;
-    private int queryDepth = 1;
+    private int queryDepth = 2;
     private InputRelation inputRelation = InputRelation.SAME;
     private int joinTimes = 0;
     private int selectColMax = Builder.MAX_COLS;

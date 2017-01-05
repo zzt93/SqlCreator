@@ -42,8 +42,7 @@ public class Operand {
     versions.put(GlobalConfig.getCmp(), new StringBuilder(ops[1]));
   }
 
-  private static Operand makeOperand(GenerationDataType resultType, Table src, PerGenerationConfig config) {
-    int depth = config.getUdfDepth();
+  private static Operand makeOperand(GenerationDataType resultType, Table src, PerGenerationConfig config, int depth) {
     if (depth == FunctionDepth.SINGLE) {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
@@ -61,7 +60,7 @@ public class Operand {
       Operand[] ops = new Operand[inputs.length];
       final GenerationDataType[] nextResultType = config.getInputRelation().refine(inputs);
       for (int i = 0; i < nextResultType.length; i++) {
-        ops[i] = makeOperand(nextResultType[i], src, config.decrementUdfDepth());
+        ops[i] = makeOperand(nextResultType[i], src, config, depth - 1);
       }
       function.apply(GlobalConfig.getBase(), ops);
       return function.apply(GlobalConfig.getCmp(), ops)
@@ -72,7 +71,7 @@ public class Operand {
   public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, PerGenerationConfig config) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = makeOperand(resultType, src, config);
+      res[i] = makeOperand(resultType, src, config, config.getUdfDepth());
     }
     return res;
   }
@@ -81,7 +80,7 @@ public class Operand {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       GenerationDataType type = TableUtil.randomCol(src).getType();
-      res[i] = makeOperand(type, src, config);
+      res[i] = makeOperand(type, src, config, config.getUdfDepth());
       assert type == res[i].type;
     }
     return res;
