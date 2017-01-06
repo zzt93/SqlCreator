@@ -55,4 +55,10 @@ public class DataTypeTest {
     Assert.assertTrue(strings[0].equals("true") || strings[0].equals("false"));
   }
 
+  @Test
+  public void dateFormat() {
+    long l = 1234;
+    SimpleDateFormat sdf = new SimpleDateFormat("DD-MON-YY");
+    System.out.println(sdf.format(new Date(l)));
+  }
 }

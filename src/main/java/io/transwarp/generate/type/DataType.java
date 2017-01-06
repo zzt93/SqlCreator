@@ -27,6 +27,12 @@ public enum DataType implements GenerationDataType {
       return b ? Strs.of("(1=1)", "true") : Strs.of("(1<1)", "false");
     }
   },
+  BINARY {
+    @Override
+    public String[] randomData(Dialect[] dialects) {
+      return new String[]{"", ""};
+    }
+  },
   BYTE {
     public String[] randomData(Dialect[] dialects) {
       return Strs.of("" + (random.nextInt(0xff) - 0x80), dialects.length);
@@ -121,6 +127,10 @@ public enum DataType implements GenerationDataType {
     }
   },
   UNIX_DATE {
+    /**
+     * have to use the {@link #DEFAULT pattern, or Oracle will not recognize it}
+     * @see #DEFAULT : yyyy-MM-dd
+     */
     public String[] randomData(Dialect[] dialects) {
       long l = random.nextLong(DATE_MIN, DATE_MAX);
       SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);

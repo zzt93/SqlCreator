@@ -25,7 +25,7 @@ public enum InputRelation {
 
     @Override
     GenerationDataType[] diff(GenerationDataType[] original) {
-      if (original == CmpOp.IN_LIST_OPS) {
+      if (isInInput(original)) {
         final GenerationDataType smallList = DataTypeGroup.smallerType(original[1]);
         return new GenerationDataType[]{DataTypeGroup.extractRawType(smallList), smallList};
       } else {
@@ -47,7 +47,7 @@ public enum InputRelation {
 
     @Override
     GenerationDataType[] diff(GenerationDataType[] original) {
-      if (original == CmpOp.IN_LIST_OPS) {
+      if (isInInput(original)) {
         final GenerationDataType smallList = DataTypeGroup.smallerType(original[1]);
         return new GenerationDataType[]{
             DataTypeGroup.sameGroupRandom(DataTypeGroup.extractRawType(smallList)),
@@ -72,6 +72,10 @@ public enum InputRelation {
       return super.diff(original);
     }
   };
+
+  private static boolean isInInput(GenerationDataType[] original) {
+    return original == CmpOp.IN_LIST_OPS || original == CmpOp.IN_QUERY_OPS;
+  }
 
 
   abstract GenerationDataType[] same(GenerationDataType[] original);

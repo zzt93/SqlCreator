@@ -15,6 +15,9 @@ public class DateOpTest {
     Assert.assertTrue(DateOp.combinedValues().length > DateOp.values().length);
   }
 
+  /**
+   * @see DateOp the order of dialect is correspond to the order of function name
+   */
   @Test
   public void ensureDialectOrder() {
     Assert.assertTrue(Dialect.INCEPTOR.ordinal() == 0);

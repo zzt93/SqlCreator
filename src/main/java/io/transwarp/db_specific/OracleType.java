@@ -48,7 +48,7 @@ public enum OracleType implements DBType {
   LONG {
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      return DataType.LONG;
+      return DataType.BINARY;
     }
   },
   /**
@@ -106,7 +106,7 @@ public enum OracleType implements DBType {
 
   /**
    * ----------------------------------------------------------------------
-   * ----------the following is the ansi type that oracle support---------
+   * ----------the following is the ansi type that oracle supports---------
    */
   SMALLINT {
     @Override
