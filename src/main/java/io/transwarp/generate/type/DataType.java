@@ -1,6 +1,8 @@
 package io.transwarp.generate.type;
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.stmt.expression.Function;
 import io.transwarp.generate.util.Strs;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -24,7 +26,7 @@ public enum DataType implements GenerationDataType {
   BOOL {
     public String[] randomData(Dialect[] dialects) {
       final boolean b = random.nextBoolean();
-      return b ? Strs.of("(1=1)", "true") : Strs.of("(1<1)", "false");
+      return b ? Strs.of("true", "(1=1)") : Strs.of("false", "(1<1)");
     }
   },
   BINARY {
@@ -128,57 +130,65 @@ public enum DataType implements GenerationDataType {
   },
   UNIX_DATE {
     /**
-     * have to use the {@link #DEFAULT pattern, or Oracle will not recognize it}
+     * <li>We have to use the {@link #DEFAULT pattern, or Oracle will not recognize it}</li>
+     * <li>In essence, date literal is the `DATE + date_str`(have to default format)`</li>
      * @see #DEFAULT : yyyy-MM-dd
      */
     public String[] randomData(Dialect[] dialects) {
-      long l = random.nextLong(DATE_MIN, DATE_MAX);
-      SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);
-      return Strs.of("DATE" + STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER, dialects.length);
+      if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+        final String dateConst = "DATE" + DataType.dateString(DEFAULT);
+        return Strs.of(dateConst, dialects.length);
+      }
+      return Strs.of("sysdate", dialects.length);
     }
   },
-  UNIX_DATE_STRING {
+  TIMESTAMP {
     public String[] randomData(Dialect[] dialects) {
-      long l = random.nextLong(DATE_MIN, DATE_MAX);
-      SimpleDateFormat sdf = new SimpleDateFormat(DEFAULT);
-      return Strs.of(STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER, dialects.length);
+      if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+        return Strs.of(name() + DataType.dateString(YYYY_MM_DD_HH_MM_SS), dialects.length);
+      }
+      return Strs.of("sysdate", "current_timestamp");
+    }
+  },
+
+  /**
+   * Although the following three are string, but should not put into string group
+   * because may cause other string used in date op
+   * @see io.transwarp.generate.stmt.expression.FunctionMap#random
+   */
+  DATE_STRING_WITH_PATTERN {
+    @Override
+    public String[] randomData(Dialect[] dialects) {
+      final String format = randomDateFormat();
+      String res = DataType.dateString(format) + Function.PARAMETER_SPLIT + STRING_DELIMITER + format + STRING_DELIMITER;
+      return Strs.of(res, dialects.length);
     }
   },
   DATE_PATTERN {
     @Override
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(STRING_DELIMITER + YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)] + STRING_DELIMITER, dialects.length);
+      return Strs.of(STRING_DELIMITER + DataType.randomDateFormat() + STRING_DELIMITER, dialects.length);
     }
   },
   TIMESTAMP_PATTERN {
     @Override
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(STRING_DELIMITER + YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)] + STRING_DELIMITER, dialects.length);
+      return Strs.of(STRING_DELIMITER + DataType.randomDateFormat() + HH_MM_SS + STRING_DELIMITER, dialects.length);
     }
   },
-  TIME_STRING {
-    public String[] randomData(Dialect[] dialects) {
-      long l = random.nextInt();
-      SimpleDateFormat sdf = new SimpleDateFormat(HH_MM_SS);
-      return Strs.of(STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER, dialects.length);
-    }
-  },
-  TIMESTAMP {
-    public String[] randomData(Dialect[] dialects) {
-      long l = random.nextLong(DATE_MIN, DATE_MAX);
-      SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
-      return Strs.of(name() + STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER, dialects.length);
-    }
-  },
-  TIMESTAMP_STRING {
-    public String[] randomData(Dialect[] dialects) {
-      long l = random.nextLong(DATE_MIN, DATE_MAX);
-      SimpleDateFormat sdf = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
-      return Strs.of(STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER, dialects.length);
-    }
-  };
+  ;
 
   public static final String STRING_DELIMITER = "'";
+
+  private static String dateString(String pattern) {
+    long l = random.nextLong(DATE_MIN, DATE_MAX);
+    SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+    return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
+  }
+
+  private static String randomDateFormat() {
+    return YYYY_MM_DD[random.nextInt(YYYY_MM_DD.length)];
+  }
 
   @Override
   public String getMax() {
@@ -264,10 +274,10 @@ public enum DataType implements GenerationDataType {
     }
   }
 
-  public static final String HH_MM_SS = "HH:mm:ss";
+  public static final String HH_MM_SS = " HH:mm:ss";
   public static final String YYYY_MM_DD[] = new String[]{"yyyy-MM-dd", "yyyyMMdd", "yyyy/MM/dd"};
   public static final String DEFAULT = YYYY_MM_DD[0];
-  public static final String YYYY_MM_DD_HH_MM_SS = DEFAULT + " " + HH_MM_SS;
+  public static final String YYYY_MM_DD_HH_MM_SS = DEFAULT + HH_MM_SS;
   public static final long DATE_MAX = new GregorianCalendar(9999, Calendar.DECEMBER, 31).getTimeInMillis() + 1;
   public static final long DATE_MIN = new GregorianCalendar(0, Calendar.JANUARY, 1).getTimeInMillis();
 

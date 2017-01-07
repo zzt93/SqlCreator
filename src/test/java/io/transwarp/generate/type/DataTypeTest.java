@@ -30,35 +30,35 @@ public class DataTypeTest {
     SimpleDateFormat dateFormat = new SimpleDateFormat(DataType.YYYY_MM_DD_HH_MM_SS);
     System.out.println(dateFormat.format(new Date(Integer.MAX_VALUE)));
 
-    Dialect[] dialects = GlobalConfig.getBaseCmp();
-    String maxDate = "9999-12-31";
-    String minDate = "0001-01-01";
+    Dialect[] dialects = GlobalConfig.getCmpBase();
+    String maxDate = "DATE'9999-12-31'";
+    String minDate = "DATE'0001-01-01'";
     for (int i = 0; i < 1000; i++) {
-      final String s = DataType.UNIX_DATE_STRING.randomData(dialects)[0];
-      Assert.assertTrue(s.compareTo(maxDate) <= 0
-          && s.compareTo(minDate) <= 0);
+      final String s = DataType.UNIX_DATE.randomData(dialects)[0];
+      if (s.startsWith("DATE")) {
+        Assert.assertTrue(s.compareToIgnoreCase(maxDate) <= 0
+            && s.compareToIgnoreCase(minDate) >= 0);
+      }
     }
   }
 
   @Test
   public void dataDialectMatchTest() {
-    Dialect[] dialects = GlobalConfig.getBaseCmp();
+    Dialect[] dialects = GlobalConfig.getCmpBase();
     Assert.assertTrue(
-        dialects[0] == Dialect.ORACLE
-            && dialects[1] == Dialect.INCEPTOR
-            && dialects.length == 2);
+        dialects[0] == Dialect.INCEPTOR && dialects[1] == Dialect.ORACLE && dialects.length == 2);
   }
 
   @Test
   public void ensureBoolDataOrder() {
-    final String[] strings = DataType.BOOL.randomData(GlobalConfig.getBaseCmp());
+    final String[] strings = DataType.BOOL.randomData(GlobalConfig.getCmpBase());
     Assert.assertTrue(strings[0].equals("true") || strings[0].equals("false"));
   }
 
   @Test
   public void dateFormat() {
     long l = 1234;
-    SimpleDateFormat sdf = new SimpleDateFormat("DD-MON-YY");
+    SimpleDateFormat sdf = new SimpleDateFormat(" HH:mm:ss");
     System.out.println(sdf.format(new Date(l)));
   }
 }

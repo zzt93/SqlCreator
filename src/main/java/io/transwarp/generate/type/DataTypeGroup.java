@@ -25,8 +25,7 @@ public enum DataTypeGroup implements GenerationDataType {
   UINT_GROUP(DataType.U_BYTE, DataType.U_SHORT, DataType.U_INT),
   INT_GROUP(DataType.BYTE, DataType.SHORT, DataType.INT, SequenceDataType.BITS, DataType.LONG),
   NUM_GROUP(DataType.BYTE, DataType.U_BYTE, DataType.SHORT, DataType.U_SHORT, DataType.INT, DataType.U_INT, SequenceDataType.BITS, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
-  DATE_STRING_GROUP(DataType.UNIX_DATE_STRING, DataType.TIMESTAMP_STRING),
-  STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING, DataType.DATE_PATTERN),
+  STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
   DATE_GROUP(DataType.UNIX_DATE, DataType.TIMESTAMP),
   LIST_GROUP() {
     @Override

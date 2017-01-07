@@ -15,8 +15,27 @@ import io.transwarp.generate.util.Strs;
 public enum DateOp implements Function {
   DATE_FORMAT("DATE_FORMAT(", "to_char(") {
     @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return DATE_WITH_PATTERN;
+    }
+  },
+  TIMESTAMP_FORMAT("DATE_FORMAT(", "to_char(") {
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return TIMESTAMP_WITH_PATTERN;
+    }
+  },
+  DATE_STRING_AND_PATTERN("DATE_FORMAT(", "to_char(") {
+    @Override
     public void register() {
-      FunctionMap.register(this, DataType.UNIX_DATE_STRING);
+      FunctionMap.register(this, DataType.DATE_STRING_WITH_PATTERN);
+    }
+
+    @Override
+    public Operand apply(Dialect dialect, Operand... input) {
+      final Operand apply = super.apply(dialect, input);
+      apply.sql(dialect).append(Function.PARAMETER_SPLIT).append(input[1].sql(dialect));
+      return apply;
     }
 
     @Override
@@ -24,19 +43,17 @@ public enum DateOp implements Function {
       return DATE_WITH_PATTERN;
     }
   },
-  TIMESTAMP_FORMAT("DATE_FORMAT(", "to_char(") {
+  TO_DATE("TO_DATE(", "to_date(") {
     @Override
     public void register() {
-      FunctionMap.register(this, DataType.TIMESTAMP_STRING);
+      FunctionMap.register(this, DataType.UNIX_DATE);
     }
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return TIMESTAMP_WITH_PATTERN;
+      return new GenerationDataType[]{DataType.DATE_STRING_WITH_PATTERN};
     }
-  },
-
-  TO_DATE("TO_DATE(", "to_date("), TDH_TO_DATE("TDH_TODATE(", "to_date("),;
+  },;
 
   public static final GenerationDataType[] DATE_GROUP_ARRAY = {DataTypeGroup.DATE_GROUP};
   public static final GenerationDataType[] DATE_WITH_PATTERN = {DataTypeGroup.DATE_GROUP, DataType.DATE_PATTERN};
@@ -49,21 +66,23 @@ public enum DateOp implements Function {
 
   @Override
   public void register() {
-    FunctionMap.register(this, DataType.UNIX_DATE);
+    FunctionMap.register(this, DataTypeGroup.STRING_GROUP);
   }
 
   @Override
   public Operand apply(Dialect dialect, Operand... input) {
-    input[0].sql(dialect).insert(0, ops[dialect.ordinal()])
-        .append(Function.PARAMETER_SPLIT)
-        .append(input[1].sql(dialect))
-        .append(Function.CLOSE_PAREN);
+    final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
+    for (int i = 1; i < input.length; i++) {
+      builder.append(Function.PARAMETER_SPLIT)
+          .append(input[i].sql(dialect));
+    }
+    builder.append(Function.CLOSE_PAREN);
     return input[0];
   }
 
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-    return new GenerationDataType[]{DataTypeGroup.DATE_STRING_GROUP, DataType.DATE_PATTERN};
+    return new GenerationDataType[]{DataType.DATE_STRING_WITH_PATTERN};
   }
 
   private enum DateArithOp implements Function {
@@ -94,7 +113,7 @@ public enum DateOp implements Function {
 
     @Override
     public void register() {
-      FunctionMap.register(this, DataTypeGroup.DATE_STRING_GROUP);
+      FunctionMap.register(this, DataTypeGroup.STRING_GROUP);
     }
 
     @Override
@@ -179,8 +198,7 @@ public enum DateOp implements Function {
         }
         return input[0];
       }
-    },
-;
+    },;
 
     final String[] ops;
 

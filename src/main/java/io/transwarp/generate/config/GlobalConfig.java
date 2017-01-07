@@ -37,8 +37,8 @@ public class GlobalConfig {
     return randomStrMaxLen;
   }
 
-  public static Dialect[] getBaseCmp() {
-    return new Dialect[]{getBase(), getCmp()};
+  public static Dialect[] getCmpBase() {
+    return new Dialect[]{getCmp(), getBase()};
   }
 
 }

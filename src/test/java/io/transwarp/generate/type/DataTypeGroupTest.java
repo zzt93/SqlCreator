@@ -1,9 +1,10 @@
 package io.transwarp.generate.type;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static io.transwarp.generate.type.DataTypeGroup.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by zzt on 12/29/16.
@@ -18,8 +19,8 @@ public class DataTypeGroupTest {
     for (DataType type : DataType.values()) {
       if (NUM_GROUP.contains(type)) {
         assertTrue(INT_GROUP.contains(type)
-        || UINT_GROUP.contains(type)
-        || DECIMAL_GROUP.contains(type));
+            || UINT_GROUP.contains(type)
+            || DECIMAL_GROUP.contains(type));
       }
       if (INT_GROUP.contains(type)
           || UINT_GROUP.contains(type)
@@ -37,7 +38,11 @@ public class DataTypeGroupTest {
 
   @Test
   public void groupOf() throws Exception {
-
+    Assert.assertTrue(
+        !DataTypeGroup.STRING_GROUP.contains(DataType.DATE_PATTERN)
+            && !DataTypeGroup.STRING_GROUP.contains(DataType.TIMESTAMP_PATTERN)
+            && !DataTypeGroup.STRING_GROUP.contains(DataType.DATE_STRING_WITH_PATTERN)
+    );
   }
 
   @Test

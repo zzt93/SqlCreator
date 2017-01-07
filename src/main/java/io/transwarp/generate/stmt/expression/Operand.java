@@ -38,7 +38,7 @@ public class Operand {
 
   public Operand(GenerationDataType type, String... ops) {
     this.type = type;
-    final Dialect[] dialects = GlobalConfig.getBaseCmp();
+    final Dialect[] dialects = GlobalConfig.getCmpBase();
     assert ops.length == dialects.length;
     for (int i = 0; i < dialects.length; i++) {
       versions.put(dialects[i], new StringBuilder(ops[i]));
@@ -50,12 +50,12 @@ public class Operand {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
         final Column column = col.get();
-        return new Operand(resultType, column.getNameOrConst(GlobalConfig.getBaseCmp()));
+        return new Operand(resultType, column.getNameOrConst(GlobalConfig.getCmpBase()));
       } else {
         if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
-          return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getBaseCmp()));
+          return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getCmpBase()));
         }
-        return new Operand(resultType, resultType.randomData(GlobalConfig.getBaseCmp()));
+        return new Operand(resultType, resultType.randomData(GlobalConfig.getCmpBase()));
       }
     } else {
       final Function function = FunctionMap.random(resultType, config.getUdfFilter());

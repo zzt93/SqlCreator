@@ -12,7 +12,13 @@ import io.transwarp.generate.type.GenerationDataType;
  * <h3>how to handle function overloading:</h3>
  * <li>return input type according to result type</li>
  * <li>for function with default arguments, implement multiple times</li>
- * <li>for functions with variable args, mark last input type to be variable length</li>
+ * <li>for functions with variable args,
+ * mark last input type to be variable length: {@link StringOp.VarStringOp#inputTypes(GenerationDataType)}</li>
+ * <h3>how to handle input relation</h3>
+ * <li>{@link io.transwarp.generate.config.InputRelation}</li>
+ * <li>{@link ArithOp} & {@link ConversionOp} specify in the {@link #inputTypes(GenerationDataType)}</li>
+ * <li>{@link DateOp#DATE_STRING_AND_PATTERN} & {@link DateOp#TO_DATE}: generate related input at the same time</li>
+ * <li>Not addressed: printf</li>
  * <p>
  * <h3>work flow</h3>
  * <li>result type (specific type is more easy to be found)</li>

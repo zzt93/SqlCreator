@@ -16,6 +16,7 @@ public interface GenerationDataType {
    * @return const value depend on dialect
    * @see DataType#BOOL
    * @see DataType#DATE_PATTERN
+   * @see DataType#TIMESTAMP
    */
   String[] randomData(Dialect[] dialects);
 // TODO String name(Dialect dialect);
