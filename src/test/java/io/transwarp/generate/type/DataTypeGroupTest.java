@@ -41,7 +41,7 @@ public class DataTypeGroupTest {
     Assert.assertTrue(
         !DataTypeGroup.STRING_GROUP.contains(DataType.DATE_PATTERN)
             && !DataTypeGroup.STRING_GROUP.contains(DataType.TIMESTAMP_PATTERN)
-            && !DataTypeGroup.STRING_GROUP.contains(DataType.DATE_STRING_WITH_PATTERN)
+            && !DataTypeGroup.STRING_GROUP.contains(DataType.Internal.DATE_STRING_WITH_PATTERN)
     );
   }
 

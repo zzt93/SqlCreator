@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 @RunWith(Parameterized.class)
 public class SelectResultTest {
 
-  private int count = 1000;
+  private int count = 10;
   private SelectResult[] selectResults;
   private Table from;
   private PrintWriter oracle;
@@ -57,7 +57,8 @@ public class SelectResultTest {
   public void selectResult() throws Exception {
     for (int i = 1; i < 10; i++) {
       final SelectResult selectResult = SelectResult.simpleQuery(new PerGenerationConfig.Builder(config).setSelectColMax(i).create());
-      Assert.assertTrue(selectResult.columns().size() <= i);
+      final int size = selectResult.columns().size();
+      Assert.assertTrue(size > 0 && size <= i);
     }
   }
 
