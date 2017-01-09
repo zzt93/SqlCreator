@@ -18,7 +18,7 @@ public enum InputRelation {
     @Override
     GenerationDataType[] same(GenerationDataType[] original) {
       GenerationDataType[] res = new GenerationDataType[original.length];
-      final GenerationDataType type = DataTypeGroup.smallerType(original[0]);
+      final GenerationDataType type = DataTypeGroup.randomDownCast(original[0]);
       Arrays.fill(res, type);
       return res;
     }
@@ -26,7 +26,7 @@ public enum InputRelation {
     @Override
     GenerationDataType[] diff(GenerationDataType[] original) {
       if (isInInput(original)) {
-        final GenerationDataType smallList = DataTypeGroup.smallerType(original[1]);
+        final GenerationDataType smallList = DataTypeGroup.randomDownCast(original[1]);
         return new GenerationDataType[]{DataTypeGroup.extractRawType(smallList), smallList};
       } else {
         return super.diff(original);
@@ -48,7 +48,7 @@ public enum InputRelation {
     @Override
     GenerationDataType[] diff(GenerationDataType[] original) {
       if (isInInput(original)) {
-        final GenerationDataType smallList = DataTypeGroup.smallerType(original[1]);
+        final GenerationDataType smallList = DataTypeGroup.randomDownCast(original[1]);
         return new GenerationDataType[]{
             DataTypeGroup.sameGroupRandom(DataTypeGroup.extractRawType(smallList)),
             smallList};
@@ -101,7 +101,7 @@ public enum InputRelation {
   GenerationDataType[] diff(GenerationDataType[] original) {
     GenerationDataType[] res = new GenerationDataType[original.length];
     for (int i = 0; i < original.length; i++) {
-      res[i] = DataTypeGroup.smallerType(original[i]);
+      res[i] = DataTypeGroup.randomDownCast(original[i]);
     }
     return res;
   }

@@ -17,7 +17,6 @@ import java.util.List;
 public class ListDataType extends SequenceDataType {
   public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, GlobalConfig.getRandomListMaxLen(), Possibility.CERTAIN);
   public static final GenerationDataType ALL_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_GROUP, GlobalConfig.getRandomListMaxLen(), Possibility.IMPOSSIBLE);
-  public static final String SUB_QUERY_TO_REPLACE = "one-column-sub-query-to-replace";
   private final Possibility listPossibility;
 
   ListDataType(GenerationDataType type, int len) {
@@ -43,7 +42,7 @@ public class ListDataType extends SequenceDataType {
     final SelectResult selectResult = SelectResult.simpleQuery(
         new PerGenerationConfig.Builder(config)
             .setSelectColMax(1)
-            .setResults(getType())
+            .addMust(getType())
             .create());
     return selectResult.subQueries(dialects);
   }
@@ -51,7 +50,11 @@ public class ListDataType extends SequenceDataType {
 
   @Override
   CompoundDataType smallerCompoundType() {
-    return new ListDataType(DataTypeGroup.smallerType(getType()), getLen(), listPossibility);
+    return new ListDataType(DataTypeGroup.randomDownCast(getType()), getLen(), listPossibility);
+  }
+
+  public CompoundDataType compoundType(GenerationDataType type) {
+    return new ListDataType(type, getLen(), listPossibility);
   }
 
   /**

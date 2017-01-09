@@ -3,10 +3,13 @@ package io.transwarp.generate.config;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.stmt.expression.AggregateOp;
 import io.transwarp.generate.stmt.expression.CmpOp;
+import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.parse.sql.DDLParser;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -29,14 +32,14 @@ public class PerGenerationConfig {
   // select
   private int selectColMax;
   private int exprNumInSelect;
-  private GenerationDataType[] results;
+  private Map<GenerationDataType, Possibility> results;
 
 
   private PerGenerationConfig(int udfDepth, int queryDepth, int joinTimes,
                               int selectColMax, int exprNumInSelect,
                               InputRelation inputRelation, UdfFilter udfFilter,
                               Table[] src,
-                              GenerationDataType[] results) {
+                              Map<GenerationDataType, Possibility> results) {
     this.udfDepth = udfDepth;
     this.queryDepth = queryDepth;
     this.joinTimes = joinTimes;
@@ -96,22 +99,22 @@ public class PerGenerationConfig {
     return src;
   }
 
-  public GenerationDataType[] getResults() {
+  public Map<GenerationDataType, Possibility> getResults() {
     return results;
   }
 
   public boolean hasResultLimit() {
-    return results.length > 0;
+    return results.size() > 0;
   }
 
-  public PerGenerationConfig addSelectListFilter() {
-    final PerGenerationConfig config = new Builder(this).create();
+  public PerGenerationConfig selectListConfig() {
+    final PerGenerationConfig config = new Builder(this).addImpossible(DataType.BOOL).create();
     config.getUdfFilter().addPreference(CmpOp.values(), Possibility.IMPOSSIBLE);
     return config;
   }
 
-  public PerGenerationConfig addWhereFilter() {
-    final PerGenerationConfig config = new Builder(this).create();
+  public PerGenerationConfig whereConfig() {
+    final PerGenerationConfig config = new Builder(this).addMust(DataType.BOOL).create();
     config.getUdfFilter().addPreference(AggregateOp.values(), Possibility.IMPOSSIBLE);
     return config;
   }
@@ -120,13 +123,13 @@ public class PerGenerationConfig {
     private static final int MAX_COLS = 20;
 
     private int udfDepth = FunctionDepth.SMALL;
-    private int queryDepth = 2;
+    private int queryDepth = 1;
     private InputRelation inputRelation = InputRelation.SAME;
     private int joinTimes = 0;
     private int selectColMax = Builder.MAX_COLS;
     private int exprNumInSelect = 1;
     private UdfFilter udfFilter = new UdfFilter();
-    private GenerationDataType[] results = new GenerationDataType[0];
+    private HashMap<GenerationDataType, Possibility> results = new HashMap<>();
     private Table[] src = new Table[0];
 
     public Builder() {
@@ -141,7 +144,7 @@ public class PerGenerationConfig {
       exprNumInSelect = config.exprNumInSelect;
       udfFilter = new UdfFilter(config.udfFilter);
       src = Arrays.copyOf(config.src, config.src.length);
-      results = Arrays.copyOf(config.results, config.results.length);
+      results = new HashMap<>(config.results);
     }
 
     public Builder setUdfDepth(int udfDepth) {
@@ -162,12 +165,13 @@ public class PerGenerationConfig {
     }
 
     public Builder setSelectColMax(int selectColMax) {
-      checkArgument(selectColMax <= MAX_COLS);
+      checkArgument(selectColMax <= MAX_COLS && selectColMax > 0);
       this.selectColMax = selectColMax;
       return this;
     }
 
     public Builder setExprNumInSelect(int exprNumInSelect) {
+      checkArgument(exprNumInSelect <= MAX_COLS && exprNumInSelect > 0);
       this.exprNumInSelect = exprNumInSelect;
       return this;
     }
@@ -183,8 +187,17 @@ public class PerGenerationConfig {
       return this;
     }
 
-    public Builder setResults(GenerationDataType... results) {
-      this.results = results;
+    public Builder addMust(GenerationDataType... types) {
+      for (GenerationDataType type : types) {
+        results.put(type, Possibility.CERTAIN);
+      }
+      return this;
+    }
+
+    public Builder addImpossible(GenerationDataType... types) {
+      for (GenerationDataType type : types) {
+        results.put(type, Possibility.IMPOSSIBLE);
+      }
       return this;
     }
 
@@ -195,7 +208,7 @@ public class PerGenerationConfig {
 
     public PerGenerationConfig create() {
       checkArgument(exprNumInSelect <= selectColMax, "exprNumInSelect > selectColMax");
-      checkArgument(results.length <= selectColMax, "results type count > selectColMax");
+      checkArgument(results.size() <= selectColMax, "results type count > selectColMax");
       if (src.length == 0) {
         src = DDLParser.getTable();
       }

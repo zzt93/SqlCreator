@@ -8,12 +8,15 @@ import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.FunctionDepth;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.PerGenerationConfig;
+import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Created by zzt on 12/8/16.
@@ -72,6 +75,8 @@ public class Operand {
   }
 
   public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, PerGenerationConfig config) {
+    checkArgument(DataType.outerVisible(resultType));
+
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       res[i] = makeOperand(resultType, src, config, config.getUdfDepth());

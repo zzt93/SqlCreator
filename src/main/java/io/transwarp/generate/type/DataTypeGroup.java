@@ -6,6 +6,7 @@ import io.transwarp.generate.config.GlobalConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -87,7 +88,7 @@ public enum DataTypeGroup implements GenerationDataType {
    * <p>e.g. {@link DataTypeGroup#ALL_GROUP} -> ALL_GROUP#randomType</p>
    * <p>e.g. {@link CompoundDataType}(ALL_GROUP) -> {@link CompoundDataType}(ALL_GROUP#randomType)</p>
    */
-  public static GenerationDataType smallerType(GenerationDataType type) {
+  public static GenerationDataType randomDownCast(GenerationDataType type) {
     if (type instanceof CompoundDataType) {
       return ((CompoundDataType) type).smallerCompoundType();
     }
@@ -102,14 +103,14 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public static DataTypeGroup smallerGroup(GenerationDataType type) {
-    return groupOf(smallerType(type));
+    return groupOf(randomDownCast(type));
   }
 
-  public static DataTypeGroup largerGroup(GenerationDataType resultType) {
+  public static DataTypeGroup upCast(GenerationDataType resultType) {
     return groupOf(resultType);
   }
 
-  public static GenerationDataType shorterType(GenerationDataType type) {
+  public static GenerationDataType numRandDownCast(GenerationDataType type) {
     if (NUM_GROUP.contains(type)) {
       final int i = NUM_GROUP.types.indexOf(type);
       if (i == 0) {
@@ -158,4 +159,7 @@ public enum DataTypeGroup implements GenerationDataType {
     return types.contains(type);
   }
 
+  public Collection<GenerationDataType> types() {
+    return types;
+  }
 }

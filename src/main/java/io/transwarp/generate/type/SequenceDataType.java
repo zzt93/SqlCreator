@@ -95,7 +95,7 @@ public class SequenceDataType extends CompoundDataType {
 
   @Override
   CompoundDataType smallerCompoundType() {
-    return sequence(DataTypeGroup.smallerType(getType()), getLen());
+    return sequence(DataTypeGroup.randomDownCast(getType()), getLen());
   }
 
   @Override

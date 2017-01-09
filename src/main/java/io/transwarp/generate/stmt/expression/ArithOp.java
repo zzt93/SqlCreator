@@ -37,7 +37,7 @@ public enum ArithOp implements Function {
 
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-    return new GenerationDataType[]{resultType, DataTypeGroup.shorterType(resultType)};
+    return new GenerationDataType[]{resultType, DataTypeGroup.numRandDownCast(resultType)};
   }
 
   @Override

@@ -1,10 +1,7 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.generate.config.UdfFilter;
-import io.transwarp.generate.type.CompoundDataType;
-import io.transwarp.generate.type.DataType;
-import io.transwarp.generate.type.DataTypeGroup;
-import io.transwarp.generate.type.GenerationDataType;
+import io.transwarp.generate.type.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -18,14 +15,32 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class FunctionMap {
 
-  private static final ConcurrentHashMap<GenerationDataType, Functions> share = new ConcurrentHashMap<>(20);
+  private static final ConcurrentHashMap<GenerationDataType, Functions> share = new ConcurrentHashMap<>(50);
   private static final ConcurrentHashMap<Function, GenerationDataType> reverse = new ConcurrentHashMap<>(200);
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   static void register(Function f, GenerationDataType resultType) {
-    reverse.put(f, resultType);
+    if (resultType instanceof DataTypeGroup) {
+      for (GenerationDataType type : ((DataTypeGroup) resultType).types()) {
+        registerSingle(f, type);
+      }
+    } else if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
+      final ListDataType result = (ListDataType) resultType;
+      final GenerationDataType type = result.getType();
+      // register specific list type
+      if (type instanceof DataTypeGroup) {
+        for (GenerationDataType dataType : ((DataTypeGroup) type).types()) {
+          registerSingle(f, result.compoundType(dataType));
+        }
+      } else {
+        registerSingle(f, resultType);
+      }
+    } else {
+      registerSingle(f, resultType);
+    }
+  }
 
-    // TODO 12/14/16 handle list type
+  private static void registerSingle(Function f, GenerationDataType resultType) {
     final Functions val;
     if (share.containsKey(resultType)) {
       val = share.get(resultType);
@@ -38,32 +53,27 @@ public class FunctionMap {
 
   /**
    * find exact data type's conversion function
-   * @param resultType a {@link DataType} or {@link CompoundDataType}
-   * @param udfFilter options to prefer some udf
-   * @return conversion function
    *
+   * @param resultType a {@link DataType} or {@link CompoundDataType}
+   * @param udfFilter  options to prefer some udf
+   * @return conversion function
    * @see DataType
    * @see CompoundDataType
    */
   static Function random(GenerationDataType resultType, UdfFilter udfFilter) {
-    checkArgument(resultType instanceof DataType || resultType instanceof CompoundDataType);
-    GenerationDataType larger = resultType;
-    Functions functions = getFilteredFunctions(udfFilter, larger);
+    checkArgument(DataType.innerVisible(resultType));
+    Functions functions = getFilteredFunctions(udfFilter, resultType);
     while (functions.isEmpty()) {
-      // handle group type
-      // TODO 1/2/17 not right to use larger group, should use smaller
-      larger = DataTypeGroup.largerGroup(larger);
-      functions = getFilteredFunctions(udfFilter, larger);
+      functions = getFilteredFunctions(udfFilter, resultType);
+      System.out.println("possible bugs in FunctionMap");
     }
     return functions.get(random.nextInt(functions.size()));
   }
 
   private static Functions getFilteredFunctions(UdfFilter udfFilter, GenerationDataType type) {
     final Functions functions = share.get(type);
-    if (functions == null) {
-      return Functions.EMPTY;
-    }
-    return functions.filter(udfFilter);
+    assert functions != null;
+    return functions.shouldNotFilter() ? functions : functions.filter(udfFilter);
   }
 
   public static GenerationDataType resultType(Function f) {
@@ -86,7 +96,7 @@ public class FunctionMap {
     for (MathOp mathOp : MathOp.values()) {
       mathOp.register();
     }
-    for (Function stringOp: StringOp.combinedValues()) {
+    for (Function stringOp : StringOp.combinedValues()) {
       stringOp.register();
     }
     for (ConversionOp conversionOp : ConversionOp.values()) {

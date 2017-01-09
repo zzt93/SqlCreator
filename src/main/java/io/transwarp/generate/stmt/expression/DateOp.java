@@ -28,7 +28,7 @@ public enum DateOp implements Function {
   DATE_STRING_AND_PATTERN("DATE_FORMAT(", "to_char(") {
     @Override
     public void register() {
-      FunctionMap.register(this, DataType.DATE_STRING_WITH_PATTERN);
+      FunctionMap.register(this, DataType.Internal.DATE_STRING_WITH_PATTERN);
     }
 
     @Override
@@ -43,7 +43,7 @@ public enum DateOp implements Function {
       return DATE_WITH_PATTERN;
     }
   },
-  TO_DATE("TO_DATE(", "to_date(") {
+  TO_DATE("STR_TO_DATE(", "to_date(") {
     @Override
     public void register() {
       FunctionMap.register(this, DataType.UNIX_DATE);
@@ -51,7 +51,7 @@ public enum DateOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataType.DATE_STRING_WITH_PATTERN};
+      return new GenerationDataType[]{DataType.Internal.DATE_STRING_WITH_PATTERN};
     }
   },;
 
@@ -82,7 +82,7 @@ public enum DateOp implements Function {
 
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-    return new GenerationDataType[]{DataType.DATE_STRING_WITH_PATTERN};
+    return new GenerationDataType[]{DataType.Internal.DATE_STRING_WITH_PATTERN};
   }
 
   private enum DateArithOp implements Function {
@@ -90,11 +90,11 @@ public enum DateOp implements Function {
     ADD_MONTHS(new String[]{"ADD_MONTHS(", "ADD_MONTHS("}, new String[]{Function.PARAMETER_SPLIT, Function.PARAMETER_SPLIT}),
     DATE_ADD(new String[]{"DATE_ADD(", "to_char("}, new String[]{Function.PARAMETER_SPLIT, " + "}),
     DATE_SUB(new String[]{"DATE_SUB(", "to_char("}, new String[]{Function.PARAMETER_SPLIT, " - "}),
-    DATE_DIFF(Strs.of("DATE_DIFF(", "("), Strs.of(Function.PARAMETER_SPLIT, " - ")) {
+    DATE_DIFF(Strs.of("(", "("), Strs.of(" - ", " - ")) {
       @Override
       public void register() {
+        // TODO 1/9/17 interval type?
         FunctionMap.register(this, DataType.INT);
-        FunctionMap.register(this, DataTypeGroup.INT_GROUP);
       }
 
       @Override
@@ -127,7 +127,7 @@ public enum DateOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.DATE_GROUP, DataTypeGroup.INT_GROUP};
+      return new GenerationDataType[]{DataTypeGroup.DATE_GROUP, DataTypeGroup.numRandDownCast(DataType.INT)};
     }
   }
 
@@ -208,7 +208,6 @@ public enum DateOp implements Function {
 
     @Override
     public void register() {
-      FunctionMap.register(this, DataType.INT);
       FunctionMap.register(this, DataTypeGroup.INT_GROUP);
     }
 

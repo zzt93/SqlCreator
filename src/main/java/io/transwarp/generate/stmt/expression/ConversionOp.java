@@ -14,6 +14,21 @@ import java.util.Arrays;
  * <h3></h3>
  */
 public enum ConversionOp implements Function {
+  BASE64("BASE64(") {
+    @Override
+    public void register() {
+    }
+
+    @Override
+    public Operand apply(Dialect dialect, Operand... input) {
+      return null;
+    }
+
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[0];
+    }
+  },
   CAST("cast(") {
     @Override
     public void register() {
@@ -55,6 +70,11 @@ public enum ConversionOp implements Function {
   },
   SAME("") {
     @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.ALL_GROUP);
+    }
+
+    @Override
     public Operand apply(Dialect dialect, Operand... input) {
       return input[0];
     }
@@ -89,7 +109,7 @@ public enum ConversionOp implements Function {
       return res;
     }
   },
-  SUB_QUERY("(") {
+  SUB_QUERY("") {
     @Override
     public void register() {
       FunctionMap.register(this, ListDataType.ALL_ONE_COL_QUERY);
@@ -113,9 +133,5 @@ public enum ConversionOp implements Function {
     op = s;
   }
 
-  @Override
-  public void register() {
-    FunctionMap.register(this, DataTypeGroup.ALL_GROUP);
-  }
 
 }

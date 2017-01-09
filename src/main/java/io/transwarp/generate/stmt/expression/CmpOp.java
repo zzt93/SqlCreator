@@ -35,7 +35,12 @@ public enum CmpOp implements Function {
       return ONE_ALL_OPS;
     }
   },
-  LIKE(" LIKE "),
+  LIKE(" LIKE ") {
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
+    }
+  },
   BETWEEN(" BETWEEN ") {
     private static final String and = " AND ";
 

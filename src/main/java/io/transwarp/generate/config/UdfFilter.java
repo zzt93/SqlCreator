@@ -1,6 +1,5 @@
 package io.transwarp.generate.config;
 
-import io.transwarp.generate.stmt.expression.DateOp;
 import io.transwarp.generate.stmt.expression.Function;
 
 import java.util.HashMap;
@@ -25,8 +24,6 @@ public class UdfFilter {
   }
 
   UdfFilter() {
-    // default must chosen udf
-    preference.put(DateOp.TO_DATE, Possibility.CERTAIN);
   }
 
   UdfFilter addPreference(Function f, Possibility p) {

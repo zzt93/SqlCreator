@@ -32,17 +32,18 @@ public enum DataType implements GenerationDataType {
   BINARY {
     @Override
     public String[] randomData(Dialect[] dialects) {
-      return new String[]{"", ""};
+      final String s = STRING_DELIMITER + SequenceDataType.CHARS.randomData(dialects)[0] + STRING_DELIMITER;
+      return new String[]{"binary(" + s + Function.CLOSE_PAREN, "to_clob(" + s + Function.CLOSE_PAREN};
     }
   },
   BYTE {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of("" + (random.nextInt(0xff) - 0x80), dialects.length);
+      return Strs.of("" + (random.nextInt(0x1 << 8) - 0x80), dialects.length);
     }
   },
   U_BYTE {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of("" + random.nextInt(256), dialects.length);
+      return Strs.of("" + random.nextInt(0x1 << 8), dialects.length);
     }
 
     public String getMax() {
@@ -55,7 +56,7 @@ public enum DataType implements GenerationDataType {
   },
   SHORT {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Short.toString((short) (random.nextInt(0xffff) + Short.MIN_VALUE)), dialects.length);
+      return Strs.of(Short.toString((short) (random.nextInt(0x1 << 16) + Short.MIN_VALUE)), dialects.length);
     }
 
     public String getMax() {
@@ -68,7 +69,7 @@ public enum DataType implements GenerationDataType {
   },
   U_SHORT {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Short.toString((short) random.nextInt(0xffff)), dialects.length);
+      return Strs.of(Integer.toString(random.nextInt(0x1 << 16)), dialects.length);
     }
   },
   INT {
@@ -86,7 +87,7 @@ public enum DataType implements GenerationDataType {
   },
   U_INT {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Long.toString(random.nextInt(Integer.MAX_VALUE)), dialects.length);
+      return Strs.of(Long.toString(random.nextLong(0, 0x1L << 32)), dialects.length);
     }
 
   },
@@ -152,18 +153,10 @@ public enum DataType implements GenerationDataType {
   },
 
   /**
-   * Although the following three are string, but should not put into string group
+   * Although the following two are string, but should not put into string group
    * because may cause other string used in date op
    * @see io.transwarp.generate.stmt.expression.FunctionMap#random
    */
-  DATE_STRING_WITH_PATTERN {
-    @Override
-    public String[] randomData(Dialect[] dialects) {
-      final String format = randomDateFormat();
-      String res = DataType.dateString(format) + Function.PARAMETER_SPLIT + STRING_DELIMITER + format + STRING_DELIMITER;
-      return Strs.of(res, dialects.length);
-    }
-  },
   DATE_PATTERN {
     @Override
     public String[] randomData(Dialect[] dialects) {
@@ -198,6 +191,14 @@ public enum DataType implements GenerationDataType {
   @Override
   public String getMin() {
     throw new NotImplementedException();
+  }
+
+  public static boolean outerVisible(GenerationDataType resultType) {
+    return resultType instanceof DataType || resultType instanceof CompoundDataType;
+  }
+
+  public static boolean innerVisible(GenerationDataType type) {
+    return outerVisible(type) || Internal.DATE_STRING_WITH_PATTERN == type;
   }
 
   public enum Meta implements GenerationDataType {
@@ -271,6 +272,26 @@ public enum DataType implements GenerationDataType {
         }
       }
       return s;
+    }
+  }
+  public enum Internal implements GenerationDataType {
+    DATE_STRING_WITH_PATTERN {
+      @Override
+      public String[] randomData(Dialect[] dialects) {
+        final String format = randomDateFormat();
+        String res = DataType.dateString(format) + Function.PARAMETER_SPLIT + STRING_DELIMITER + format + STRING_DELIMITER;
+        return Strs.of(res, dialects.length);
+      }
+    },;
+
+    @Override
+    public String getMax() {
+      throw new NotImplementedException();
+    }
+
+    @Override
+    public String getMin() {
+      throw new NotImplementedException();
     }
   }
 

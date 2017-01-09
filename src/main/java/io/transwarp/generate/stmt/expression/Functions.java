@@ -45,7 +45,11 @@ public class Functions {
     return new Functions(fs);
   }
 
-  public boolean isEmpty() {
+  boolean isEmpty() {
     return functions.isEmpty();
+  }
+
+  boolean shouldNotFilter() {
+    return size() == 1;
   }
 }

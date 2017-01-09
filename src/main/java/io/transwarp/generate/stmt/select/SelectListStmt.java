@@ -12,6 +12,7 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Created by zzt on 12/12/16.
@@ -24,12 +25,14 @@ public class SelectListStmt implements SqlGeneration {
   SelectListStmt(Table from, PerGenerationConfig config) {
     final int colLimit = config.getSelectColMax();
     if (config.hasResultLimit()) {
-      final GenerationDataType[] results = config.getResults();
+      final Map<GenerationDataType, Possibility> results = config.getResults();
       cols = new ArrayList<>(config.getSelectColMax());
-      for (GenerationDataType result : results) {
-        cols.addAll(Arrays.asList(Column.fromOperand(Operand.getOperands(from, 1, result, config))));
+      for (GenerationDataType type : results.keySet()) {
+        if (results.get(type).chooseFirstOrRandom(true, false)) {
+          cols.addAll(Arrays.asList(Column.fromOperand(Operand.getOperands(from, 1, type, config))));
+        }
       }
-      cols.addAll(TableUtil.randomSubCols(from, config.getSelectColMax() - results.length));
+      cols.addAll(TableUtil.randomSubCols(from, colLimit - results.size()));
     } else {
       cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {
