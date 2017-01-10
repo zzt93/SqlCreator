@@ -14,7 +14,7 @@ import io.transwarp.generate.type.GenerationDataType;
  * <li>for function with default arguments, implement multiple times</li>
  * <li>for functions with variable args,
  * mark last input type to be variable length: {@link StringOp.VarStringOp#inputTypes(GenerationDataType)}</li>
- *
+ * <p>
  * <h3>how to handle input relation</h3>
  * <li>{@link io.transwarp.generate.config.InputRelation}</li>
  * <li>{@link ArithOp} & {@link ConversionOp} specify in the {@link #inputTypes(GenerationDataType)}</li>
@@ -48,6 +48,8 @@ public interface Function {
   void register();
 
   /**
+   * TODO may change to `Dialect[] dialects`, because generation should be in one method call (if it has random data)
+   * <p>
    * <li> update sql</li>
    * <li> update type -- set at {@link Operand#makeOperand(GenerationDataType, Table, PerGenerationConfig, int)}</li>
    *
@@ -55,6 +57,8 @@ public interface Function {
    * @param input   parameter
    * @return result
    * @see ParenWrapper
+   * @see GenerationDataType#randomData(Dialect[]) -- generation should in one method call
+   * @see io.transwarp.generate.common.Column#getNameOrConst(Dialect[]) -- generation put in one call
    */
   Operand apply(Dialect dialect, Operand... input);
 

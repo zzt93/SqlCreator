@@ -32,7 +32,6 @@ public class SelectResult implements Table {
     selectListStmt = new SelectListStmt(from, newConfig);
     fromStmt = new FromStmt(from, newConfig);
     whereStmt = new WhereStmt(from, newConfig);
-    // TODO 12/29/16 replace sub-query; add set operation
     addSetOp();
   }
 
@@ -45,6 +44,7 @@ public class SelectResult implements Table {
   }
 
   private void addSetOp() {
+    // TODO 1/10/17 add set op
   }
 
 
@@ -53,7 +53,7 @@ public class SelectResult implements Table {
       this.from = TableUtil.randomTable(src);
     } else {
       makeFromTable(joinTimes - 1, src);
-      // TODO 12/13/16 add join condition
+      // TODO 12/13/16 add join condition; add alias
       // TODO 12/29/16 join with sub-query
 //      from = from.join(TableUtil.randomTable(src), );
     }

@@ -32,7 +32,7 @@ public enum DataType implements GenerationDataType {
   BINARY {
     @Override
     public String[] randomData(Dialect[] dialects) {
-      final String s = STRING_DELIMITER + SequenceDataType.CHARS.randomData(dialects)[0] + STRING_DELIMITER;
+      final String s = SequenceDataType.CHARS.randomData(dialects)[0];
       return new String[]{"binary(" + s + Function.CLOSE_PAREN, "to_clob(" + s + Function.CLOSE_PAREN};
     }
   },
@@ -42,8 +42,12 @@ public enum DataType implements GenerationDataType {
     }
   },
   U_BYTE {
+    /**
+     * @return [0, 128)
+     * @see DataTypeGroup#UINT_GROUP about the range
+     */
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of("" + random.nextInt(0x1 << 8), dialects.length);
+      return Strs.of("" + random.nextInt(0x1 << 7), dialects.length);
     }
 
     public String getMax() {
@@ -68,8 +72,12 @@ public enum DataType implements GenerationDataType {
     }
   },
   U_SHORT {
+    /**
+     * @return [0, 2**15)
+     * @see DataTypeGroup#UINT_GROUP about the range
+     */
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Integer.toString(random.nextInt(0x1 << 16)), dialects.length);
+      return Strs.of(Integer.toString(random.nextInt(0x1 << 15)), dialects.length);
     }
   },
   INT {
@@ -86,8 +94,12 @@ public enum DataType implements GenerationDataType {
     }
   },
   U_INT {
+    /**
+     * @return [0, 2**31)
+     * @see DataTypeGroup#UINT_GROUP about the range
+     */
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Long.toString(random.nextLong(0, 0x1L << 32)), dialects.length);
+      return Strs.of(Long.toString(random.nextLong(0, 0x1L << 31)), dialects.length);
     }
 
   },

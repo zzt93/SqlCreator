@@ -52,10 +52,15 @@ public class TableUtil {
     return src[random.nextInt(src.length)];
   }
 
-  private static AtomicLong atomicLong = new AtomicLong(0);
+  private static AtomicLong tableCounter = new AtomicLong(0);
+  private static AtomicLong colCounter = new AtomicLong(0);
 
   public static String nextAlias() {
-    return "alias" + atomicLong.getAndAdd(1);
+    return " alias" + tableCounter.getAndAdd(1);
+  }
+
+  static String nextColAlias() {
+    return " col_alias" + colCounter.getAndAdd(1);
   }
 
   public static ArrayList<Column> randomSubCols(Table from, Possibility possibility, int colLimit) {

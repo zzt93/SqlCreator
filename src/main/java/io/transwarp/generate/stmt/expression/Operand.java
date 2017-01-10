@@ -13,7 +13,6 @@ import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -92,18 +91,6 @@ public class Operand {
       assert type == res[i].type;
     }
     return res;
-  }
-
-  private static GenerationDataType getSameTypeGroupCols(Table src, ArrayList<Column> same) {
-    final ArrayList<Column> columns = src.columns();
-    final GenerationDataType type = TableUtil.randomCol(src).getType();
-    final DataTypeGroup group = DataTypeGroup.groupOf(type);
-    for (Column column : columns) {
-      if (group.contains(column.getType())) {
-        same.add(column);
-      }
-    }
-    return type;
   }
 
   public StringBuilder sql(Dialect dialect) {

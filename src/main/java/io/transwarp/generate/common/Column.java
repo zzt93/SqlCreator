@@ -14,17 +14,21 @@ import io.transwarp.generate.type.GenerationDataType;
  */
 public class Column {
 
+  private static final String EMPTY = "";
   private final Possibility poss;
   private final Operand operand;
 
   //  private Table table;
+  private final String alias;
+
 
   private Column(String name, GenerationDataType type) {
-    this(new Operand(type, name, name));
+    this(new Operand(type, name, name), EMPTY);
   }
 
-  private Column(Operand operand) {
+  private Column(Operand operand, String alias) {
     this.operand = operand;
+    this.alias = alias;
     poss = Possibility.NAME_CONST_POSSIBILITY;
   }
 
@@ -46,12 +50,16 @@ public class Column {
   public static Column[] fromOperand(Operand... operands) {
     Column[] res = new Column[operands.length];
     for (int i = 0; i < operands.length; i++) {
-      res[i] = new Column(operands[i]);
+      res[i] = new Column(operands[i], TableUtil.nextAlias());
     }
     return res;
   }
 
-  public StringBuilder getName(Dialect dialect) {
-    return operand.sql(dialect);
+  public StringBuilder getNameWithAlias(Dialect dialect) {
+    // not converted from expression/operand, so no need to append alias
+    if (alias.equals(EMPTY)) {
+      return operand.sql(dialect);
+    }
+    return new StringBuilder(operand.sql(dialect)).append(alias);
   }
 }

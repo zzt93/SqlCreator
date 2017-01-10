@@ -51,7 +51,7 @@ public class SelectListStmt implements SqlGeneration {
   public StringBuilder sql(Dialect dialect) {
     final StringBuilder res = new StringBuilder("select ");
     for (Column col : cols) {
-      res.append(col.getName(dialect)).append(", ");
+      res.append(col.getNameWithAlias(dialect)).append(", ");
     }
     res.setLength(res.length() - 2);
     return res;

@@ -7,6 +7,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,9 +24,12 @@ import java.util.concurrent.ThreadLocalRandom;
 public enum DataTypeGroup implements GenerationDataType {
 
   DECIMAL_GROUP(DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  /**
+   * My unsigned int group is actually non-negative half int, not unsigned range in programming language
+   */
   UINT_GROUP(DataType.U_BYTE, DataType.U_SHORT, DataType.U_INT),
   INT_GROUP(DataType.BYTE, DataType.SHORT, DataType.INT, SequenceDataType.BITS, DataType.LONG),
-  NUM_GROUP(DataType.BYTE, DataType.U_BYTE, DataType.SHORT, DataType.U_SHORT, DataType.INT, DataType.U_INT, SequenceDataType.BITS, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  NUM_GROUP(DataType.U_BYTE, DataType.BYTE, DataType.U_SHORT, DataType.SHORT, DataType.U_INT, DataType.INT, SequenceDataType.BITS, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
   STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
   DATE_GROUP(DataType.UNIX_DATE, DataType.TIMESTAMP),
   LIST_GROUP() {
@@ -45,7 +49,6 @@ public enum DataTypeGroup implements GenerationDataType {
       final DataTypeGroup type = (DataTypeGroup) types.get(random.nextInt(types.size()));
       return type.randomType();
     }
-    // TODO 1/9/17 other method?
   },
   /**
    * <p>this must be the last group, or {@link #groupOf(GenerationDataType)} will always return this group
@@ -168,6 +171,6 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public Collection<GenerationDataType> types() {
-    return types;
+    return Collections.unmodifiableCollection(types);
   }
 }
