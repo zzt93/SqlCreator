@@ -97,11 +97,11 @@ public enum CmpOp implements Function {
     }
   };
 
-  private static final GenerationDataType[] Thr_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
-  private static final GenerationDataType[] TWO_ALL_OPS = {DataTypeGroup.ALL_GROUP, DataTypeGroup.ALL_GROUP};
-  public static final GenerationDataType[] IN_LIST_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_LIST};
-  public static final GenerationDataType[] IN_QUERY_OPS = {DataTypeGroup.ALL_GROUP, ListDataType.ALL_ONE_COL_QUERY};
-  private static final GenerationDataType[] ONE_ALL_OPS = {DataTypeGroup.ALL_GROUP};
+  private static final GenerationDataType[] Thr_ALL_OPS = {DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST};
+  private static final GenerationDataType[] TWO_ALL_OPS = {DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST};
+  public static final GenerationDataType[] IN_LIST_OPS = {DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, ListDataType.ALL_BUT_LIST};
+  public static final GenerationDataType[] IN_QUERY_OPS = {DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, ListDataType.ALL_BUT_ONE_COL_QUERY};
+  private static final GenerationDataType[] ONE_ALL_OPS = {DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST};
 
   private final String operator;
 

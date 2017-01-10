@@ -39,6 +39,14 @@ public enum DataTypeGroup implements GenerationDataType {
       return type instanceof ListDataType;
     }
   },
+  ALL_BUT_BOOL_BINARY_LIST(NUM_GROUP, STRING_GROUP, DATE_GROUP) {
+    @Override
+    public GenerationDataType randomType() {
+      final DataTypeGroup type = (DataTypeGroup) types.get(random.nextInt(types.size()));
+      return type.randomType();
+    }
+    // TODO 1/9/17 other method?
+  },
   /**
    * <p>this must be the last group, or {@link #groupOf(GenerationDataType)} will always return this group
    * because others are subset of this group</p>
