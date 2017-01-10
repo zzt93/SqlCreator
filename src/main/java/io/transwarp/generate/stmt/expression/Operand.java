@@ -34,10 +34,6 @@ public class Operand {
 
   private EnumMap<Dialect, StringBuilder> versions = new EnumMap<>(Dialect.class);
 
-  private Operand(GenerationDataType type, String operand) {
-    this(type, operand, operand);
-  }
-
   public Operand(GenerationDataType type, String... ops) {
     this.type = type;
     final Dialect[] dialects = GlobalConfig.getCmpBase();

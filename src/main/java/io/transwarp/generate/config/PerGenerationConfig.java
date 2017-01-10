@@ -21,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PerGenerationConfig {
 
+  // TODO may add input requirement: const, expr, sub-query -- by udf depth and Column#possiblity
+
   // operand
   private int udfDepth;
   private int queryDepth;
