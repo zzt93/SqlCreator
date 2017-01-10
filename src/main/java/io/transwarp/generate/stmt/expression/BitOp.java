@@ -11,7 +11,15 @@ import io.transwarp.generate.util.Strs;
  * <h3></h3>
  */
 public enum BitOp implements Function {
-  LOGICAL_AND(Strs.of("(", "bitand("), Strs.of(" & ", ", ")),;
+  LOGICAL_AND(Strs.of("(", "bitand("), Strs.of(" & ", ", ")),
+
+  MOD(Strs.of("(", "mod("), Strs.of(" % ", ", ")) {
+    @Override
+    public void register() {
+      FunctionMap.register(this, DataTypeGroup.NUM_GROUP);
+    }
+  },
+  ;
 
   private final String[] ops;
   private final String[] delim;

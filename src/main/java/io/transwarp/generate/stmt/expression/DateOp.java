@@ -170,7 +170,7 @@ public enum DateOp implements Function {
       @Override
       public Operand apply(Dialect dialect, Operand... input) {
         if (dialect == Dialect.ORACLE) {
-          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'FmDay'").append(Function.CLOSE_PAREN);
+          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'D'").append(Function.CLOSE_PAREN);
         } else {
           super.apply(dialect, input);
         }

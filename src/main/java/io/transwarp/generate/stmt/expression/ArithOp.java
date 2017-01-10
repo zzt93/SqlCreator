@@ -14,7 +14,6 @@ public enum ArithOp implements Function {
   MINUS(" - "),
   MUL(" * "),
   DIV(" / "),
-  MOD(" % "),
   ;
 
 
@@ -38,10 +37,5 @@ public enum ArithOp implements Function {
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
     return new GenerationDataType[]{resultType, DataTypeGroup.numRandDownCast(resultType)};
-  }
-
-  @Override
-  public String toString() {
-    return op;
   }
 }

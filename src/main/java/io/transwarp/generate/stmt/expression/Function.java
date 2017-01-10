@@ -64,6 +64,7 @@ public interface Function {
 
   /**
    * TODO may change return type to add the restriction between inputs, i.e. specify input relation for each function
+   * TODO may change return type to add input requirement: const, expr, sub-query
    * <li>sometimes, the result type depend on input type, like {@link ArithOp},
    * by using the parameter, we can avoid overloading manually</li>
    * <li>input type can be set as large as possible, so we could generate more choice, more exact type

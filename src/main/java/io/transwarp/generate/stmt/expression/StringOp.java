@@ -16,8 +16,13 @@ import java.util.concurrent.ThreadLocalRandom;
  * <h3></h3>
  */
 public enum StringOp implements Function {
-  LOWER("LOWER("), LCASE("LCASE("), LTRIM("LTRIM("),
+  LOWER("LOWER("), LTRIM("LTRIM("),
   REPEAT("REPEAT(") {
+    @Override
+    public void register() {
+      // TODO 1/10/17 implement using lpad(str, n*length(str), str)
+    }
+
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
       return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.UINT_GROUP};
@@ -130,7 +135,7 @@ public enum StringOp implements Function {
 
   private enum StringToIntOp implements Function {
     ASCII("ASCII(", "ASCII("),
-    INSTR("INSTR(", "instr") {
+    INSTR("INSTR(", "instr(") {
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {
         return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.STRING_GROUP};
