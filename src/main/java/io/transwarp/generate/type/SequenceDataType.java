@@ -40,7 +40,7 @@ public class SequenceDataType extends CompoundDataType {
         @Override
         public String[] randomData(Dialect[] dialects) {
           final String s = Long.toString(Long.parseLong(getType().randomData(dialects)[0], 2));
-          return Strs.of(s, dialects.length);
+          return Strs.repeat(s, dialects.length);
         }
       };
     }
@@ -60,8 +60,8 @@ public class SequenceDataType extends CompoundDataType {
   @Override
   public String[] randomData(Dialect[] dialects) {
     final Joiner on = Joiner.on("");
-    final String s = DataType.STRING_DELIMITER + on.join(DataTypeUtil.randomSize(type, len, dialects)[0]) + DataType.STRING_DELIMITER;
-    return Strs.of(s, dialects.length);
+    final String s = Strs.sqlString(on.join(DataTypeUtil.randomSize(type, len, dialects)[0]));
+    return Strs.repeat(s, dialects.length);
   }
 
   @Override

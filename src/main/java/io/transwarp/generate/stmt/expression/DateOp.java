@@ -2,6 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -97,13 +98,26 @@ public enum DateOp implements Function {
     DATE_DIFF(Strs.of("(", "("), Strs.of(" - ", " - ")) {
       @Override
       public void register() {
-        // TODO 1/9/17 interval type?
-        FunctionMap.register(this, DataType.INT);
+        FunctionMap.register(this, DataType.INTERVAL);
       }
 
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {
         return new GenerationDataType[]{DataTypeGroup.DATE_GROUP, DataTypeGroup.DATE_GROUP};
+      }
+    },
+    DATE_TIME_ADD(Strs.of("(", "("), Strs.of(" + ", " + ")) {
+      @Override
+      public void register() {
+        FunctionMap.register(this, DataTypeGroup.DATE_GROUP);
+      }
+
+      @Override
+      public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+        if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+          return new GenerationDataType[]{DataType.INTERVAL, resultType};
+        }
+        return new GenerationDataType[]{resultType, DataType.INTERVAL};
       }
     },;
 

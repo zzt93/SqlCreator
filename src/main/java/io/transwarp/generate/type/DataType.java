@@ -38,7 +38,7 @@ public enum DataType implements GenerationDataType {
   },
   BYTE {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of("" + (random.nextInt(0x1 << 8) - 0x80), dialects.length);
+      return Strs.repeat("" + (random.nextInt(0x1 << 8) - 0x80), dialects.length);
     }
   },
   U_BYTE {
@@ -47,7 +47,7 @@ public enum DataType implements GenerationDataType {
      * @see DataTypeGroup#UINT_GROUP about the range
      */
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of("" + random.nextInt(0x1 << 7), dialects.length);
+      return Strs.repeat("" + random.nextInt(0x1 << 7), dialects.length);
     }
 
     public String getMax() {
@@ -60,7 +60,7 @@ public enum DataType implements GenerationDataType {
   },
   SHORT {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Short.toString((short) (random.nextInt(0x1 << 16) + Short.MIN_VALUE)), dialects.length);
+      return Strs.repeat(Short.toString((short) (random.nextInt(0x1 << 16) + Short.MIN_VALUE)), dialects.length);
     }
 
     public String getMax() {
@@ -77,12 +77,12 @@ public enum DataType implements GenerationDataType {
      * @see DataTypeGroup#UINT_GROUP about the range
      */
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Integer.toString(random.nextInt(0x1 << 15)), dialects.length);
+      return Strs.repeat(Integer.toString(random.nextInt(0x1 << 15)), dialects.length);
     }
   },
   INT {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Integer.toString(random.nextInt()), dialects.length);
+      return Strs.repeat(Integer.toString(random.nextInt()), dialects.length);
     }
 
     public String getMax() {
@@ -99,13 +99,13 @@ public enum DataType implements GenerationDataType {
      * @see DataTypeGroup#UINT_GROUP about the range
      */
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Long.toString(random.nextLong(0, 0x1L << 31)), dialects.length);
+      return Strs.repeat(Long.toString(random.nextLong(0, 0x1L << 31)), dialects.length);
     }
 
   },
   LONG {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Long.toString(random.nextLong()), dialects.length);
+      return Strs.repeat(Long.toString(random.nextLong()), dialects.length);
     }
 
     public String getMax() {
@@ -118,7 +118,7 @@ public enum DataType implements GenerationDataType {
   },
   FLOAT {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Float.toString(random.nextFloat()), dialects.length);
+      return Strs.repeat(Float.toString(random.nextFloat()), dialects.length);
     }
 
     public String getMax() {
@@ -131,14 +131,14 @@ public enum DataType implements GenerationDataType {
   },
   DOUBLE {
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(Double.toString(random.nextDouble()), dialects.length);
+      return Strs.repeat(Double.toString(random.nextDouble()), dialects.length);
     }
   },
   DECIMAL {
     public String[] randomData(Dialect[] dialects) {
       String integer = String.valueOf(random.nextInt());
       String decimal = String.valueOf(Math.abs(random.nextInt()));
-      return Strs.of(integer + "." + decimal, dialects.length);
+      return Strs.repeat(integer + "." + decimal, dialects.length);
     }
   },
   UNIX_DATE {
@@ -150,45 +150,50 @@ public enum DataType implements GenerationDataType {
     public String[] randomData(Dialect[] dialects) {
       if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
         final String dateConst = "DATE" + DataType.dateString(DEFAULT);
-        return Strs.of(dateConst, dialects.length);
+        return Strs.repeat(dateConst, dialects.length);
       }
-      return Strs.of("sysdate", dialects.length);
+      return Strs.repeat("sysdate", dialects.length);
     }
   },
   TIMESTAMP {
     public String[] randomData(Dialect[] dialects) {
       if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
-        return Strs.of(name() + DataType.dateString(YYYY_MM_DD_HH_MM_SS), dialects.length);
+        return Strs.repeat(name() + DataType.dateString(YYYY_MM_DD_HH_MM_SS), dialects.length);
       }
       return Strs.of("sysdate", "current_timestamp");
     }
   },
 
-  /**
-   * Although the following two are string, but should not put into string group
-   * because may cause other string used in date op
-   * @see io.transwarp.generate.stmt.expression.FunctionMap#random
-   */
   DATE_PATTERN {
     @Override
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(STRING_DELIMITER + DataType.randomDateFormat() + STRING_DELIMITER, dialects.length);
+      return Strs.repeat(Strs.sqlString(DataType.randomDateFormat()), dialects.length);
     }
   },
   TIMESTAMP_PATTERN {
     @Override
     public String[] randomData(Dialect[] dialects) {
-      return Strs.of(STRING_DELIMITER + DataType.randomDateFormat() + HH_MM_SS + STRING_DELIMITER, dialects.length);
+      return Strs.repeat(Strs.sqlString(DataType.randomDateFormat() + HH_MM_SS), dialects.length);
     }
   },
+  INTERVAL {
+    private String[] types = {"year", "month", "day", "hour", "minute", "second"};
+    private int[] upLimit = {Integer.MAX_VALUE, 12, Integer.MAX_VALUE, 24, 60, 60};
+    private int[] lowerLimit = {Integer.MIN_VALUE, 0, Integer.MIN_VALUE, 0, 0, 0,};
+    @Override
+    public String[] randomData(Dialect[] dialects) {
+      final int index = random.nextInt(types.length);
+      return Strs.repeat(INTERVAL_PREFIX + Strs.sqlString(random.nextLong(lowerLimit[index], upLimit[index]))+ types[index], dialects.length);
+    }
+  }
   ;
 
-  public static final String STRING_DELIMITER = "'";
+  private static final String INTERVAL_PREFIX = "interval";
 
   private static String dateString(String pattern) {
     long l = random.nextLong(DATE_MIN, DATE_MAX);
     SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-    return STRING_DELIMITER + sdf.format(new Date(l)) + STRING_DELIMITER;
+    return Strs.sqlString(sdf.format(new Date(l)));
   }
 
   private static String randomDateFormat() {
@@ -217,7 +222,7 @@ public enum DataType implements GenerationDataType {
     BIT {
       @Override
       public String[] randomData(Dialect[] dialects) {
-        return Strs.of(random.nextBoolean() ? "1" : "0", dialects.length);
+        return Strs.repeat(random.nextBoolean() ? "1" : "0", dialects.length);
       }
 
       @Override
@@ -235,7 +240,7 @@ public enum DataType implements GenerationDataType {
 
       public String[] randomData(Dialect[] dialects) {
         final String s = "" + (char) (MIN_CHAR + random.nextInt(count));
-        return Strs.of(escape(s), dialects.length);
+        return Strs.repeat(escape(s), dialects.length);
       }
 
       /**
@@ -258,7 +263,7 @@ public enum DataType implements GenerationDataType {
       @Override
       public String[] randomData(Dialect[] dialects) {
         final String s = "" + (char) (MIN_CHAR + random.nextInt(count));
-        return Strs.of(Meta.escape(s), dialects.length);
+        return Strs.repeat(Meta.escape(s), dialects.length);
       }
 
       /**
@@ -292,8 +297,8 @@ public enum DataType implements GenerationDataType {
       @Override
       public String[] randomData(Dialect[] dialects) {
         final String format = randomDateFormat();
-        String res = DataType.dateString(format) + Function.PARAMETER_SPLIT + STRING_DELIMITER + format + STRING_DELIMITER;
-        return Strs.of(res, dialects.length);
+        String res = DataType.dateString(format) + Function.PARAMETER_SPLIT + Strs.sqlString(format);
+        return Strs.repeat(res, dialects.length);
       }
     },;
 
