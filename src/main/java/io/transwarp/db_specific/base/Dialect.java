@@ -15,8 +15,24 @@ import io.transwarp.generate.type.*;
  */
 public enum Dialect {
 
-  INCEPTOR(InceptorType.values()),
-  ORACLE(OracleType.values()),;
+  INCEPTOR(InceptorType.values()) {
+    @Override
+    public DBType getOriginType(GenerationDataType mapped) {
+      if (mapped == DataType.LONG) {
+        return InceptorType.BIGINT;
+      }
+      return super.getOriginType(mapped);
+    }
+  },
+  ORACLE(OracleType.values()) {
+    @Override
+    public DBType getOriginType(GenerationDataType mapped) {
+      if (mapped == DataType.LONG) {
+        return OracleType.NUMBER;
+      }
+      return super.getOriginType(mapped);
+    }
+  },;
 
   private final DBType[] values;
 

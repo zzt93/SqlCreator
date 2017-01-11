@@ -178,15 +178,15 @@ public enum DataType implements GenerationDataType {
   },
   INTERVAL {
     private String[] types = {"year", "month", "day", "hour", "minute", "second"};
-    private int[] upLimit = {Integer.MAX_VALUE, 12, Integer.MAX_VALUE, 24, 60, 60};
-    private int[] lowerLimit = {Integer.MIN_VALUE, 0, Integer.MIN_VALUE, 0, 0, 0,};
+    private int[] upLimit = {1000, 12, 1 << 15, 24, 60, 60};
+    private int[] lowerLimit = {-1000, 0, -(1 << 15), 0, 0, 0,};
+
     @Override
     public String[] randomData(Dialect[] dialects) {
       final int index = random.nextInt(types.length);
-      return Strs.repeat(INTERVAL_PREFIX + Strs.sqlString(random.nextLong(lowerLimit[index], upLimit[index]))+ types[index], dialects.length);
+      return Strs.repeat(INTERVAL_PREFIX + Strs.sqlString(random.nextLong(lowerLimit[index], upLimit[index])) + types[index], dialects.length);
     }
-  }
-  ;
+  };
 
   private static final String INTERVAL_PREFIX = "interval";
 
@@ -292,6 +292,7 @@ public enum DataType implements GenerationDataType {
       return s;
     }
   }
+
   public enum Internal implements GenerationDataType {
     DATE_STRING_WITH_PATTERN {
       @Override
