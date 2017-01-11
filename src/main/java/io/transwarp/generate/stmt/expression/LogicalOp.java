@@ -10,12 +10,14 @@ import io.transwarp.generate.type.GenerationDataType;
  * <h3></h3>
  */
 public enum LogicalOp implements Function {
-  AND(" AND ") , OR(" OR "),
+  AND(" AND "), OR(" OR "),
   NOT(" NOT ") {
     @Override
-    public Operand apply(Dialect dialect, Operand... operands) {
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... operands) {
       final Operand f = operands[0];
-      f.sql(dialect).insert(0, LogicalOp.NOT);
+      for (Dialect dialect : dialects) {
+        f.sql(dialect).insert(0, LogicalOp.NOT);
+      }
       return f;
     }
 
@@ -26,7 +28,7 @@ public enum LogicalOp implements Function {
   };
 
   private static final GenerationDataType[] TWO_BOOL = {
-          DataType.BOOL, DataType.BOOL
+      DataType.BOOL, DataType.BOOL
   };
 
   private final StringBuilder name;
@@ -51,10 +53,12 @@ public enum LogicalOp implements Function {
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... operands) {
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... operands) {
     Operand f = operands[0];
     Operand s = operands[1];
-    f.sql(dialect).append(this).append(s.sql(dialect));
+    for (Dialect dialect : dialects) {
+      f.sql(dialect).append(this).append(s.sql(dialect));
+    }
     return f;
   }
 }

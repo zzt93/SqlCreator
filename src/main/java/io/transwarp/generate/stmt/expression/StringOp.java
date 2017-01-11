@@ -3,6 +3,7 @@ package io.transwarp.generate.stmt.expression;
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.util.Strs;
@@ -32,17 +33,16 @@ public enum StringOp implements Function {
   LPAD("LPAD(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.UINT_GROUP, DataTypeGroup.STRING_GROUP};
+      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataType.U_BYTE, DataTypeGroup.STRING_GROUP};
     }
   },
   RPAD("RPAD(") {
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataTypeGroup.UINT_GROUP, DataTypeGroup.STRING_GROUP};
+      return new GenerationDataType[]{DataTypeGroup.STRING_GROUP, DataType.U_BYTE, DataTypeGroup.STRING_GROUP};
     }
   },
-  RTRIM("RTRIM("),
-  ;
+  RTRIM("RTRIM("),;
 
   private final String op;
 
@@ -56,12 +56,14 @@ public enum StringOp implements Function {
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... input) {
-    final StringBuilder builder = input[0].sql(dialect).insert(0, op);
-    for (int i = 1; i < input.length; i++) {
-      builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+    for (Dialect dialect : dialects) {
+      final StringBuilder builder = input[0].sql(dialect).insert(0, op);
+      for (int i = 1; i < input.length; i++) {
+        builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
+      }
+      builder.append(Function.CLOSE_PAREN);
     }
-    builder.append(Function.CLOSE_PAREN);
     return input[0];
   }
 
@@ -80,9 +82,16 @@ public enum StringOp implements Function {
     },
     PRINTF("PRINTF(", "(") {
       @Override
-      public Operand apply(Dialect dialect, Operand... input) {
+      public void register() {
+        // TODO Argument 1 of function PRINTF must be "string", but "varchar(50)" was found.
+      }
+
+      @Override
+      public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
         // TODO 12/23/16 not fully implemented
-        input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(Function.CLOSE_PAREN);
+        for (Dialect dialect : dialects) {
+          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(Function.CLOSE_PAREN);
+        }
         return input[0];
       }
     };
@@ -107,12 +116,14 @@ public enum StringOp implements Function {
     }
 
     @Override
-    public Operand apply(Dialect dialect, Operand... inputs) {
-      final StringBuilder builder = inputs[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
-      for (int i = 1; i < inputs.length - 1; i++) {
-        builder.append(delims[dialect.ordinal()]).append(inputs[i].sql(dialect));
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... inputs) {
+      for (Dialect dialect : dialects) {
+        final StringBuilder builder = inputs[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
+        for (int i = 1; i < inputs.length - 1; i++) {
+          builder.append(delims[dialect.ordinal()]).append(inputs[i].sql(dialect));
+        }
+        builder.append(Function.CLOSE_PAREN);
       }
-      builder.append(Function.CLOSE_PAREN);
       return inputs[0];
     }
 
@@ -152,7 +163,7 @@ public enum StringOp implements Function {
     SPACE("SPACE(", "rpad('', ") {
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-        return new GenerationDataType[]{DataTypeGroup.UINT_GROUP};
+        return new GenerationDataType[]{DataType.U_BYTE};
       }
 
       @Override
@@ -173,12 +184,14 @@ public enum StringOp implements Function {
     }
 
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
-      for (int i = 1; i < input.length; i++) {
-        builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+      for (Dialect dialect : dialects) {
+        final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
+        for (int i = 1; i < input.length; i++) {
+          builder.append(Function.PARAMETER_SPLIT).append(input[i].sql(dialect));
+        }
+        builder.append(Function.CLOSE_PAREN);
       }
-      builder.append(Function.CLOSE_PAREN);
       return input[0];
     }
 

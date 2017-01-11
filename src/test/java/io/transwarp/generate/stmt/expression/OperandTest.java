@@ -47,9 +47,12 @@ public class OperandTest {
 
   @Parameterized.Parameters
   public static GenerationDataType[] types() {
-    final ArrayList<GenerationDataType> list = new ArrayList<GenerationDataType>(Arrays.asList(DataType.values()));
+    final DataType[] values = DataType.values();
+    final ArrayList<GenerationDataType> list = new ArrayList<GenerationDataType>(Arrays.asList(values));
     list.addAll(Arrays.asList(SequenceDataType.values()));
-    list.add(ListDataType.ALL_LIST);
+    for (DataType value : values) {
+      list.add(((ListDataType) ListDataType.ALL_LIST).compoundType(value));
+    }
     return list.toArray(new GenerationDataType[0]);
   }
 }

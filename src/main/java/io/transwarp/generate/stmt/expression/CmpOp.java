@@ -25,8 +25,10 @@ public enum CmpOp implements Function {
   LAR_EQ(" >= "),
   IS_NULL(" IS NULL") {
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect).append(this);
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+      for (Dialect dialect : dialects) {
+        input[0].sql(dialect).append(this);
+      }
       return input[0];
     }
 
@@ -45,12 +47,14 @@ public enum CmpOp implements Function {
     private static final String and = " AND ";
 
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect)
-          .append(this)
-          .append(input[1].sql(dialect))
-          .append(and)
-          .append(input[2].sql(dialect));
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+      for (Dialect dialect : dialects) {
+        input[0].sql(dialect)
+            .append(this)
+            .append(input[1].sql(dialect))
+            .append(and)
+            .append(input[2].sql(dialect));
+      }
       return input[0];
     }
 
@@ -74,8 +78,10 @@ public enum CmpOp implements Function {
   },
   EXISTS(" EXISTS ") {
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect).insert(0, toString());
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+      for (Dialect dialect : dialects) {
+        input[0].sql(dialect).insert(0, toString());
+      }
       return input[0];
     }
 
@@ -120,8 +126,10 @@ public enum CmpOp implements Function {
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... input) {
-    input[0].sql(dialect).append(operator).append(input[1].sql(dialect));
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+    for (Dialect dialect : dialects) {
+      input[0].sql(dialect).append(operator).append(input[1].sql(dialect));
+    }
     return input[0];
   }
 

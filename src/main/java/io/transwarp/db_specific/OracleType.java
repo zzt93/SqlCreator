@@ -19,6 +19,11 @@ public enum OracleType implements DBType {
    */
   VARCHAR {
     @Override
+    public String getName() {
+      return addLen(LEN);
+    }
+
+    @Override
     public GenerationDataType mapToGeneration(int len) {
       if (len > 4000 || len == NO_LEN) {
         throw new IllegalArgumentException("invalid len for varchar2: " + len);
@@ -26,7 +31,12 @@ public enum OracleType implements DBType {
       return SequenceDataType.sequence(DataType.Meta.CHAR, len);
     }
   },
-  NVARCHAR {
+  NVARCHAR2 {
+    @Override
+    public String getName() {
+      return addLen(LEN);
+    }
+
     @Override
     public GenerationDataType mapToGeneration(int len) {
       if (len > 4000 || len == NO_LEN) {
@@ -80,6 +90,11 @@ public enum OracleType implements DBType {
   },
   CHAR {
     @Override
+    public String getName() {
+      return addLen(LEN);
+    }
+
+    @Override
     public GenerationDataType mapToGeneration(int len) {
       if (len > 2000) {
         throw new IllegalArgumentException("too long for varchar2: " + len);
@@ -91,6 +106,11 @@ public enum OracleType implements DBType {
     }
   },
   NCHAR {
+    @Override
+    public String getName() {
+      return addLen(LEN);
+    }
+
     @Override
     public GenerationDataType mapToGeneration(int len) {
       if (len > 2000) {
@@ -121,4 +141,12 @@ public enum OracleType implements DBType {
     }
   },;
 
+  String addLen(int len) {
+    return name() + '(' + len + ')';
+  }
+
+  @Override
+  public String getName() {
+    return name();
+  }
 }

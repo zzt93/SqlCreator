@@ -5,10 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -43,13 +40,7 @@ public enum DataTypeGroup implements GenerationDataType {
       return type instanceof ListDataType;
     }
   },
-  ALL_BUT_BOOL_BINARY_LIST(NUM_GROUP, STRING_GROUP, DATE_GROUP) {
-    @Override
-    public GenerationDataType randomType() {
-      final DataTypeGroup type = (DataTypeGroup) types.get(random.nextInt(types.size()));
-      return type.randomType();
-    }
-  },
+  ALL_BUT_BOOL_BINARY_LIST(NUM_GROUP, STRING_GROUP, DATE_GROUP),
   /**
    * <p>this must be the last group, or {@link #groupOf(GenerationDataType)} will always return this group
    * because others are subset of this group</p>
@@ -122,6 +113,7 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public static GenerationDataType numRandDownCast(GenerationDataType type) {
+    // TODO 1/11/17 depend on the order of type init, may change
     if (NUM_GROUP.contains(type)) {
       final int i = NUM_GROUP.types.indexOf(type);
       if (i == 0) {
@@ -144,6 +136,14 @@ public enum DataTypeGroup implements GenerationDataType {
 
   DataTypeGroup(GenerationDataType... types) {
     this.types = Arrays.asList(types);
+    this.typeCount = types.length;
+  }
+  DataTypeGroup(DataTypeGroup... types) {
+    final ArrayList<GenerationDataType> list = new ArrayList<>();
+    for (DataTypeGroup group : types) {
+      list.addAll(group.types);
+    }
+    this.types = list;
     this.typeCount = types.length;
   }
 

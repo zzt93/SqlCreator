@@ -275,8 +275,8 @@ public enum DataType implements GenerationDataType {
         return " ";
       }
     };
-    private static char[] special = {'\'', ';', '&'};
-    private static String[] escaped = {"''", ".", "?"};
+    private static char[] special = {'\'', ';', '&', '\\'};
+    private static String[] escaped = {"''", ".", "?", "\\\\"};
 
     private static String escape(String s) {
       for (int i = 0; i < special.length; i++) {

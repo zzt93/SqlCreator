@@ -18,8 +18,7 @@ public enum BitOp implements Function {
     public void register() {
       FunctionMap.register(this, DataTypeGroup.NUM_GROUP);
     }
-  },
-  ;
+  },;
 
   private final String[] ops;
   private final String[] delim;
@@ -35,12 +34,14 @@ public enum BitOp implements Function {
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... input) {
-    input[0].sql(dialect)
-        .insert(0, ops[dialect.ordinal()])
-        .append(delim[dialect.ordinal()])
-        .append(input[1].sql(dialect))
-        .append(Function.CLOSE_PAREN);
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+    for (Dialect dialect : dialects) {
+      input[0].sql(dialect)
+          .insert(0, ops[dialect.ordinal()])
+          .append(delim[dialect.ordinal()])
+          .append(input[1].sql(dialect))
+          .append(Function.CLOSE_PAREN);
+    }
     return input[0];
   }
 

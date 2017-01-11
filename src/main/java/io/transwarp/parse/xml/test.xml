@@ -3,14 +3,22 @@
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="define.xsd">
     <test>
-        <sql type="select">
+        <select table="src.sql" dialect="oracle" name="">
+            <!--<from/> means default: table and subQuery-->
             <where type="=;>="/>
-        </sql>
+            <join>
+                <operand>
+                    <!--<table/> means default: -->
+                    <sub-query depth="5" ref="simpleQuery"/>
+                </operand>
+                <condition type=""/>
+            </join>
+        </select>
     </test>
 
 
-    <test dialect="oracle">
-        <sql type="select" table="src.sql" num="1000">
+    <test>
+        <sql type="select" num="1000">
             <!--specify needed keyword-->
             <group-by/>
             <having/>

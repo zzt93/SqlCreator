@@ -21,9 +21,11 @@ public class ParenWrapper implements Function {
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... input) {
-    final Operand apply = f.apply(dialect, input);
-    apply.sql(dialect).insert(0, '(').append(')');
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+    final Operand apply = f.apply(dialects, resultType, input);
+    for (Dialect dialect : dialects) {
+      apply.sql(dialect).insert(0, '(').append(')');
+    }
     return apply;
   }
 

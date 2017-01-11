@@ -32,9 +32,11 @@ public enum DateOp implements Function {
     }
 
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      final Operand apply = super.apply(dialect, input);
-      apply.sql(dialect).append(Function.PARAMETER_SPLIT).append(input[1].sql(dialect));
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+      final Operand apply = super.apply(dialects, resultType, input);
+      for (Dialect dialect : dialects) {
+        apply.sql(dialect).append(Function.PARAMETER_SPLIT).append(input[1].sql(dialect));
+      }
       return apply;
     }
 
@@ -70,13 +72,15 @@ public enum DateOp implements Function {
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... input) {
-    final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
-    for (int i = 1; i < input.length; i++) {
-      builder.append(Function.PARAMETER_SPLIT)
-          .append(input[i].sql(dialect));
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+    for (Dialect dialect : dialects) {
+      final StringBuilder builder = input[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
+      for (int i = 1; i < input.length; i++) {
+        builder.append(Function.PARAMETER_SPLIT)
+            .append(input[i].sql(dialect));
+      }
+      builder.append(Function.CLOSE_PAREN);
     }
-    builder.append(Function.CLOSE_PAREN);
     return input[0];
   }
 
@@ -117,11 +121,13 @@ public enum DateOp implements Function {
     }
 
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect).insert(0, ops[dialect.ordinal()])
-          .append(delims[dialect.ordinal()])
-          .append(input[1].sql(dialect))
-          .append(Function.CLOSE_PAREN);
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+      for (Dialect dialect : dialects) {
+        input[0].sql(dialect).insert(0, ops[dialect.ordinal()])
+            .append(delims[dialect.ordinal()])
+            .append(input[1].sql(dialect))
+            .append(Function.CLOSE_PAREN);
+      }
       return input[0];
     }
 
@@ -157,44 +163,52 @@ public enum DateOp implements Function {
 
     DAY_OF_YEAR("DAYOFYEAR(", "to_char(") {
       @Override
-      public Operand apply(Dialect dialect, Operand... input) {
-        if (dialect == Dialect.ORACLE) {
-          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'DDD'").append(Function.CLOSE_PAREN);
-        } else {
-          super.apply(dialect, input);
+      public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+        for (Dialect dialect : dialects) {
+          if (dialect == Dialect.ORACLE) {
+            input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'DDD'").append(Function.CLOSE_PAREN);
+          } else {
+            super.apply(dialects, resultType, input);
+          }
         }
         return input[0];
       }
     },
     DAY_OF_WEEK("DAYOFWEEK(", "to_char(") {
       @Override
-      public Operand apply(Dialect dialect, Operand... input) {
-        if (dialect == Dialect.ORACLE) {
-          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'D'").append(Function.CLOSE_PAREN);
-        } else {
-          super.apply(dialect, input);
+      public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+        for (Dialect dialect : dialects) {
+          if (dialect == Dialect.ORACLE) {
+            input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'D'").append(Function.CLOSE_PAREN);
+          } else {
+            super.apply(dialects, resultType, input);
+          }
         }
         return input[0];
       }
     },
     WEEK_OF_YEAR("WEEKOFYEAR(", "to_char(") {
       @Override
-      public Operand apply(Dialect dialect, Operand... input) {
-        if (dialect == Dialect.ORACLE) {
-          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'WW'").append(Function.CLOSE_PAREN);
-        } else {
-          super.apply(dialect, input);
+      public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+        for (Dialect dialect : dialects) {
+          if (dialect == Dialect.ORACLE) {
+            input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'WW'").append(Function.CLOSE_PAREN);
+          } else {
+            super.apply(dialects, resultType, input);
+          }
         }
         return input[0];
       }
     },
     QUARTER("QUARTER(", "to_char(") {
       @Override
-      public Operand apply(Dialect dialect, Operand... input) {
-        if (dialect == Dialect.ORACLE) {
-          input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'Q'").append(Function.CLOSE_PAREN);
-        } else {
-          super.apply(dialect, input);
+      public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+        for (Dialect dialect : dialects) {
+          if (dialect == Dialect.ORACLE) {
+            input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(", 'Q'").append(Function.CLOSE_PAREN);
+          } else {
+            super.apply(dialects, resultType, input);
+          }
         }
         return input[0];
       }
@@ -212,8 +226,10 @@ public enum DateOp implements Function {
     }
 
     @Override
-    public Operand apply(Dialect dialect, Operand... input) {
-      input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(Function.CLOSE_PAREN);
+    public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+      for (Dialect dialect : dialects) {
+        input[0].sql(dialect).insert(0, ops[dialect.ordinal()]).append(Function.CLOSE_PAREN);
+      }
       return input[0];
     }
 

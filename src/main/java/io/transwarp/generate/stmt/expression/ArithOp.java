@@ -13,8 +13,7 @@ public enum ArithOp implements Function {
   PLUS(" + "),
   MINUS(" - "),
   MUL(" * "),
-  DIV(" / "),
-  ;
+  DIV(" / "),;
 
 
   final String op;
@@ -29,8 +28,10 @@ public enum ArithOp implements Function {
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... input) {
-    input[0].sql(dialect).append(op).append(input[1].sql(dialect));
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
+    for (Dialect dialect : dialects) {
+      input[0].sql(dialect).append(op).append(input[1].sql(dialect));
+    }
     return input[0];
   }
 

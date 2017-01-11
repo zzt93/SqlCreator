@@ -63,8 +63,7 @@ public class Operand {
       for (int i = 0; i < nextResultType.length; i++) {
         ops[i] = makeOperand(nextResultType[i], src, config, depth - 1);
       }
-      function.apply(GlobalConfig.getBase(), ops);
-      return function.apply(GlobalConfig.getCmp(), ops)
+      return function.apply(GlobalConfig.getCmpBase(), resultType, ops)
           .setType(resultType);
     }
   }

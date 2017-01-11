@@ -17,7 +17,7 @@ public enum  AggregateOp implements Function{
   }
 
   @Override
-  public Operand apply(Dialect dialect, Operand... input) {
+  public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
     return null;
   }
 

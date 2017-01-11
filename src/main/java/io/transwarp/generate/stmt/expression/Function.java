@@ -48,19 +48,16 @@ public interface Function {
   void register();
 
   /**
-   * TODO may change to `Dialect[] dialects`, because generation should be in one method call (if it has random data)
-   * <p>
    * <li> update sql</li>
    * <li> update type -- set at {@link Operand#makeOperand(GenerationDataType, Table, PerGenerationConfig, int)}</li>
    *
-   * @param dialect used when different dialect has different ways to apply
-   * @param input   parameter
-   * @return result
+   * @param dialects used when different dialect has different ways to apply
+   * @param input   parameter  @return result
    * @see ParenWrapper
    * @see GenerationDataType#randomData(Dialect[]) -- generation should in one method call
    * @see io.transwarp.generate.common.Column#getNameOrConst(Dialect[]) -- generation put in one call
    */
-  Operand apply(Dialect dialect, Operand... input);
+  Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input);
 
   /**
    * TODO may change return type to add the restriction between inputs, i.e. specify input relation for each function

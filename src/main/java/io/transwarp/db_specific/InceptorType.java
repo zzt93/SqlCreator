@@ -68,6 +68,11 @@ public enum InceptorType implements DBType {
   },
   VARCHAR {
     @Override
+    public String getName() {
+      return addLen(LEN);
+    }
+
+    @Override
     public GenerationDataType mapToGeneration(int len) {
       return SequenceDataType.sequence(DataType.Meta.UNICODE, len);
     }
@@ -85,4 +90,13 @@ public enum InceptorType implements DBType {
     }
   },
   ;
+
+  String addLen(int len) {
+    return name() + '(' + len + ')';
+  }
+
+  @Override
+  public String getName() {
+    return name();
+  }
 }

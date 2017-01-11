@@ -10,6 +10,8 @@ import io.transwarp.generate.type.GenerationDataType;
 public interface DBType {
 
   int NO_LEN = -1;
+  int LEN = 100;
 
   GenerationDataType mapToGeneration(int len);
+  String getName();
 }
