@@ -28,6 +28,9 @@ public enum BitOp implements Function {
     this.delim = delim;
   }
 
+  /**
+   * can't register {@link DataTypeGroup#NUM_GROUP}, because {@link #inputTypes(GenerationDataType)}
+   */
   @Override
   public void register() {
     FunctionMap.register(this, DataTypeGroup.INT_GROUP);

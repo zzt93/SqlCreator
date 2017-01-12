@@ -25,8 +25,8 @@ public enum DataTypeGroup implements GenerationDataType {
    * My unsigned int group is actually non-negative half int, not unsigned range in programming language
    */
   UINT_GROUP(DataType.U_BYTE, DataType.U_SHORT, DataType.U_INT),
-  INT_GROUP(DataType.BYTE, DataType.SHORT, DataType.INT, SequenceDataType.BITS, DataType.LONG),
-  NUM_GROUP(DataType.U_BYTE, DataType.BYTE, DataType.U_SHORT, DataType.SHORT, DataType.U_INT, DataType.INT, SequenceDataType.BITS, DataType.LONG, DataType.FLOAT, DataType.DOUBLE, DataType.DECIMAL),
+  INT_GROUP(DataType.U_BYTE, DataType.BYTE, DataType.U_SHORT, DataType.SHORT, DataType.U_INT, DataType.INT, SequenceDataType.BITS, DataType.LONG),
+  NUM_GROUP(DataType.U_BYTE, DataType.BYTE, DataType.U_SHORT, DataType.SHORT, DataType.U_INT, DataType.INT, DataType.FLOAT, DataType.DOUBLE, DataType.LONG, DataType.DECIMAL, SequenceDataType.BITS),
   STRING_GROUP(SequenceDataType.CHARS, SequenceDataType.UNICODE_STRING),
   DATE_GROUP(DataType.UNIX_DATE, DataType.TIMESTAMP),
   LIST_GROUP() {

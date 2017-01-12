@@ -19,11 +19,9 @@ public class DataTypeGroupTest {
     for (DataType type : DataType.values()) {
       if (NUM_GROUP.contains(type)) {
         assertTrue(INT_GROUP.contains(type)
-            || UINT_GROUP.contains(type)
             || DECIMAL_GROUP.contains(type));
       }
       if (INT_GROUP.contains(type)
-          || UINT_GROUP.contains(type)
           || DECIMAL_GROUP.contains(type)) {
         assertTrue(NUM_GROUP.contains(type));
       }
