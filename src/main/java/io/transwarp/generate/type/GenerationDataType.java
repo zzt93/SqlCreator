@@ -15,11 +15,10 @@ public interface GenerationDataType {
    * @param dialects dialects to differ the const
    * @return const value depend on dialect
    * @see DataType#BOOL
-   * @see DataType#DATE_PATTERN
+   * @see DataType#BINARY
    * @see DataType#TIMESTAMP
    */
   String[] randomData(Dialect[] dialects);
-// TODO String name(Dialect dialect);
 
   String getMax();
 

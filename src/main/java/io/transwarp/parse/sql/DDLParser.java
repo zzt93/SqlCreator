@@ -71,7 +71,6 @@ public class DDLParser {
         for (String col : cols) {
           columns.add(extractCol(col, table));
         }
-        // TODO how to require join column
         tables.add(table);
       } else {
         throw new IllegalArgumentException("Can't find create stmt:" + stmt);
