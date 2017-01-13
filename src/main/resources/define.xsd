@@ -1,58 +1,69 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
     <xs:element name="tests">
         <xs:complexType>
-            <xs:all>
+            <xs:sequence>
                 <xs:element name="test" type="sql" maxOccurs="unbounded"/>
-            </xs:all>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="sql">
-        <xs:all>
+        <xs:choice>
             <xs:element name="query" type="selectStmt" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="updateStmt" type="updateStmt" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="deleteStmt" type="deleteStmt" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="createStmt" type="createStmt" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:all>
+        </xs:choice>
         <xs:attribute name="transaction" type="xs:boolean" default="false"/>
         <xs:attribute name="threads" type="xs:unsignedInt" default="2"/>
         <xs:attribute name="dialect" type="xs:string" default="oracle"/>
         <xs:attribute name="table" type="xs:string"/>
     </xs:complexType>
-    <xs:complexType name="stmt">
-        <xs:attribute name="ref" type="stmt"/>
-    </xs:complexType>
-    <xs:complexType name="selectStmt">
-        <xs:sequence>
-            <xs:element name="select" type="operator" minOccurs="0"/>
-            <xs:element name="from" type="from" minOccurs="0"/>
-            <xs:element name="where" type="operator" minOccurs="0"/>
-            <xs:element name="group-by" type="operator" minOccurs="0"/>
-            <xs:element name="having" type="operator" minOccurs="0"/>
-        </xs:sequence>
+
+    <xs:complexType name="stmt" abstract="true">
+        <xs:attribute name="ref" type="xs:IDREF"/>
         <xs:attribute name="id" type="xs:ID"/>
-        <xs:attribute name="depth" type="xs:int" default="1"/>
+        <xs:attribute name="num" type="xs:unsignedInt" default="100"/>
         <xs:attribute name="table" type="xs:string" default="default_oracle.sql"/>
         <xs:attribute name="dialect" type="dialects" default="oracle"/>
-        <xs:attribute name="num" type="xs:int" default="100"/>
-        <xs:attribute name="ref" type="selectStmt"/>
-        <xs:attribute name="nested-query-depth" type="xs:int" default="1"/>
+    </xs:complexType>
+
+    <xs:complexType name="selectStmt" block="#all">
+        <xs:complexContent>
+            <xs:extension base="stmt">
+                <xs:sequence>
+                    <xs:element name="select" type="operator" minOccurs="0"/>
+                    <xs:element name="from" type="from" minOccurs="0"/>
+                    <xs:element name="where" type="operator" minOccurs="0"/>
+                    <xs:element name="group-by" type="operator" minOccurs="0"/>
+                    <xs:element name="having" type="operator" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="depth" type="xs:unsignedByte" default="1"/>
+            </xs:extension>
+        </xs:complexContent>
+
     </xs:complexType>
 
     <xs:complexType name="updateStmt">
-
+        <xs:complexContent>
+            <xs:extension base="stmt"></xs:extension>
+        </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="deleteStmt">
-
+        <xs:complexContent>
+            <xs:extension base="stmt"></xs:extension>
+        </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="createStmt">
-
+        <xs:complexContent>
+            <xs:extension base="stmt"></xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="operator">
-        <xs:all>
+        <xs:choice>
             <xs:element name="operand" type="operand" maxOccurs="unbounded" minOccurs="0"/>
-        </xs:all>
+        </xs:choice>
         <xs:attribute name="type" type="xs:string"/>
     </xs:complexType>
 
@@ -76,8 +87,8 @@
 
     <xs:simpleType name="dialects" final="restriction">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="oracle" />
-            <xs:enumeration value="inceptor" />
+            <xs:enumeration value="oracle"/>
+            <xs:enumeration value="inceptor"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

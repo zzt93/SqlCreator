@@ -7,18 +7,10 @@ import io.transwarp.parse.ParserSource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import java.io.*;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.Iterator;
 
 /**
@@ -36,15 +28,6 @@ public class XMLConfigParser implements ConfigParser {
     parseXML(source.getSource());
   }
 
-  private void validateXML() throws SAXException, IOException {
-    final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-    URL schemaURL = Paths.get("define.xsd").toUri().toURL();
-    Schema schema = sf.newSchema(schemaURL);
-    Validator validator = schema.newValidator();
-    Source xml = new DOMSource();
-    validator.validate(xml);
-  }
-
   private void parseXML(String filename) throws IOException {
     DocumentBuilder db = getDocumentBuilder();
     try {
@@ -56,12 +39,17 @@ public class XMLConfigParser implements ConfigParser {
 
   private static final String JAXP_SCHEMA_SOURCE =
       "http://java.sun.com/xml/jaxp/properties/schemaSource";
+  private static final String JAXP_SCHEMA_LANGUAGE =
+      "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+  private static final String W3C_XML_SCHEMA =
+      "http://www.w3.org/2001/XMLSchema";
 
   private DocumentBuilder getDocumentBuilder() throws UnsupportedEncodingException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    dbf.setValidating(false);
+    dbf.setValidating(true);
     dbf.setNamespaceAware(true);
-    dbf.setAttribute(JAXP_SCHEMA_SOURCE, new File("define.xsd"));
+    dbf.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+    dbf.setAttribute(JAXP_SCHEMA_SOURCE, new File("src/main/resources/define.xsd"));
 
     DocumentBuilder db = null;
     try {
@@ -92,7 +80,7 @@ public class XMLConfigParser implements ConfigParser {
     }
   }
 
-  class Builder implements ConfigParser.ConfigParserBuilder {
+  static class Builder implements ConfigParser.ConfigParserBuilder {
 
     @Override
     public ConfigParser build(ParserSource parserSource) throws IOException {
