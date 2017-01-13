@@ -137,7 +137,7 @@ public enum OracleType implements DBType {
   INT {
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      return ANSIType.INT.mapToGeneration(len);
+      return DataType.INT;
     }
   },;
 

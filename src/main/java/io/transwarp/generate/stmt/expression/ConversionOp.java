@@ -56,6 +56,7 @@ public enum ConversionOp implements Function {
           input = DataTypeGroup.INT_GROUP;
           break;
         case INT_GROUP:
+        case UINT_GROUP:
           input = DataTypeGroup.DECIMAL_GROUP;
           break;
         case STRING_GROUP:

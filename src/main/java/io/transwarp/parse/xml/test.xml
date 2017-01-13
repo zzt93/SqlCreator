@@ -3,44 +3,39 @@
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="define.xsd">
     <test>
-        <select table="src.sql" dialect="oracle" name="">
-            <!--<from/> means default: table and subQuery-->
-            <where type="=;>="/>
-            <join>
-                <operand>
-                    <!--<table/> means default: -->
-                    <sub-query depth="5" ref="simpleQuery"/>
-                </operand>
-                <condition type=""/>
-            </join>
-        </select>
+        <query id="nonEqualJoin">
+            <from>
+                <join>
+                    <operand desc="default: table or query"/>
+                    <operand>
+                        <query depth="2" ref="simpleQuery"/>
+                    </operand>
+                    <operand desc="condition" udf="and">
+                        <expr udf="=" udf-depth="1"/>
+                        <operand desc="default: const/expr/operand"/>
+                    </operand>
+                </join>
+            </from>
+        </query>
+        <query id="simpleQuery"/>
     </test>
 
 
     <test>
-        <sql type="select" num="1000">
+        <query num="1000">
             <!--specify needed keyword-->
             <group-by/>
             <having/>
-        </sql>
+        </query>
     </test>
 
 
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
-        <sql type="select" num="1000"/>
-        <sql type="update" num="1000"/>
-        <sql type="delete" num="1000"/>
     </test>
 
 
-    <test>
-        <sql type="select">
-            <join>
-                <condition>=</condition>
-            </join>
-        </sql>
-    </test>
+
 
 
 </tests>

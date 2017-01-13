@@ -66,10 +66,16 @@ public enum Dialect {
         } catch (Exception ignored) {}
       }
     }
-    if (DataTypeGroup.UINT_GROUP.contains(mapped) || mapped == DataType.BYTE || mapped.equals(SequenceDataType.BITS)) {
+    if (noMappingBackInt(mapped)) {
       return ANSIType.INT;
     }
     throw new IllegalArgumentException("unknown mapping: " + mapped);
+  }
+
+  public static boolean noMappingBackInt(GenerationDataType mapped) {
+    return DataTypeGroup.UINT_GROUP.contains(mapped)
+        || mapped == DataType.BYTE
+        || mapped.equals(SequenceDataType.BITS);
   }
 
   private boolean hasLen(GenerationDataType mapped) {
