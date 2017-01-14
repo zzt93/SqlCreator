@@ -29,7 +29,7 @@ public class Column {
   private Column(Operand operand, String alias) {
     this.operand = operand;
     this.alias = alias;
-    poss = Possibility.NAME_CONST_POSSIBILITY;
+    poss = Possibility.COL_CONST_POSSIBILITY;
   }
 
   public Column(String name, GenerationDataType type, Table table) {

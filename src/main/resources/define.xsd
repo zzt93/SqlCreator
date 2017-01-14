@@ -9,10 +9,10 @@
     </xs:element>
     <xs:complexType name="sql">
         <xs:choice>
-            <xs:element name="query" type="selectStmt" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="updateStmt" type="updateStmt" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="deleteStmt" type="deleteStmt" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="createStmt" type="createStmt" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="query" type="queryConfig" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="updateStmt" type="updateStmtConfig" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="deleteStmt" type="deleteStmtConfig" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="createStmt" type="createStmtConfig" minOccurs="0" maxOccurs="unbounded"/>
         </xs:choice>
         <xs:attribute name="transaction" type="xs:boolean" default="false"/>
         <xs:attribute name="threads" type="xs:unsignedInt" default="2"/>
@@ -22,21 +22,30 @@
 
     <xs:complexType name="stmt" abstract="true">
         <xs:attribute name="ref" type="xs:IDREF"/>
-        <xs:attribute name="id" type="xs:ID"/>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
         <xs:attribute name="num" type="xs:unsignedInt" default="100"/>
         <xs:attribute name="table" type="xs:string" default="default_oracle.sql"/>
         <xs:attribute name="dialect" type="dialects" default="oracle"/>
     </xs:complexType>
+    <xs:complexType name="stmtRef">
+        <xs:attribute name="ref" type="xs:IDREF"/>
+    </xs:complexType>
 
-    <xs:complexType name="selectStmt" block="#all">
+    <xs:complexType name="queryConfig">
         <xs:complexContent>
             <xs:extension base="stmt">
                 <xs:sequence>
-                    <xs:element name="select" type="operator" minOccurs="0"/>
-                    <xs:element name="from" type="from" minOccurs="0"/>
-                    <xs:element name="where" type="operator" minOccurs="0"/>
-                    <xs:element name="group-by" type="operator" minOccurs="0"/>
-                    <xs:element name="having" type="operator" minOccurs="0"/>
+                    <xs:element name="select" type="FilterOperator" minOccurs="0"/>
+                    <xs:element name="from" minOccurs="0">
+                        <xs:complexType>
+                            <xs:all>
+                                <xs:element name="join" type="SetOperator" minOccurs="0"/>
+                            </xs:all>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="where" type="FilterOperator" minOccurs="0"/>
+                    <xs:element name="group-by" type="FilterOperator" minOccurs="0"/>
+                    <xs:element name="having" type="FilterOperator" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="depth" type="xs:unsignedByte" default="1"/>
             </xs:extension>
@@ -44,46 +53,53 @@
 
     </xs:complexType>
 
-    <xs:complexType name="updateStmt">
+    <xs:complexType name="updateStmtConfig">
         <xs:complexContent>
             <xs:extension base="stmt"></xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:complexType name="deleteStmt">
+    <xs:complexType name="deleteStmtConfig">
         <xs:complexContent>
             <xs:extension base="stmt"></xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    <xs:complexType name="createStmt">
+    <xs:complexType name="createStmtConfig">
         <xs:complexContent>
             <xs:extension base="stmt"></xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="operator">
+
+    <xs:complexType name="expr">
         <xs:choice>
-            <xs:element name="operand" type="operand" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="expr" type="expr" minOccurs="0" maxOccurs="unbounded"/>
         </xs:choice>
-        <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="udfCentain" type="xs:string"/>
+        <xs:attribute name="udfPrefer" type="xs:string"/>
+        <xs:attribute name="udfDeny" type="xs:string"/>
+        <xs:attribute name="udfImpossible" type="xs:string"/>
+        <xs:attribute name="udfDepth" default="3"/>
+        <xs:attribute name="desc" type="xs:string"/>
+        <xs:attribute name="constOrColumnPossibility" type="xs:float" default="0.5"/>
     </xs:complexType>
 
-    <xs:complexType name="operand">
-        <xs:all>
-            <xs:element name="const" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="expr" type="operand" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="query" type="selectStmt" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="operand" type="operand" minOccurs="0" maxOccurs="1"/>
-        </xs:all>
-        <xs:attribute name="udf"/>
-        <xs:attribute name="udf-depth" default="3"/>
-        <xs:attribute name="desc"/>
+    <xs:complexType name="const">
+        <xs:complexContent>
+            <xs:restriction base="expr">
+                <xs:attribute name="udfDepth" fixed="0" use="prohibited"/>
+                <xs:attribute name="columnOrConstPossibility" fixed="0" use="prohibited"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="column">
+        <xs:complexContent>
+            <xs:restriction base="expr">
+                <xs:attribute name="udfDepth" fixed="0" use="prohibited"/>
+                <xs:attribute name="columnOrConstPossibility" fixed="1" use="prohibited"/>
+            </xs:restriction>
+        </xs:complexContent>
     </xs:complexType>
 
-    <xs:complexType name="from">
-        <xs:all>
-            <xs:element name="join" type="operator"/>
-        </xs:all>
-    </xs:complexType>
 
     <xs:simpleType name="dialects" final="restriction">
         <xs:restriction base="xs:string">
@@ -91,4 +107,25 @@
             <xs:enumeration value="inceptor"/>
         </xs:restriction>
     </xs:simpleType>
+
+
+    <xs:complexType name="FilterOperator">
+        <xs:choice>
+            <xs:element name="operand" type="expr" maxOccurs="1" minOccurs="0"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="SetOperator">
+        <xs:sequence>
+            <xs:element name="operand" type="setOperand" maxOccurs="2" minOccurs="2"/>
+            <xs:element name="condition" type="expr" maxOccurs="1" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="setOperand">
+        <xs:choice>
+            <xs:element name="table" type="xs:string" minOccurs="0"/>
+            <xs:element name="subQuery" type="stmtRef" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute name="desc" type="xs:string"/>
+    </xs:complexType>
 </xs:schema>

@@ -5,6 +5,7 @@ import io.transwarp.parse.ConfigParser;
 import io.transwarp.parse.ParseException;
 import io.transwarp.parse.ParserSource;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -66,12 +67,15 @@ public class XMLConfigParser implements ConfigParser {
   @Override
   public Iterator<PerGenerationConfig> parseEach() throws ParseException {
     checkState();
+    final Element root = doc.getDocumentElement();
+
     return null;
   }
 
   @Override
   public void parseGlobal() throws ParseException {
     checkState();
+    final Element root = doc.getDocumentElement();
   }
 
   private void checkState() throws ParseException {

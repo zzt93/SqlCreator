@@ -12,7 +12,7 @@ public class XMLParserSource implements ParserSource{
 
   private final String xmlFile;
 
-  public XMLParserSource(String xmlFile) {
+  XMLParserSource(String xmlFile) {
     this.xmlFile = xmlFile;
   }
 

@@ -8,21 +8,21 @@
                 <join>
                     <operand desc="default: table or query"/>
                     <operand>
-                        <query depth="2" ref="simpleQuery"/>
+                        <subQuery ref="simpleQuery"/>
                     </operand>
-                    <operand desc="condition" udf="and">
-                        <expr udf="=" udf-depth="1"/>
-                        <operand desc="default: const/expr/operand"/>
-                    </operand>
+                    <condition desc="condition" udfCentain="and">
+                        <expr udfCentain="=" udfDepth="1"/>
+                        <expr desc="default: const/expr/operand"/>
+                    </condition>
                 </join>
             </from>
         </query>
-        <query id="simpleQuery"/>
+        <query id="simpleQuery" depth="2"/>
     </test>
 
 
     <test>
-        <query num="1000">
+        <query num="1000" id="test">
             <!--specify needed keyword-->
             <group-by/>
             <having/>

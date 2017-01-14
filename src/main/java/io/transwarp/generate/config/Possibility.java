@@ -22,7 +22,7 @@ public class Possibility {
 
   public static final Possibility LIST_OR_QUERY = new Possibility(0.5);
   public static final Possibility SELECT_COL_POSSIBILITY = new Possibility(0.05);
-  public static final Possibility NAME_CONST_POSSIBILITY = new Possibility(0.7);
+  public static final Possibility COL_CONST_POSSIBILITY = new Possibility(0.7);
 
   private final double[] possibility;
 
