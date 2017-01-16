@@ -1,9 +1,9 @@
 package io.transwarp.parse;
 
-import io.transwarp.generate.config.PerGenerationConfig;
+import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.parse.xml.ValidationException;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  * Created by zzt on 12/12/16.
@@ -12,10 +12,5 @@ import java.util.Iterator;
  */
 public interface ConfigParser {
 
-  void parseGlobal() throws ParseException;
-  Iterator<PerGenerationConfig> parseEach() throws ParseException;
-
-  interface ConfigParserBuilder {
-    ConfigParser build(ParserSource parserSource) throws IOException;
-  }
+    GlobalConfig parse(ParserSource parserSource) throws IOException, ValidationException;
 }

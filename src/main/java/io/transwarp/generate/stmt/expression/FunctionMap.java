@@ -1,6 +1,6 @@
 package io.transwarp.generate.stmt.expression;
 
-import io.transwarp.generate.config.UdfFilter;
+import io.transwarp.generate.config.expr.UdfFilter;
 import io.transwarp.generate.type.*;
 
 import java.util.concurrent.ConcurrentHashMap;

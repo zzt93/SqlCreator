@@ -1,6 +1,12 @@
-package io.transwarp.generate.config;
+package io.transwarp.generate.config.stmt;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.expr.FunctionDepth;
+import io.transwarp.generate.config.expr.InputRelation;
+import io.transwarp.generate.config.expr.UdfFilter;
+import io.transwarp.generate.config.op.FilterOperatorConfig;
+import io.transwarp.generate.config.op.SetOperatorConfig;
 import io.transwarp.generate.stmt.expression.AggregateOp;
 import io.transwarp.generate.stmt.expression.CmpOp;
 import io.transwarp.generate.type.DataType;
@@ -19,13 +25,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>
  * <h3>This class should be immutable</h3>
  */
-public class PerGenerationConfig {
+public class PerGenerationConfig extends StmtConfig {
 
   // TODO may add input requirement: const, expr, sub-query -- by udf depth and Column#possiblity
 
+  private int queryDepth;
+  private FilterOperatorConfig select, where, groupBy, having;
+  private SetOperatorConfig join;
+
   // operand
   private int udfDepth;
-  private int queryDepth;
   private InputRelation inputRelation;
   private UdfFilter udfFilter;
   // from
@@ -36,6 +45,8 @@ public class PerGenerationConfig {
   private int exprNumInSelect;
   private Map<GenerationDataType, Possibility> results;
 
+  public PerGenerationConfig() {
+  }
 
   private PerGenerationConfig(int udfDepth, int queryDepth, int joinTimes,
                               int selectColMax, int exprNumInSelect,
@@ -120,6 +131,7 @@ public class PerGenerationConfig {
     config.getUdfFilter().addPreference(AggregateOp.values(), Possibility.IMPOSSIBLE);
     return config;
   }
+
 
   public static class Builder {
     private static final int MAX_COLS = 20;

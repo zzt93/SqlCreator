@@ -2,8 +2,9 @@ package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.PerGenerationConfig;
-import io.transwarp.generate.config.UdfFilter;
+import io.transwarp.generate.config.expr.InputRelation;
+import io.transwarp.generate.config.expr.UdfFilter;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**
@@ -16,7 +17,7 @@ import io.transwarp.generate.type.GenerationDataType;
  * mark last input type to be variable length: {@link StringOp.VarStringOp#inputTypes(GenerationDataType)}</li>
  * <p>
  * <h3>how to handle input relation</h3>
- * <li>{@link io.transwarp.generate.config.InputRelation}</li>
+ * <li>{@link InputRelation}</li>
  * <li>{@link ArithOp} & {@link ConversionOp} specify in the {@link #inputTypes(GenerationDataType)}</li>
  * <li>{@link DateOp#DATE_STRING_AND_PATTERN} & {@link DateOp#TO_DATE}: generate related input at the same time</li>
  * <li>Not addressed: printf</li>
@@ -28,7 +29,7 @@ import io.transwarp.generate.type.GenerationDataType;
  * <li>input types (more choice is better -- so prefer group; different types is better)</li>
  *
  * @see FunctionMap#random(GenerationDataType, UdfFilter)
- * @see io.transwarp.generate.config.InputRelation#refine(GenerationDataType[])
+ * @see InputRelation#refine(GenerationDataType[])
  * @see Operand#makeOperand(GenerationDataType, Table, PerGenerationConfig, int)
  */
 public interface Function {
@@ -65,13 +66,13 @@ public interface Function {
    * by using the parameter, we can avoid overloading manually</li>
    * <li>input type can be set as large as possible, so we could generate more choice, more exact type
    * to use, i.e. generate more function overloading -- down-cast type</li>
-   * <li>the process to down cast type is finished by {@link io.transwarp.generate.config.InputRelation}, or
+   * <li>the process to down cast type is finished by {@link InputRelation}, or
    * by itself by using {@link io.transwarp.generate.type.DataTypeGroup#randomDownCast(GenerationDataType)}
    * or {@link io.transwarp.generate.type.DataTypeGroup#numRandDownCast(GenerationDataType)}</li>
    *
    * @return the input types that can produce result type
    * @see ArithOp
-   * @see io.transwarp.generate.config.InputRelation
+   * @see InputRelation
    * @see io.transwarp.generate.type.DataTypeGroup
    */
   GenerationDataType[] inputTypes(GenerationDataType resultType);

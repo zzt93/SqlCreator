@@ -17,7 +17,8 @@
                 </join>
             </from>
         </query>
-        <query id="simpleQuery" depth="2"/>
+        <updateStmt id="update"/>
+        <query id="simpleQuery" queryDepth="2"/>
     </test>
 
 

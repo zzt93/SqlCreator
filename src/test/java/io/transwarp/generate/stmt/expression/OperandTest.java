@@ -2,7 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.PerGenerationConfig;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;

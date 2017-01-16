@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class SequenceDataType extends CompoundDataType {
 
-  public static final SequenceDataType BITS = sequence(DataType.Meta.BIT, GlobalConfig.getRandomMaxBitLen());
+  public static final SequenceDataType BITS = sequence(DataType.Meta.BIT, GlobalConfig.getRandomBitsMaxLen());
   public static final SequenceDataType CHARS = sequence(DataType.Meta.CHAR, GlobalConfig.getRandomStrMaxLen());
   static final SequenceDataType UNICODE_STRING = sequence(DataType.Meta.UNICODE, GlobalConfig.getRandomStrMaxLen());
   private static final GenerationDataType[] COMPOUNDS = {BITS, CHARS, UNICODE_STRING};

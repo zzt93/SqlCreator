@@ -1,4 +1,4 @@
-package io.transwarp.generate.config.stmt_config;
+package io.transwarp.generate.config.stmt;
 
 
 import io.transwarp.db_specific.base.Dialect;

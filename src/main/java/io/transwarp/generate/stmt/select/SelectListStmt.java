@@ -5,8 +5,8 @@ import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.type.GenerationDataType;
 

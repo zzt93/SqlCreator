@@ -1,5 +1,6 @@
-package io.transwarp.generate.config;
+package io.transwarp.generate.config.expr;
 
+import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Function;
 
 import java.util.HashMap;
@@ -19,19 +20,19 @@ public class UdfFilter {
    */
   private final Map<Function, Possibility> preference = new HashMap<>();
 
-  UdfFilter(UdfFilter udfFilter) {
+  public UdfFilter(UdfFilter udfFilter) {
     preference.putAll(udfFilter.preference);
   }
 
-  UdfFilter() {
+  public UdfFilter() {
   }
 
-  UdfFilter addPreference(Function f, Possibility p) {
+  public UdfFilter addPreference(Function f, Possibility p) {
     preference.put(f, p);
     return this;
   }
 
-  UdfFilter addPreference(Function[] f, Possibility p) {
+  public UdfFilter addPreference(Function[] f, Possibility p) {
     for (Function function : f) {
       addPreference(function, p);
     }

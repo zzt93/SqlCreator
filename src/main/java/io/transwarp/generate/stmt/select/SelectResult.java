@@ -5,7 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.PerGenerationConfig;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.generate.stmt.share.Condition;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;

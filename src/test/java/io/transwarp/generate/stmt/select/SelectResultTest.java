@@ -2,8 +2,8 @@ package io.transwarp.generate.stmt.select;
 
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.InputRelation;
-import io.transwarp.generate.config.PerGenerationConfig;
+import io.transwarp.generate.config.expr.InputRelation;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.parse.sql.DDLParser;
 import org.junit.After;
 import org.junit.Assert;

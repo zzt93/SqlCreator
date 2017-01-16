@@ -3,7 +3,7 @@ package io.transwarp.generate.stmt.share;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.PerGenerationConfig;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 
 /**
  * Created by zzt on 12/13/16.

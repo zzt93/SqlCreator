@@ -1,4 +1,4 @@
-package io.transwarp.generate.config;
+package io.transwarp.generate.config.expr;
 
 import io.transwarp.generate.stmt.expression.CmpOp;
 import io.transwarp.generate.type.DataTypeGroup;

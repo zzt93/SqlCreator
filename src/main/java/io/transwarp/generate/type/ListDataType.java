@@ -3,8 +3,8 @@ package io.transwarp.generate.type;
 import com.google.common.base.Joiner;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.PerGenerationConfig;
 import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
 
 import java.util.List;

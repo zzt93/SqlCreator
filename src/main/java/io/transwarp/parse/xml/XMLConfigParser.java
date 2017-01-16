@@ -1,6 +1,7 @@
 package io.transwarp.parse.xml;
 
-import io.transwarp.generate.config.PerGenerationConfig;
+import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.parse.ConfigParser;
 import io.transwarp.parse.ParseException;
 import io.transwarp.parse.ParserSource;
@@ -25,7 +26,7 @@ public class XMLConfigParser implements ConfigParser {
   private ParseException e;
   private Document doc;
 
-  private XMLConfigParser(ParserSource source) throws IOException {
+  XMLConfigParser(ParserSource source) throws IOException {
     parseXML(source.getSource());
   }
 
@@ -64,16 +65,14 @@ public class XMLConfigParser implements ConfigParser {
     return db;
   }
 
-  @Override
-  public Iterator<PerGenerationConfig> parseEach() throws ParseException {
+  private Iterator<PerGenerationConfig> parseEach() throws ParseException {
     checkState();
     final Element root = doc.getDocumentElement();
 
     return null;
   }
 
-  @Override
-  public void parseGlobal() throws ParseException {
+  private void parseGlobal() throws ParseException {
     checkState();
     final Element root = doc.getDocumentElement();
   }
@@ -84,11 +83,9 @@ public class XMLConfigParser implements ConfigParser {
     }
   }
 
-  static class Builder implements ConfigParser.ConfigParserBuilder {
 
-    @Override
-    public ConfigParser build(ParserSource parserSource) throws IOException {
-      return new XMLConfigParser(parserSource);
-    }
+  @Override
+  public GlobalConfig parse(ParserSource parserSource) throws IOException {
+    return null;
   }
 }
