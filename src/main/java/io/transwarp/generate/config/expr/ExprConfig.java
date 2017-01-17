@@ -1,5 +1,11 @@
 package io.transwarp.generate.config.expr;
 
+import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.expr.adapter.UdfMapAdapter;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -11,7 +17,7 @@ public class ExprConfig {
 
   private List<ExprConfig> operands;
 
-  private String udfCertain, udfPrefer, udfDeny, udfImpossible;
+  private HashMap<String, Possibility> udfRequirement;
 
   private int udfDepth = 3;
   private String desc;
@@ -26,40 +32,14 @@ public class ExprConfig {
     return this;
   }
 
-  public String getUdfCertain() {
-    return udfCertain;
+  @XmlElement(name = "udfConfig")
+  @XmlJavaTypeAdapter(UdfMapAdapter.class)
+  public HashMap<String, Possibility> getUdfRequirement() {
+    return udfRequirement;
   }
 
-  public ExprConfig setUdfCertain(String udfCertain) {
-    this.udfCertain = udfCertain;
-    return this;
-  }
-
-  public String getUdfPrefer() {
-    return udfPrefer;
-  }
-
-  public ExprConfig setUdfPrefer(String udfPrefer) {
-    this.udfPrefer = udfPrefer;
-    return this;
-  }
-
-  public String getUdfDeny() {
-    return udfDeny;
-  }
-
-  public ExprConfig setUdfDeny(String udfDeny) {
-    this.udfDeny = udfDeny;
-    return this;
-  }
-
-  public String getUdfImpossible() {
-    return udfImpossible;
-  }
-
-  public ExprConfig setUdfImpossible(String udfImpossible) {
-    this.udfImpossible = udfImpossible;
-    return this;
+  public void setUdfRequirement(HashMap<String, Possibility> udfRequirement) {
+    this.udfRequirement = udfRequirement;
   }
 
   public int getUdfDepth() {

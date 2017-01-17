@@ -27,8 +27,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PerGenerationConfig extends StmtConfig {
 
-  // TODO may add input requirement: const, expr, sub-query -- by udf depth and Column#possiblity
-
   private int queryDepth;
   private FilterOperatorConfig select, where, groupBy, having;
   private SetOperatorConfig join;

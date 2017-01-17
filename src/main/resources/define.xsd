@@ -35,13 +35,13 @@
     </xs:element>
 
     <xs:complexType name="sql">
-        <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
             <xs:element ref="stmtConfig"/>
-        </xs:choice>
+        </xs:sequence>
         <xs:attribute name="transaction" type="xs:boolean" default="false"/>
-        <xs:attribute name="threads" type="xs:unsignedInt" default="2"/>
-        <xs:attribute name="dialect" type="xs:string" default="ORACLE"/>
-        <xs:attribute name="tableDdlFile" type="xs:string"/>
+        <xs:attribute name="threads" type="xs:unsignedInt" default="1"/>
+        <xs:attribute name="dialect" type="dialects" default="ORACLE"/>
+        <xs:attribute name="tableDdlFile" type="xs:string" default="default_oracle.sql"/>
     </xs:complexType>
 
     <xs:element name="stmtConfig" type="stmtConfig"/>
@@ -50,7 +50,6 @@
     <xs:element name="createStmt" type="createStmtConfig" substitutionGroup="stmtConfig"/>
     <xs:element name="deleteStmt" type="deleteStmtConfig" substitutionGroup="stmtConfig"/>
     <xs:complexType name="stmtConfig" abstract="true">
-        <xs:attribute name="ref" type="xs:IDREF"/>
         <xs:attribute name="id" type="xs:ID" use="required"/>
         <xs:attribute name="num" type="xs:unsignedInt" default="100"/>
         <xs:attribute name="table" type="xs:string" default="default_oracle.sql"/>
@@ -73,7 +72,7 @@
                         </xs:complexType>
                     </xs:element>
                     <xs:element name="where" type="filterOperatorConfig" minOccurs="0"/>
-                    <xs:element name="group-by" type="filterOperatorConfig" minOccurs="0"/>
+                    <xs:element name="groupBy" type="filterOperatorConfig" minOccurs="0"/>
                     <xs:element name="having" type="filterOperatorConfig" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="queryDepth" default="1">
@@ -107,13 +106,12 @@
 
 
     <xs:complexType name="exprConfig">
-        <xs:choice>
-            <xs:element name="expr" type="exprConfig" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="expr" type="exprConfig"/>
+            <xs:element name="const" type="const"/>
+            <xs:element name="column" type="column"/>
+            <xs:element name="udfConfig" maxOccurs="1" type="udfConfig"/>
         </xs:choice>
-        <xs:attribute name="udfCentain" type="xs:string"/>
-        <xs:attribute name="udfPrefer" type="xs:string"/>
-        <xs:attribute name="udfDeny" type="xs:string"/>
-        <xs:attribute name="udfImpossible" type="xs:string"/>
         <xs:attribute name="udfDepth" default="3"/>
         <xs:attribute name="desc" type="xs:string"/>
         <xs:attribute name="constOrColumnPossibility" type="xs:float" default="0.5"/>
@@ -122,7 +120,9 @@
     <xs:complexType name="const">
         <xs:complexContent>
             <xs:restriction base="exprConfig">
-                <xs:attribute name="udfDepth" fixed="0" use="prohibited"/>
+                <xs:all>
+                    <xs:element name="udfConfig" type="udfConfig" maxOccurs="1"/>
+                </xs:all>
                 <xs:attribute name="constOrColumnPossibility" fixed="1" use="prohibited"/>
             </xs:restriction>
         </xs:complexContent>
@@ -130,7 +130,9 @@
     <xs:complexType name="column">
         <xs:complexContent>
             <xs:restriction base="exprConfig">
-                <xs:attribute name="udfDepth" fixed="0" use="prohibited"/>
+                <xs:all>
+                    <xs:element name="udfConfig" type="udfConfig" maxOccurs="1"/>
+                </xs:all>
                 <xs:attribute name="constOrColumnPossibility" fixed="0" use="prohibited"/>
             </xs:restriction>
         </xs:complexContent>
@@ -160,8 +162,28 @@
 
     <xs:simpleType name="dialects" final="restriction">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="ORACLE"/>
             <xs:enumeration value="INCEPTOR"/>
+            <xs:enumeration value="ORACLE"/>
         </xs:restriction>
     </xs:simpleType>
+
+    <xs:complexType name="udfConfig">
+        <xs:choice>
+            <xs:element name="udfList" type="udfList" maxOccurs="4"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="udfList">
+        <xs:simpleContent>
+            <xs:extension base="possibility">
+                <xs:attribute name="list" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="possibility">
+        <xs:restriction base="xs:double">
+            <xs:maxInclusive value="1"/>
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
 </xs:schema>

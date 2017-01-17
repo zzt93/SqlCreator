@@ -2,6 +2,8 @@ package io.transwarp.generate.config.op;
 
 import io.transwarp.generate.config.stmt.QueryConfig;
 
+import javax.xml.bind.annotation.XmlIDREF;
+
 /**
  * Created by zzt on 1/16/17.
  * <p>
@@ -12,4 +14,29 @@ public class SetOperandConfig {
   private QueryConfig subQuery;
 
   private String desc;
+
+  public String getTable() {
+    return table;
+  }
+
+  public void setTable(String table) {
+    this.table = table;
+  }
+
+  @XmlIDREF
+  public QueryConfig getSubQuery() {
+    return subQuery;
+  }
+
+  public void setSubQuery(QueryConfig subQuery) {
+    this.subQuery = subQuery;
+  }
+
+  public String getDesc() {
+    return desc;
+  }
+
+  public void setDesc(String desc) {
+    this.desc = desc;
+  }
 }

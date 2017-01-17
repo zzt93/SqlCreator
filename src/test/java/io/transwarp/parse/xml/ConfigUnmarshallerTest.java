@@ -1,5 +1,6 @@
 package io.transwarp.parse.xml;
 
+import io.transwarp.generate.config.GlobalConfig;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,8 @@ public class ConfigUnmarshallerTest {
 
   @Test
   public void parse() throws Exception {
-    configUnmarshaller.parse(new XMLParserSource("src/main/resources/template.xml"));
+    final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource("src/main/resources/template.xml"));
+    System.out.println();
   }
 
 }

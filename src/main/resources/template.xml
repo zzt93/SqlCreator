@@ -10,8 +10,15 @@
                     <operand>
                         <subQuery ref="simpleQuery"/>
                     </operand>
-                    <condition desc="condition" udfCentain="and">
-                        <expr udfCentain="=" udfDepth="1"/>
+                    <condition udfDepth="1">
+                        <udfConfig>
+                            <udfList list="and">1</udfList>
+                        </udfConfig>
+                        <const udfDepth="1">
+                            <udfConfig>
+                                <udfList list="=">1</udfList>
+                            </udfConfig>
+                        </const>
                         <expr desc="default: const/expr/operand"/>
                     </condition>
                 </join>
@@ -25,7 +32,7 @@
     <test>
         <query num="1000" id="test">
             <!--specify needed keyword-->
-            <group-by/>
+            <groupBy/>
             <having/>
         </query>
     </test>

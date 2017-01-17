@@ -5,6 +5,8 @@ import io.transwarp.db_specific.InceptorType;
 import io.transwarp.db_specific.OracleType;
 import io.transwarp.generate.type.*;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 /**
  * Created by zzt on 12/7/16.
  * <p>
@@ -13,6 +15,7 @@ import io.transwarp.generate.type.*;
  * <p>The order of following dialect determines the choice of string representation of date operator</p>
  * @see io.transwarp.generate.stmt.expression.DateOp
  */
+@XmlEnum
 public enum Dialect {
 
   INCEPTOR(InceptorType.values()) {
