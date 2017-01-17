@@ -2,6 +2,9 @@ package io.transwarp.generate.config.op;
 
 import io.transwarp.generate.config.expr.ExprConfig;
 
+import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
+
 /**
  * Created by zzt on 1/16/17.
  * <p>
@@ -9,25 +12,16 @@ import io.transwarp.generate.config.expr.ExprConfig;
  */
 public class SetOperatorConfig {
 
-  private SetOperandConfig left, right;
+  private List<SetOperandConfig> operands;
   private ExprConfig condition;
 
-  public SetOperandConfig getLeft() {
-    return left;
+  @XmlElement(name = "operand")
+  public List<SetOperandConfig> getOperands() {
+    return operands;
   }
 
-  public SetOperatorConfig setLeft(SetOperandConfig left) {
-    this.left = left;
-    return this;
-  }
-
-  public SetOperandConfig getRight() {
-    return right;
-  }
-
-  public SetOperatorConfig setRight(SetOperandConfig right) {
-    this.right = right;
-    return this;
+  public void setOperands(List<SetOperandConfig> operands) {
+    this.operands = operands;
   }
 
   public ExprConfig getCondition() {

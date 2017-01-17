@@ -33,14 +33,15 @@ public class PerGenerationConfig extends StmtConfig {
 
   // operand
   private int udfDepth;
-  private InputRelation inputRelation;
   private UdfFilter udfFilter;
   // from
   private int joinTimes;
   private Table[] src;
+
   // select
   private int selectColMax;
   private int exprNumInSelect;
+  private InputRelation inputRelation;
   private Map<GenerationDataType, Possibility> results;
 
   public PerGenerationConfig() {

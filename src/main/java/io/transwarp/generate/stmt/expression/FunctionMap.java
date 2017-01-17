@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class FunctionMap {
 
   private static final ConcurrentHashMap<GenerationDataType, Functions> share = new ConcurrentHashMap<>(50);
-  private static final ConcurrentHashMap<Function, GenerationDataType> reverse = new ConcurrentHashMap<>(200);
+  private static final ConcurrentHashMap<String, Function> nameToFunction = new ConcurrentHashMap<>(200);
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   static void register(Function f, GenerationDataType resultType) {
@@ -38,6 +38,8 @@ public class FunctionMap {
     } else {
       registerSingle(f, resultType);
     }
+
+    nameToFunction.put(f.toString(), f);
   }
 
   private static void registerSingle(Function f, GenerationDataType resultType) {
@@ -76,8 +78,8 @@ public class FunctionMap {
     return functions.shouldNotFilter() ? functions : functions.filter(udfFilter);
   }
 
-  public static GenerationDataType resultType(Function f) {
-    return reverse.get(f);
+  public static Function getUdfByName(String name) {
+    return nameToFunction.get(name);
   }
 
   static {

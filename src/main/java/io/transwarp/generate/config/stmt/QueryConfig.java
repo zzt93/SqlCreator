@@ -2,30 +2,31 @@ package io.transwarp.generate.config.stmt;
 
 
 import io.transwarp.generate.config.op.FilterOperatorConfig;
-import io.transwarp.generate.config.op.SetOperatorConfig;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Created by zzt on 1/13/17.
  * <p>
  * <h3></h3>
  */
-@XmlRootElement
 public class QueryConfig extends StmtConfig {
 
-  private int depth;
+  private int queryDepth;
   private FilterOperatorConfig select, where, groupBy, having;
-  private SetOperatorConfig join;
+  private FromConfig from;
 
-  public int getDepth() {
-    return depth;
+  @XmlAttribute
+  public int getQueryDepth() {
+    return queryDepth;
   }
 
-  public void setDepth(int depth) {
-    this.depth = depth;
+  public void setQueryDepth(int queryDepth) {
+    this.queryDepth = queryDepth;
   }
 
+  @XmlElement
   public FilterOperatorConfig getSelect() {
     return select;
   }
@@ -34,6 +35,7 @@ public class QueryConfig extends StmtConfig {
     this.select = select;
   }
 
+  @XmlElement
   public FilterOperatorConfig getWhere() {
     return where;
   }
@@ -42,6 +44,7 @@ public class QueryConfig extends StmtConfig {
     this.where = where;
   }
 
+  @XmlElement
   public FilterOperatorConfig getGroupBy() {
     return groupBy;
   }
@@ -50,6 +53,7 @@ public class QueryConfig extends StmtConfig {
     this.groupBy = groupBy;
   }
 
+  @XmlElement
   public FilterOperatorConfig getHaving() {
     return having;
   }
@@ -58,11 +62,12 @@ public class QueryConfig extends StmtConfig {
     this.having = having;
   }
 
-  public SetOperatorConfig getJoin() {
-    return join;
+  @XmlElement
+  public FromConfig getFrom() {
+    return from;
   }
 
-  public void setJoin(SetOperatorConfig join) {
-    this.join = join;
+  public void setFrom(FromConfig from) {
+    this.from = from;
   }
 }

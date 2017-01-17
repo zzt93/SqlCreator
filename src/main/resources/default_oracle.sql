@@ -28,4 +28,3 @@ INSERT INTO test_udf VALUES (10, 0, 'sdfng', DATE '2015-10-10', '10', 10000, 100
 INSERT INTO test_udf VALUES (11, 1, 'zxvcg', DATE '2015-10-11', '11', 10010, 1020, 'zenzxvcg zetang', 321.01, TIMESTAMP '2016-12-23 00:00:00', '曾泽堂', '曾', 162);
 
 
--- how to require join on column

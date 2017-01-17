@@ -1,6 +1,8 @@
 package io.transwarp.generate.config.expr.adapter;
 
 import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.stmt.expression.Function;
+import io.transwarp.generate.stmt.expression.FunctionMap;
 import org.w3c.dom.Element;
 
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -14,10 +16,7 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-public class UdfMapAdapter extends XmlAdapter<UdfMapAdapter.AdaptedMap, HashMap<String, Possibility>> {
-
-  public UdfMapAdapter() throws Exception {
-  }
+public class UdfMapAdapter extends XmlAdapter<UdfMapAdapter.AdaptedMap, HashMap<Function, Possibility>> {
 
   static class AdaptedMap {
     @XmlAnyElement
@@ -25,16 +24,20 @@ public class UdfMapAdapter extends XmlAdapter<UdfMapAdapter.AdaptedMap, HashMap<
   }
 
   @Override
-  public AdaptedMap marshal(HashMap<String, Possibility> map) throws Exception {
+  public AdaptedMap marshal(HashMap<Function, Possibility> map) throws Exception {
     return null;
   }
 
   @Override
-  public HashMap<String, Possibility> unmarshal(AdaptedMap adaptedMap) throws Exception {
-    HashMap<String, Possibility> map = new HashMap<>();
+  public HashMap<Function, Possibility> unmarshal(AdaptedMap adaptedMap) throws Exception {
+    HashMap<Function, Possibility> map = new HashMap<>();
     for (Element element : adaptedMap.elements) {
-      map.put(element.getLocalName(),
-          Possibility.possibility(Double.parseDouble(element.getTextContent())));
+      final Possibility possibility = Possibility.possibility(
+          Double.parseDouble(element.getAttribute("possibility")));
+      for (String s : element.getTextContent().split("\\s")) {
+        map.put(FunctionMap.getUdfByName(s),
+            possibility);
+      }
     }
     return map;
   }

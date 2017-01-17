@@ -2,6 +2,8 @@ package io.transwarp.generate.config.op;
 
 import io.transwarp.generate.config.stmt.QueryConfig;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 
 /**
@@ -15,6 +17,7 @@ public class SetOperandConfig {
 
   private String desc;
 
+  @XmlElement
   public String getTable() {
     return table;
   }
@@ -32,6 +35,7 @@ public class SetOperandConfig {
     this.subQuery = subQuery;
   }
 
+  @XmlAttribute
   public String getDesc() {
     return desc;
   }

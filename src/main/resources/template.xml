@@ -12,11 +12,11 @@
                     </operand>
                     <condition udfDepth="1">
                         <udfConfig>
-                            <udfList list="and">1</udfList>
+                            <udfList possibility="1">AND</udfList>
                         </udfConfig>
                         <const udfDepth="1">
                             <udfConfig>
-                                <udfList list="=">1</udfList>
+                                <udfList possibility="1">EQ SMALL</udfList>
                             </udfConfig>
                         </const>
                         <expr desc="default: const/expr/operand"/>

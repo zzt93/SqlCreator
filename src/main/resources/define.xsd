@@ -174,8 +174,8 @@
     </xs:complexType>
     <xs:complexType name="udfList">
         <xs:simpleContent>
-            <xs:extension base="possibility">
-                <xs:attribute name="list" type="xs:string" use="required"/>
+            <xs:extension base="stringList">
+                <xs:attribute name="possibility" type="possibility" use="required"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -186,4 +186,7 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="stringList">
+        <xs:list itemType="xs:string"/>
+    </xs:simpleType>
 </xs:schema>

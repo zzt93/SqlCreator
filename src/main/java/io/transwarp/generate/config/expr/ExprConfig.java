@@ -2,8 +2,11 @@ package io.transwarp.generate.config.expr;
 
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.adapter.UdfMapAdapter;
+import io.transwarp.generate.stmt.expression.Function;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +20,15 @@ public class ExprConfig {
 
   private List<ExprConfig> operands;
 
-  private HashMap<String, Possibility> udfRequirement;
+  private HashMap<Function, Possibility> udfRequirement;
 
-  private int udfDepth = 3;
+  private int udfDepth;
   private String desc;
-  private double constOrColumnPossibility = 0.5;
+  private double constOrColumnPossibility;
 
+  @XmlElements({
+
+  })
   public List<ExprConfig> getOperands() {
     return operands;
   }
@@ -34,14 +40,15 @@ public class ExprConfig {
 
   @XmlElement(name = "udfConfig")
   @XmlJavaTypeAdapter(UdfMapAdapter.class)
-  public HashMap<String, Possibility> getUdfRequirement() {
+  public HashMap<Function, Possibility> getUdfRequirement() {
     return udfRequirement;
   }
 
-  public void setUdfRequirement(HashMap<String, Possibility> udfRequirement) {
+  public void setUdfRequirement(HashMap<Function, Possibility> udfRequirement) {
     this.udfRequirement = udfRequirement;
   }
 
+  @XmlAttribute
   public int getUdfDepth() {
     return udfDepth;
   }
@@ -51,6 +58,7 @@ public class ExprConfig {
     return this;
   }
 
+  @XmlAttribute
   public String getDesc() {
     return desc;
   }
@@ -60,6 +68,7 @@ public class ExprConfig {
     return this;
   }
 
+  @XmlAttribute
   public double getConstOrColumnPossibility() {
     return constOrColumnPossibility;
   }
