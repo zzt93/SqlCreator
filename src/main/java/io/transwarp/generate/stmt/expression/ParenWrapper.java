@@ -50,4 +50,9 @@ public class ParenWrapper implements Function {
   public int hashCode() {
     return f != null ? f.hashCode() : 0;
   }
+
+  @Override
+  public String toString() {
+    return f.toString();
+  }
 }

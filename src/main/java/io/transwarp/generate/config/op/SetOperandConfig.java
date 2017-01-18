@@ -27,6 +27,7 @@ public class SetOperandConfig {
   }
 
   @XmlIDREF
+  @XmlElement
   public QueryConfig getSubQuery() {
     return subQuery;
   }

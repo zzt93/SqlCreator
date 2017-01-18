@@ -24,6 +24,7 @@ public class SetOperatorConfig {
     this.operands = operands;
   }
 
+  @XmlElement
   public ExprConfig getCondition() {
     return condition;
   }

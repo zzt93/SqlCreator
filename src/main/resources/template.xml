@@ -19,7 +19,7 @@
                                 <udfList possibility="1">EQ SMALL</udfList>
                             </udfConfig>
                         </const>
-                        <expr desc="default: const/expr/operand"/>
+                        <expr desc="default: const/column/expr"/>
                     </condition>
                 </join>
             </from>

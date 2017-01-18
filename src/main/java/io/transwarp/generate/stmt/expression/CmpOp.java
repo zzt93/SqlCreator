@@ -80,7 +80,7 @@ public enum CmpOp implements Function {
     @Override
     public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
       for (Dialect dialect : dialects) {
-        input[0].sql(dialect).insert(0, toString());
+        input[0].sql(dialect).insert(0, getOperator());
       }
       return input[0];
     }
@@ -115,8 +115,7 @@ public enum CmpOp implements Function {
     this.operator = s;
   }
 
-  @Override
-  public String toString() {
+  public String getOperator() {
     return operator;
   }
 

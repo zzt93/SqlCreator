@@ -1,14 +1,11 @@
 package io.transwarp.generate.config.expr;
 
-import io.transwarp.generate.config.Possibility;
-import io.transwarp.generate.config.expr.adapter.UdfMapAdapter;
-import io.transwarp.generate.stmt.expression.Function;
+import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,14 +17,16 @@ public class ExprConfig {
 
   private List<ExprConfig> operands;
 
-  private HashMap<Function, Possibility> udfRequirement;
+  private UdfFilter udfFilter;
 
   private int udfDepth;
   private String desc;
   private double constOrColumnPossibility;
 
   @XmlElements({
-
+    @XmlElement(name = "const", type = ExprConfig.class),
+    @XmlElement(name = "expr", type = ExprConfig.class),
+    @XmlElement(name = "column", type = ExprConfig.class)
   })
   public List<ExprConfig> getOperands() {
     return operands;
@@ -39,13 +38,13 @@ public class ExprConfig {
   }
 
   @XmlElement(name = "udfConfig")
-  @XmlJavaTypeAdapter(UdfMapAdapter.class)
-  public HashMap<Function, Possibility> getUdfRequirement() {
-    return udfRequirement;
+  @XmlJavaTypeAdapter(UdfFilterAdapter.class)
+  public UdfFilter getUdfFilter() {
+    return udfFilter;
   }
 
-  public void setUdfRequirement(HashMap<Function, Possibility> udfRequirement) {
-    this.udfRequirement = udfRequirement;
+  public void setUdfFilter(UdfFilter udfFilter) {
+    this.udfFilter = udfFilter;
   }
 
   @XmlAttribute
@@ -53,9 +52,8 @@ public class ExprConfig {
     return udfDepth;
   }
 
-  public ExprConfig setUdfDepth(int udfDepth) {
+  public void setUdfDepth(int udfDepth) {
     this.udfDepth = udfDepth;
-    return this;
   }
 
   @XmlAttribute
@@ -73,8 +71,7 @@ public class ExprConfig {
     return constOrColumnPossibility;
   }
 
-  public ExprConfig setConstOrColumnPossibility(double constOrColumnPossibility) {
+  public void setConstOrColumnPossibility(double constOrColumnPossibility) {
     this.constOrColumnPossibility = constOrColumnPossibility;
-    return this;
   }
 }

@@ -56,7 +56,7 @@
         <xs:attribute name="dialect" type="dialects" default="ORACLE"/>
     </xs:complexType>
     <xs:complexType name="stmtRef">
-        <xs:attribute name="ref" type="xs:IDREF"/>
+        <xs:attribute name="ref" type="xs:IDREF" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="queryConfig">
@@ -77,9 +77,15 @@
                 </xs:sequence>
                 <xs:attribute name="queryDepth" default="1">
                     <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo>Sql Generator Note</xs:appinfo>
+                            <xs:documentation xml:lang="en">
+                                this attribute not affect the depth of containing recursive queryConfig depth settings
+                            </xs:documentation>
+                        </xs:annotation>
                         <xs:restriction base="xs:unsignedByte">
                             <xs:minInclusive value="1"/>
-                            <xs:maxInclusive value="10"/>
+                            <xs:maxInclusive value="5"/>
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:attribute>
@@ -112,7 +118,20 @@
             <xs:element name="column" type="column"/>
             <xs:element name="udfConfig" maxOccurs="1" type="udfConfig"/>
         </xs:choice>
-        <xs:attribute name="udfDepth" default="3"/>
+        <xs:attribute name="udfDepth" default="3">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo>Sql Generator Note</xs:appinfo>
+                    <xs:documentation xml:lang="en">
+                        this attribute not affect the depth of containing recursive exprConfig depth settings
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:unsignedByte">
+                    <xs:minInclusive value="1"/>
+                    <xs:maxInclusive value="10"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="desc" type="xs:string"/>
         <xs:attribute name="constOrColumnPossibility" type="xs:float" default="0.5"/>
     </xs:complexType>
@@ -153,8 +172,8 @@
 
     <xs:complexType name="setOperand">
         <xs:choice>
-            <xs:element name="table" type="xs:string" minOccurs="0"/>
             <xs:element name="subQuery" type="stmtRef" minOccurs="0"/>
+            <xs:element name="table" type="xs:string" minOccurs="0"/>
         </xs:choice>
         <xs:attribute name="desc" type="xs:string"/>
     </xs:complexType>

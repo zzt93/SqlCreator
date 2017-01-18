@@ -31,15 +31,10 @@ public enum LogicalOp implements Function {
       DataType.BOOL, DataType.BOOL
   };
 
-  private final StringBuilder name;
+  private final String operator;
 
   LogicalOp(String s) {
-    name = new StringBuilder(s);
-  }
-
-  @Override
-  public String toString() {
-    return name.toString();
+    operator = s;
   }
 
   @Override
@@ -57,7 +52,7 @@ public enum LogicalOp implements Function {
     Operand f = operands[0];
     Operand s = operands[1];
     for (Dialect dialect : dialects) {
-      f.sql(dialect).append(this).append(s.sql(dialect));
+      f.sql(dialect).append(operator).append(s.sql(dialect));
     }
     return f;
   }

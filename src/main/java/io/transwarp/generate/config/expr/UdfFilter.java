@@ -24,8 +24,11 @@ public class UdfFilter {
     preference.putAll(udfFilter.preference);
   }
 
-  public UdfFilter() {
+  public UdfFilter(Map<Function, Possibility> preference) {
+    this.preference.putAll(preference);
   }
+
+  public UdfFilter() {}
 
   public UdfFilter addPreference(Function f, Possibility p) {
     preference.put(f, p);
