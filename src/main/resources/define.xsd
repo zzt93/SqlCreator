@@ -163,6 +163,14 @@
             <xs:element name="operand" type="exprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:choice>
     </xs:complexType>
+    <xs:complexType name="selectConfig">
+        <xs:complexContent>
+            <xs:restriction base="filterOperatorConfig">
+                <xs:choice>
+                </xs:choice>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="setOperatorConfig">
         <xs:sequence>
             <xs:element name="operand" type="setOperand" maxOccurs="2" minOccurs="2"/>

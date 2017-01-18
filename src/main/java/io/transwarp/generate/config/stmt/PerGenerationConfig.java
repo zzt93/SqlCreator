@@ -6,13 +6,14 @@ import io.transwarp.generate.config.expr.FunctionDepth;
 import io.transwarp.generate.config.expr.InputRelation;
 import io.transwarp.generate.config.expr.UdfFilter;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
-import io.transwarp.generate.config.op.SetOperatorConfig;
 import io.transwarp.generate.stmt.expression.AggregateOp;
 import io.transwarp.generate.stmt.expression.CmpOp;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.parse.sql.DDLParser;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,70 @@ public class PerGenerationConfig extends StmtConfig {
 
   private int queryDepth;
   private FilterOperatorConfig select, where, groupBy, having;
-  private SetOperatorConfig join;
+  private FromConfig from;
+
+  public PerGenerationConfig(int queryDepth, FilterOperatorConfig select, FilterOperatorConfig where, FilterOperatorConfig groupBy, FilterOperatorConfig having, FromConfig from) {
+    this.queryDepth = queryDepth;
+    this.select = select;
+    this.where = where;
+    this.groupBy = groupBy;
+    this.having = having;
+    this.from = from;
+  }
+
+  @XmlAttribute
+  public int getQueryDepth() {
+    return queryDepth;
+  }
+
+  public void setQueryDepth(int queryDepth) {
+    this.queryDepth = queryDepth;
+  }
+
+  @XmlElement
+  public FilterOperatorConfig getSelect() {
+    return select;
+  }
+
+  public void setSelect(FilterOperatorConfig select) {
+    this.select = select;
+  }
+
+  @XmlElement
+  public FilterOperatorConfig getWhere() {
+    return where;
+  }
+
+  public void setWhere(FilterOperatorConfig where) {
+    this.where = where;
+  }
+
+  @XmlElement
+  public FilterOperatorConfig getGroupBy() {
+    return groupBy;
+  }
+
+  public void setGroupBy(FilterOperatorConfig groupBy) {
+    this.groupBy = groupBy;
+  }
+
+  @XmlElement
+  public FilterOperatorConfig getHaving() {
+    return having;
+  }
+
+  public void setHaving(FilterOperatorConfig having) {
+    this.having = having;
+  }
+
+  @XmlElement
+  public FromConfig getFrom() {
+    return from;
+  }
+
+  public void setFrom(FromConfig from) {
+    this.from = from;
+  }
 
   // operand
   private int udfDepth;
@@ -41,8 +105,9 @@ public class PerGenerationConfig extends StmtConfig {
   // select
   private int selectColMax;
   private int exprNumInSelect;
-  private InputRelation inputRelation;
   private Map<GenerationDataType, Possibility> results;
+
+  private InputRelation inputRelation;
 
   public PerGenerationConfig() {
   }
@@ -65,10 +130,6 @@ public class PerGenerationConfig extends StmtConfig {
 
   public int getUdfDepth() {
     return udfDepth;
-  }
-
-  public int getQueryDepth() {
-    return queryDepth;
   }
 
   public int getJoinTimes() {

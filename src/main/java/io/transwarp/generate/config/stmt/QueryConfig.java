@@ -17,6 +17,18 @@ public class QueryConfig extends StmtConfig {
   private FilterOperatorConfig select, where, groupBy, having;
   private FromConfig from;
 
+  public QueryConfig() {
+  }
+
+  public QueryConfig(int queryDepth, FilterOperatorConfig select, FilterOperatorConfig where, FilterOperatorConfig groupBy, FilterOperatorConfig having, FromConfig from) {
+    this.queryDepth = queryDepth;
+    this.select = select;
+    this.where = where;
+    this.groupBy = groupBy;
+    this.having = having;
+    this.from = from;
+  }
+
   @XmlAttribute
   public int getQueryDepth() {
     return queryDepth;
