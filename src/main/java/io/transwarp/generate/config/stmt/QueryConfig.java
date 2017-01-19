@@ -2,6 +2,7 @@ package io.transwarp.generate.config.stmt;
 
 
 import io.transwarp.generate.config.op.FilterOperatorConfig;
+import io.transwarp.generate.config.op.SelectConfig;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,7 +39,7 @@ public class QueryConfig extends StmtConfig {
     this.queryDepth = queryDepth;
   }
 
-  @XmlElement
+  @XmlElement(type = SelectConfig.class)
   public FilterOperatorConfig getSelect() {
     return select;
   }

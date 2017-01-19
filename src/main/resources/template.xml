@@ -8,7 +8,7 @@
                 <join>
                     <operand desc="default: table or query"/>
                     <operand>
-                        <subQuery ref="simpleQuery"/>
+                        <subQuery>simpleQuery</subQuery>
                     </operand>
                     <condition udfDepth="1">
                         <udfConfig>
@@ -25,13 +25,19 @@
             </from>
         </query>
         <updateStmt id="update"/>
-        <query id="simpleQuery" queryDepth="2"/>
+        <query id="simpleQuery" queryDepth="2">
+            <where/>
+        </query>
     </test>
 
 
     <test>
         <query num="1000" id="test">
-            <!--specify needed keyword-->
+            <select>
+                <results>
+                    <result possibility="1">INT</result>
+                </results>
+            </select>
             <groupBy/>
             <having/>
         </query>
@@ -41,9 +47,6 @@
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
     </test>
-
-
-
 
 
 </tests>

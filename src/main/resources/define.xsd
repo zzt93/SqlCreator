@@ -55,15 +55,12 @@
         <xs:attribute name="table" type="xs:string" default="default_oracle.sql"/>
         <xs:attribute name="dialect" type="dialects" default="ORACLE"/>
     </xs:complexType>
-    <xs:complexType name="stmtRef">
-        <xs:attribute name="ref" type="xs:IDREF" use="required"/>
-    </xs:complexType>
 
     <xs:complexType name="queryConfig">
         <xs:complexContent>
             <xs:extension base="stmtConfig">
                 <xs:sequence>
-                    <xs:element name="select" type="filterOperatorConfig" minOccurs="0"/>
+                    <xs:element name="select" type="selectConfig" minOccurs="0"/>
                     <xs:element name="from" minOccurs="0">
                         <xs:complexType>
                             <xs:all>
@@ -165,10 +162,11 @@
     </xs:complexType>
     <xs:complexType name="selectConfig">
         <xs:complexContent>
-            <xs:restriction base="filterOperatorConfig">
+            <xs:extension base="filterOperatorConfig">
                 <xs:choice>
+                    <xs:element name="results" type="results"/>
                 </xs:choice>
-            </xs:restriction>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="setOperatorConfig">
@@ -180,7 +178,7 @@
 
     <xs:complexType name="setOperand">
         <xs:choice>
-            <xs:element name="subQuery" type="stmtRef" minOccurs="0"/>
+            <xs:element name="subQuery" type="xs:IDREF" minOccurs="0"/>
             <xs:element name="table" type="xs:string" minOccurs="0"/>
         </xs:choice>
         <xs:attribute name="desc" type="xs:string"/>
@@ -196,10 +194,10 @@
 
     <xs:complexType name="udfConfig">
         <xs:choice>
-            <xs:element name="udfList" type="udfList" maxOccurs="4"/>
+            <xs:element name="udfList" type="possibilityMap" maxOccurs="4"/>
         </xs:choice>
     </xs:complexType>
-    <xs:complexType name="udfList">
+    <xs:complexType name="possibilityMap">
         <xs:simpleContent>
             <xs:extension base="stringList">
                 <xs:attribute name="possibility" type="possibility" use="required"/>
@@ -216,4 +214,9 @@
     <xs:simpleType name="stringList">
         <xs:list itemType="xs:string"/>
     </xs:simpleType>
+    <xs:complexType name="results">
+        <xs:choice>
+            <xs:element name="result" type="possibilityMap"/>
+        </xs:choice>
+    </xs:complexType>
 </xs:schema>
