@@ -197,6 +197,12 @@
             <xs:element name="udfList" type="possibilityMap" maxOccurs="4"/>
         </xs:choice>
     </xs:complexType>
+    <xs:complexType name="results">
+        <xs:choice>
+            <xs:element name="result" type="possibilityMap"/>
+        </xs:choice>
+    </xs:complexType>
+
     <xs:complexType name="possibilityMap">
         <xs:simpleContent>
             <xs:extension base="stringList">
@@ -210,13 +216,8 @@
             <xs:minInclusive value="0"/>
         </xs:restriction>
     </xs:simpleType>
-
     <xs:simpleType name="stringList">
         <xs:list itemType="xs:string"/>
     </xs:simpleType>
-    <xs:complexType name="results">
-        <xs:choice>
-            <xs:element name="result" type="possibilityMap"/>
-        </xs:choice>
-    </xs:complexType>
+
 </xs:schema>
