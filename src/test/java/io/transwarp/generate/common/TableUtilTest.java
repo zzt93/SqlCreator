@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class TableUtilTest {
   @Test
   public void randomCol() throws Exception {
-    final Table table = DDLParser.getTable()[0];
+    final Table table = DDLParser.getTable(table, dialect)[0];
     assertTrue(TableUtil.sameTypeRandomCol(table, DataType.DECIMAL).isPresent());
     assertTrue(TableUtil.sameTypeRandomCol(table, DataType.UNIX_DATE).isPresent());
     assertTrue(TableUtil.sameTypeRandomCol(table, SequenceDataType.CHARS).isPresent());

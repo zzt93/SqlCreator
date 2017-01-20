@@ -44,10 +44,10 @@ public class SelectResultTest {
 
   @Before
   public void setUp() throws Exception {
-    from = DDLParser.getTable()[0];
+    from = DDLParser.getTable(table, dialect)[0];
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
-      selectResults[i] = SelectResult.selectResult(config, DDLParser.getTable());
+      selectResults[i] = SelectResult.selectResult(config, DDLParser.getTable(table, dialect));
     }
     oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));

@@ -16,7 +16,7 @@
                         </udfConfig>
                         <const udfDepth="1">
                             <udfConfig>
-                                <udfList possibility="1">EQ SMALL</udfList>
+                                <udfList possibility="1">EQ</udfList>
                             </udfConfig>
                         </const>
                         <expr desc="default: const/column/expr"/>
@@ -28,6 +28,14 @@
         <query id="simpleQuery" queryDepth="2">
             <where/>
         </query>
+        <setOperation type="UNION">
+            <operand>
+                <subQuery>simpleQuery</subQuery>
+            </operand>
+            <operand>
+                <subQuery>simpleQuery</subQuery>
+            </operand>
+        </setOperation>
     </test>
 
 

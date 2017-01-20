@@ -4,6 +4,7 @@ import io.transwarp.generate.stmt.expression.CmpOp;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
+import javax.xml.bind.annotation.XmlEnum;
 import java.util.Arrays;
 
 /**
@@ -13,6 +14,7 @@ import java.util.Arrays;
  * Because most function receive many different types, but return a few types, so
  * I refine group type to specific type to assist function search
  */
+@XmlEnum
 public enum InputRelation {
   SAME {
     @Override

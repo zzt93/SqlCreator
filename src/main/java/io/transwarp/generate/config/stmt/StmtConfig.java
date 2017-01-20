@@ -2,6 +2,8 @@ package io.transwarp.generate.config.stmt;
 
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.common.Table;
+import io.transwarp.parse.sql.DDLParser;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
@@ -58,5 +60,9 @@ public abstract class StmtConfig {
   public StmtConfig setDialect(Dialect dialect) {
     this.dialect = dialect;
     return this;
+  }
+
+  public Table[] getSrc() {
+    return DDLParser.getTable(table, dialect);
   }
 }

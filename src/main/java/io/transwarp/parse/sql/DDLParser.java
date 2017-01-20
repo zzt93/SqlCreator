@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -111,20 +112,31 @@ public class DDLParser {
   }
 
   private static class TableLoader {
-    static {
+    private String fileName;
+    private Dialect dialect;
+
+    TableLoader(String fileName, Dialect dialect) {
+      this.fileName = fileName;
+      this.dialect = dialect;
       DDLParser ddlParser = null;
       try {
-        ddlParser = new DDLParser("src/main/resources/default_oracle.sql", Dialect.ORACLE);
+        ddlParser = new DDLParser("src/main/resources/" + fileName, dialect);
       } catch (IOException e) {
         e.printStackTrace();
       }
       table = ddlParser.parse();
     }
 
-    private static final Table[] table;
+    private final Table[] table;
+    private static HashMap<String, TableLoader> map = new HashMap<>();
   }
 
-  public static Table[] getTable() {
-    return TableLoader.table;
+  public static Table[] getTable(String tableFile, Dialect dialect) {
+    if (TableLoader.map.containsKey(tableFile)) {
+      return TableLoader.map.get(tableFile).table;
+    }
+    final TableLoader value = new TableLoader(tableFile, dialect);
+    TableLoader.map.put(tableFile, value);
+    return value.table;
   }
 }

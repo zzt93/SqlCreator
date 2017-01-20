@@ -12,7 +12,7 @@ import org.junit.Test;
 public class DDLParserTest {
   @Test
   public void delimiterTest() throws Exception {
-    final Table parse = DDLParser.getTable()[0];
+    final Table parse = DDLParser.getTable(table, dialect)[0];
     assert parse.name().isPresent();
     assert parse.name().get().equals("test_udf");
     assert parse.columns().size() == 13;

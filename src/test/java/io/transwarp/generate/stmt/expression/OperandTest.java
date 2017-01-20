@@ -28,7 +28,7 @@ public class OperandTest {
 
   @Test
   public void randomSameTypeOperand() throws Exception {
-    final Table test = DDLParser.getTable()[0];
+    final Table test = DDLParser.getTable(table, dialect)[0];
     for (int i = 0; i < 1000; i++) {
       final Operand[] operands = Operand.getOperands(test, 3, testType, new PerGenerationConfig.Builder().create());
       final GenerationDataType type = operands[0].getType();

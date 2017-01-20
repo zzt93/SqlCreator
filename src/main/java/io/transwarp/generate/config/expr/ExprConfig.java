@@ -22,6 +22,7 @@ public class ExprConfig {
   private int udfDepth;
   private String desc;
   private double constOrColumnPossibility;
+  private InputRelation inputRelation;
 
   @XmlElements({
     @XmlElement(name = "const", type = ExprConfig.class),
@@ -73,5 +74,14 @@ public class ExprConfig {
 
   public void setConstOrColumnPossibility(double constOrColumnPossibility) {
     this.constOrColumnPossibility = constOrColumnPossibility;
+  }
+
+  @XmlAttribute
+  public InputRelation getInputRelation() {
+    return inputRelation;
+  }
+
+  public void setInputRelation(InputRelation inputRelation) {
+    this.inputRelation = inputRelation;
   }
 }

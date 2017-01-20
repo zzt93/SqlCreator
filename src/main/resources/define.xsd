@@ -35,9 +35,10 @@
     </xs:element>
 
     <xs:complexType name="sql">
-        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element ref="stmtConfig"/>
-        </xs:sequence>
+            <xs:element name="setOperation" type="setOperatorConfig"/>
+        </xs:choice>
         <xs:attribute name="transaction" type="xs:boolean" default="false"/>
         <xs:attribute name="threads" type="xs:unsignedInt" default="1"/>
         <xs:attribute name="dialect" type="dialects" default="ORACLE"/>
@@ -64,7 +65,7 @@
                     <xs:element name="from" minOccurs="0">
                         <xs:complexType>
                             <xs:all>
-                                <xs:element name="join" type="setOperatorConfig" minOccurs="0"/>
+                                <xs:element name="join" type="joinConfig" minOccurs="0"/>
                             </xs:all>
                         </xs:complexType>
                     </xs:element>
@@ -131,6 +132,15 @@
         </xs:attribute>
         <xs:attribute name="desc" type="xs:string"/>
         <xs:attribute name="constOrColumnPossibility" type="xs:float" default="0.5"/>
+        <xs:attribute name="inputRelation" default="SAME">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="SAME"/>
+                    <xs:enumeration value="GROUP"/>
+                    <xs:enumeration value="RANDOM"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="const">
@@ -166,12 +176,34 @@
                 <xs:choice>
                     <xs:element name="results" type="results"/>
                 </xs:choice>
+                <xs:attribute name="selectNum" default="-1">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:byte">
+                            <xs:maxInclusive value="30"/>
+                            <!--this min value represent all available-->
+                            <xs:minInclusive value="-1"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="exprNum">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:unsignedByte">
+                            <xs:maxInclusive value="10"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="setOperatorConfig">
         <xs:sequence>
             <xs:element name="operand" type="setOperand" maxOccurs="2" minOccurs="2"/>
+        </xs:sequence>
+        <xs:attribute name="type" type="tableOp" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="joinConfig">
+        <xs:sequence>
+            <xs:element name="operand" type="relationOperand" maxOccurs="2" minOccurs="2"/>
             <xs:element name="condition" type="exprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -179,11 +211,18 @@
     <xs:complexType name="setOperand">
         <xs:choice>
             <xs:element name="subQuery" type="xs:IDREF" minOccurs="0"/>
-            <xs:element name="table" type="xs:string" minOccurs="0"/>
         </xs:choice>
         <xs:attribute name="desc" type="xs:string"/>
     </xs:complexType>
-
+    <xs:complexType name="relationOperand">
+        <xs:complexContent>
+            <xs:extension base="setOperand">
+                <xs:choice>
+                    <xs:element name="table" type="xs:string" minOccurs="0"/>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
     <xs:simpleType name="dialects" final="restriction">
         <xs:restriction base="xs:string">
@@ -218,6 +257,14 @@
     </xs:simpleType>
     <xs:simpleType name="stringList">
         <xs:list itemType="xs:string"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="tableOp">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="UNION"/>
+            <xs:enumeration value="INTERSECT"/>
+            <xs:enumeration value="MINUS"/>
+        </xs:restriction>
     </xs:simpleType>
 
 </xs:schema>

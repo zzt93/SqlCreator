@@ -15,20 +15,10 @@ import javax.xml.bind.annotation.XmlElement;
 public class QueryConfig extends StmtConfig {
 
   private int queryDepth;
-  private FilterOperatorConfig select, where, groupBy, having;
+  private FilterOperatorConfig where, groupBy, having;
+  private SelectConfig select;
   private FromConfig from;
 
-  public QueryConfig() {
-  }
-
-  public QueryConfig(int queryDepth, FilterOperatorConfig select, FilterOperatorConfig where, FilterOperatorConfig groupBy, FilterOperatorConfig having, FromConfig from) {
-    this.queryDepth = queryDepth;
-    this.select = select;
-    this.where = where;
-    this.groupBy = groupBy;
-    this.having = having;
-    this.from = from;
-  }
 
   @XmlAttribute
   public int getQueryDepth() {
@@ -40,11 +30,11 @@ public class QueryConfig extends StmtConfig {
   }
 
   @XmlElement(type = SelectConfig.class)
-  public FilterOperatorConfig getSelect() {
+  public SelectConfig getSelect() {
     return select;
   }
 
-  public void setSelect(FilterOperatorConfig select) {
+  public void setSelect(SelectConfig select) {
     this.select = select;
   }
 

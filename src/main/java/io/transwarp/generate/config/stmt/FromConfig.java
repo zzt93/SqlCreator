@@ -1,6 +1,6 @@
 package io.transwarp.generate.config.stmt;
 
-import io.transwarp.generate.config.op.SetOperatorConfig;
+import io.transwarp.generate.config.op.JoinConfig;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -11,14 +11,18 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class FromConfig {
 
-  private SetOperatorConfig join;
+  private JoinConfig join;
 
   @XmlElement
-  public SetOperatorConfig getJoin() {
+  public JoinConfig getJoin() {
     return join;
   }
 
-  public void setJoin(SetOperatorConfig join) {
+  public void setJoin(JoinConfig join) {
     this.join = join;
+  }
+
+  public boolean noJion() {
+    return join == null;
   }
 }
