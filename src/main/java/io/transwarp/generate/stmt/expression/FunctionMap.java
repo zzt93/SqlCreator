@@ -4,7 +4,6 @@ import io.transwarp.generate.config.expr.UdfFilter;
 import io.transwarp.generate.type.*;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -17,7 +16,6 @@ public class FunctionMap {
 
   private static final ConcurrentHashMap<GenerationDataType, Functions> share = new ConcurrentHashMap<>(50);
   private static final ConcurrentHashMap<String, Function> nameToFunction = new ConcurrentHashMap<>(200);
-  private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   static void register(Function f, GenerationDataType resultType) {
     if (resultType instanceof DataTypeGroup) {
@@ -64,18 +62,18 @@ public class FunctionMap {
    */
   static Function random(GenerationDataType resultType, UdfFilter udfFilter) {
     checkArgument(DataType.innerVisible(resultType));
-    Functions functions = getFilteredFunctions(udfFilter, resultType);
-    while (functions.isEmpty()) {
-      functions = getFilteredFunctions(udfFilter, resultType);
+    Function function = getFilteredFunctions(udfFilter, resultType);
+    while (function == null) {
+      function = getFilteredFunctions(udfFilter, resultType);
       System.out.println("possible bugs in FunctionMap");
     }
-    return functions.get(random.nextInt(functions.size()));
+    return function;
   }
 
-  private static Functions getFilteredFunctions(UdfFilter udfFilter, GenerationDataType type) {
+  private static Function getFilteredFunctions(UdfFilter udfFilter, GenerationDataType type) {
     final Functions functions = share.get(type);
     assert functions != null;
-    return functions.shouldNotFilter() ? functions : functions.filter(udfFilter);
+    return functions.random(udfFilter);
   }
 
   public static Function getUdfByName(String name) {

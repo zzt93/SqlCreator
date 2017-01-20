@@ -6,8 +6,8 @@ import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.config.expr.FunctionDepth;
-import io.transwarp.generate.config.stmt.PerGenerationConfig;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -43,7 +43,7 @@ public class Operand {
     }
   }
 
-  private static Operand makeOperand(GenerationDataType resultType, Table src, PerGenerationConfig config, int depth) {
+  private static Operand makeOperand(GenerationDataType resultType, Table src, ExprConfig config, int depth) {
     if (depth == FunctionDepth.SINGLE) {
       final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
       if (col.isPresent()) {
@@ -68,7 +68,7 @@ public class Operand {
     }
   }
 
-  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, PerGenerationConfig config) {
+  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, ExprConfig config) {
     checkArgument(DataType.outerVisible(resultType));
 
     final Operand[] res = new Operand[num];
@@ -78,7 +78,7 @@ public class Operand {
     return res;
   }
 
-  public static Operand[] randomOperand(Table src, int num, PerGenerationConfig config) {
+  public static Operand[] randomOperand(Table src, int num, ExprConfig config) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       GenerationDataType type = TableUtil.randomCol(src).getType();

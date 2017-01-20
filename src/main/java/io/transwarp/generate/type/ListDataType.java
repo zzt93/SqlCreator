@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.Possibility;
-import io.transwarp.generate.config.stmt.PerGenerationConfig;
+import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class ListDataType extends SequenceDataType {
     this.listPossibility = possibility;
   }
 
-  public String[] listOrQuery(PerGenerationConfig config, Dialect[] dialects) {
+  public String[] listOrQuery(ExprConfig config, Dialect[] dialects) {
     if (listPossibility.chooseFirstOrRandom(true, false)) {
       final Joiner on = Joiner.on(", ");
       String[] res = new String[dialects.length];
@@ -43,11 +43,8 @@ public class ListDataType extends SequenceDataType {
       }
       return res;
     }
-    final SelectResult selectResult = SelectResult.simpleQuery(
-        new PerGenerationConfig.Builder(config)
-            .setSelectColMax(getLen())
-            .addMust(getType())
-            .create());
+    // TODO 1/20/17 add subQuery check
+    final SelectResult selectResult = SelectResult.simpleQuery(config.getSubQuery());
     return selectResult.subQueries(dialects);
   }
 

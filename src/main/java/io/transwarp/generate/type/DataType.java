@@ -218,6 +218,10 @@ public enum DataType implements GenerationDataType {
     return outerVisible(type) || Internal.DATE_STRING_WITH_PATTERN == type;
   }
 
+  public static boolean notInSelectList(DataType dataType) {
+    return dataType == BOOL;
+  }
+
   public enum Meta implements GenerationDataType {
     BIT {
       @Override

@@ -1,10 +1,12 @@
 package io.transwarp.generate.config.expr;
 
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
+import io.transwarp.generate.config.stmt.QueryConfig;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
@@ -23,6 +25,28 @@ public class ExprConfig {
   private String desc;
   private double constOrColumnPossibility;
   private InputRelation inputRelation;
+
+  private int queryDepth;
+  private QueryConfig subQuery;
+
+  @XmlAttribute
+  public int getQueryDepth() {
+    return queryDepth;
+  }
+
+  public void setQueryDepth(int queryDepth) {
+    this.queryDepth = queryDepth;
+  }
+
+  @XmlAttribute
+  @XmlIDREF
+  public QueryConfig getSubQuery() {
+    return subQuery;
+  }
+
+  public void setSubQuery(QueryConfig subQuery) {
+    this.subQuery = subQuery;
+  }
 
   @XmlElements({
     @XmlElement(name = "const", type = ExprConfig.class),

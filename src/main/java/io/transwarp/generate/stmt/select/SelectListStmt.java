@@ -6,7 +6,7 @@ import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Possibility;
-import io.transwarp.generate.config.stmt.PerGenerationConfig;
+import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -22,22 +22,22 @@ import java.util.Map;
 public class SelectListStmt implements SqlGeneration {
   private ArrayList<Column> cols;
 
-  SelectListStmt(Table from, PerGenerationConfig config) {
-    final int colLimit = config.getSelectColMax();
+  SelectListStmt(Table from, SelectConfig config) {
+    final int colLimit = config.getSelectNum();
     if (config.hasResultLimit()) {
       final Map<GenerationDataType, Possibility> results = config.getResults();
-      cols = new ArrayList<>(config.getSelectColMax());
+      cols = new ArrayList<>(config.getSelectNum());
       for (GenerationDataType type : results.keySet()) {
         if (results.get(type).chooseFirstOrRandom(true, false)) {
-          cols.addAll(Arrays.asList(Column.fromOperand(Operand.getOperands(from, 1, type, config))));
+          cols.addAll(Arrays.asList(Column.fromOperand(Operand.getOperands(from, 1, type, config.getOperand()))));
         }
       }
       cols.addAll(TableUtil.randomSubCols(from, colLimit - results.size()));
     } else {
       cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {
-        final int num = Math.min(colLimit - cols.size(), config.getExprNumInSelect());
-        cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, num, config))));
+        final int num = Math.min(colLimit - cols.size(), config.getExprNum());
+        cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, num, config.getOperand()))));
       }
     }
   }

@@ -5,7 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.stmt.PerGenerationConfig;
+import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.share.Condition;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
@@ -20,45 +20,32 @@ import java.util.ArrayList;
 public class SelectResult implements Table {
 
   private Optional<String> name = Optional.absent();
-  private Table from;
   private final SelectListStmt selectListStmt;
   private final FromStmt fromStmt;
   private final WhereStmt whereStmt;
 
 
-  private SelectResult(PerGenerationConfig config) {
-    makeFromTable(config.getJoinTimes(), config.getSrc());
-    final PerGenerationConfig newConfig = config.decrementQueryDepth();
-    selectListStmt = new SelectListStmt(from, newConfig);
-    fromStmt = new FromStmt(from, newConfig);
-    whereStmt = new WhereStmt(from, newConfig);
+  private SelectResult(QueryConfig config) {
+    fromStmt = new FromStmt(config.getFrom(), config.getSrc());
+    Table from = fromStmt.getTable();
+
+    selectListStmt = new SelectListStmt(from, config.getSelect());
+    whereStmt = new WhereStmt(from, config.getWhere());
+
     addSetOp();
   }
 
-  static SelectResult selectResult(PerGenerationConfig config, Table... src) {
+  static SelectResult selectResult(QueryConfig config, Table... src) {
     return new SelectResult(config);
   }
 
-  public static SelectResult simpleQuery(PerGenerationConfig config) {
+  public static SelectResult simpleQuery(QueryConfig config) {
     return new SelectResult(config);
   }
 
   private void addSetOp() {
     // TODO 1/10/17 add set op
   }
-
-
-  private void makeFromTable(int joinTimes, Table[] src) {
-    if (joinTimes == 0) {
-      this.from = TableUtil.randomTable(src);
-    } else {
-      makeFromTable(joinTimes - 1, src);
-      // TODO 12/13/16 add join condition; add alias
-      // TODO 12/29/16 join with sub-query
-//      from = from.join(TableUtil.randomTable(src), );
-    }
-  }
-
 
   @Override
   public Table join(Table table, Condition condition) {

@@ -37,7 +37,7 @@
     <xs:complexType name="sql">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element ref="stmtConfig"/>
-            <xs:element name="setOperation" type="setOperatorConfig"/>
+            <xs:element name="setOperator" type="setOperatorConfig"/>
         </xs:choice>
         <xs:attribute name="transaction" type="xs:boolean" default="false"/>
         <xs:attribute name="threads" type="xs:unsignedInt" default="1"/>
@@ -108,6 +108,18 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:element name="__defaultWhere__" type="filterOperatorConfig"/>
+    <xs:element name="__simpleQuery__" >
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:restriction base="queryConfig">
+                    <xs:sequence>
+                        <xs:element ref="__defaultWhere__"/>
+                    </xs:sequence>
+                </xs:restriction>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
 
     <xs:complexType name="exprConfig">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -130,6 +142,21 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
+        <xs:attribute name="queryDepth" default="0">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo>Sql Generator Note</xs:appinfo>
+                    <xs:documentation xml:lang="en">
+                        this attribute not affect the depth of containing recursive exprConfig depth setting
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:unsignedByte">
+                    <xs:minInclusive value="0"/>
+                    <xs:maxInclusive value="5"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="subQuery" type="xs:IDREF" default="__simpleQuery__"/>
         <xs:attribute name="desc" type="xs:string"/>
         <xs:attribute name="constOrColumnPossibility" type="xs:float" default="0.5"/>
         <xs:attribute name="inputRelation" default="SAME">
@@ -174,7 +201,7 @@
         <xs:complexContent>
             <xs:extension base="filterOperatorConfig">
                 <xs:choice>
-                    <xs:element name="results" type="results"/>
+                    <xs:element name="results" type="results" minOccurs="0"/>
                 </xs:choice>
                 <xs:attribute name="selectNum" default="-1">
                     <xs:simpleType>

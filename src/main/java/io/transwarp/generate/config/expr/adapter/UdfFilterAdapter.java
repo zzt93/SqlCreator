@@ -38,7 +38,11 @@ public class UdfFilterAdapter extends XmlAdapter<UdfFilterAdapter.AdaptedMap, Ud
       final Possibility possibility = Possibility.possibility(
           Double.parseDouble(element.getAttribute("possibility")));
       for (String s : element.getTextContent().split("\\s")) {
-        map.put(FunctionMap.getUdfByName(s),
+        final Function udfByName = FunctionMap.getUdfByName(s);
+        if (udfByName == null) {
+          throw new IllegalArgumentException("Invalid udf name");
+        }
+        map.put(udfByName,
             possibility);
       }
     }

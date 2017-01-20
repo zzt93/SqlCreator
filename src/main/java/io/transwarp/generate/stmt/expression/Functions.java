@@ -3,6 +3,7 @@ package io.transwarp.generate.stmt.expression;
 import io.transwarp.generate.config.expr.UdfFilter;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 1/3/17.
@@ -11,20 +12,11 @@ import java.util.ArrayList;
  */
 public class Functions {
 
-  public static final Functions EMPTY = new Functions(0);
-
+  private static ThreadLocalRandom random = ThreadLocalRandom.current();
   private ArrayList<Function> functions;
 
   Functions(int i) {
     functions = new ArrayList<>(i);
-  }
-
-  private Functions(ArrayList<Function> fs) {
-    functions = fs;
-  }
-
-  int size() {
-    return functions.size();
   }
 
   public boolean add(Function function) {
@@ -35,21 +27,19 @@ public class Functions {
     return functions.get(i);
   }
 
-  Functions filter(UdfFilter udfFilter) {
-    ArrayList<Function> fs = new ArrayList<>(functions.size());
+  private boolean shouldNotFilter() {
+    return functions.size() == 1;
+  }
+
+  public Function random(UdfFilter udfFilter) {
+    if (shouldNotFilter()) {
+      return functions.get(0);
+    }
     for (Function function : functions) {
       if (udfFilter.want(function)) {
-        fs.add(function);
+
       }
     }
-    return new Functions(fs);
-  }
-
-  boolean isEmpty() {
-    return functions.isEmpty();
-  }
-
-  boolean shouldNotFilter() {
-    return size() == 1;
+    return functions.get(random.nextInt(functions.size()));
   }
 }

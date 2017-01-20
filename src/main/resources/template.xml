@@ -25,14 +25,9 @@
             </from>
         </query>
         <updateStmt id="update"/>
-        <query id="simpleQuery" queryDepth="2">
+        <query id="simpleQuery" queryDepth="2" num="0">
             <where/>
         </query>
-        <setOperation type="UNION">
-            <operand>
-                <subQuery>simpleQuery</subQuery>
-            </operand>
-        </setOperation>
     </test>
 
 
@@ -40,7 +35,7 @@
         <query num="1000" id="test">
             <select>
                 <results>
-                    <result possibility="1">INT</result>
+                    <result possibility="1">int</result>
                 </results>
             </select>
             <groupBy/>
@@ -51,6 +46,28 @@
 
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
+        <query id="intQuery" queryDepth="1" num="0">
+            <select>
+                <results>
+                    <result possibility="1">int</result>
+                </results>
+            </select>
+        </query>
+        <query id="longQuery" queryDepth="1" num="0">
+            <select>
+                <results>
+                    <result possibility="1">long</result>
+                </results>
+            </select>
+        </query>
+        <setOperator type="UNION">
+            <operand>
+                <subQuery>intQuery</subQuery>
+            </operand>
+            <operand>
+                <subQuery>longQuery</subQuery>
+            </operand>
+        </setOperator>
     </test>
 
 

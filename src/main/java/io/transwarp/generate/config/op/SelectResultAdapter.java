@@ -35,7 +35,11 @@ public class SelectResultAdapter extends XmlAdapter<SelectResultAdapter.AdaptedM
       final Possibility possibility = Possibility.possibility(
           Double.parseDouble(element.getAttribute("possibility")));
       for (String s : element.getTextContent().split("\\s")) {
-        map.put(DataType.valueOf(s),
+        final DataType key = DataType.valueOf(s.toUpperCase());
+        if (DataType.notInSelectList(key)) {
+          throw new IllegalArgumentException("Invalid data type in select list");
+        }
+        map.put(key,
             possibility);
       }
     }
