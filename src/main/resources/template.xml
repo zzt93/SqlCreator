@@ -32,9 +32,6 @@
             <operand>
                 <subQuery>simpleQuery</subQuery>
             </operand>
-            <operand>
-                <subQuery>simpleQuery</subQuery>
-            </operand>
         </setOperation>
     </test>
 

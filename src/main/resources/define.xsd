@@ -197,7 +197,7 @@
     </xs:complexType>
     <xs:complexType name="setOperatorConfig">
         <xs:sequence>
-            <xs:element name="operand" type="setOperand" maxOccurs="2" minOccurs="2"/>
+            <xs:element name="operand" type="setOperand" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="type" type="tableOp" use="required"/>
     </xs:complexType>
