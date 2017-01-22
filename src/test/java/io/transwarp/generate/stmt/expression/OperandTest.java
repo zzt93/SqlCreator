@@ -1,8 +1,9 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.stmt.PerGenerationConfig;
+import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
@@ -28,9 +29,10 @@ public class OperandTest {
 
   @Test
   public void randomSameTypeOperand() throws Exception {
-    final Table test = DDLParser.getTable(table, dialect)[0];
+    final Table test = DDLParser.getTable("src/main/resources/default_oracle.sql", Dialect.ORACLE)[0];
+    final ExprConfig config = new ExprConfig();
     for (int i = 0; i < 1000; i++) {
-      final Operand[] operands = Operand.getOperands(test, 3, testType, new PerGenerationConfig.Builder().create());
+      final Operand[] operands = Operand.getOperands(test, 3, testType, config);
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
         System.out.println(operand.getType());

@@ -34,9 +34,7 @@
     <test>
         <query num="1000" id="test">
             <select>
-                <results>
-                    <result possibility="1">int</result>
-                </results>
+                <results>int long</results>
             </select>
             <groupBy/>
             <having/>
@@ -48,16 +46,12 @@
     <test transaction="true" threads="3">
         <query id="intQuery" queryDepth="1" num="0">
             <select>
-                <results>
-                    <result possibility="1">int</result>
-                </results>
+                <results>int</results>
             </select>
         </query>
         <query id="longQuery" queryDepth="1" num="0">
             <select>
-                <results>
-                    <result possibility="1">long</result>
-                </results>
+                <results>long</results>
             </select>
         </query>
         <setOperator type="UNION">

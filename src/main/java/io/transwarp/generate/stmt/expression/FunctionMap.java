@@ -62,15 +62,15 @@ public class FunctionMap {
    */
   static Function random(GenerationDataType resultType, UdfFilter udfFilter) {
     checkArgument(DataType.innerVisible(resultType));
-    Function function = getFilteredFunctions(udfFilter, resultType);
+    Function function = getFilteredFunction(udfFilter, resultType);
     while (function == null) {
-      function = getFilteredFunctions(udfFilter, resultType);
+      function = getFilteredFunction(udfFilter, resultType);
       System.out.println("possible bugs in FunctionMap");
     }
     return function;
   }
 
-  private static Function getFilteredFunctions(UdfFilter udfFilter, GenerationDataType type) {
+  private static Function getFilteredFunction(UdfFilter udfFilter, GenerationDataType type) {
     final Functions functions = share.get(type);
     assert functions != null;
     return functions.random(udfFilter);

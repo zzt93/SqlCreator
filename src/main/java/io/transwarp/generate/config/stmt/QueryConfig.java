@@ -74,10 +74,4 @@ public class QueryConfig extends StmtConfig {
     this.from = from;
   }
 
-
-  public static QueryConfig defaultQuery() {
-    final QueryConfig queryConfig = new QueryConfig();
-    // TODO 1/20/17 set value
-    return queryConfig;
-  }
 }

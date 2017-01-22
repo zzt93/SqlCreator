@@ -1,4 +1,4 @@
-package io.transwarp.generate.config.op;
+package io.transwarp.generate.config.op.adapter;
 
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.type.DataType;
@@ -32,18 +32,20 @@ public class SelectResultAdapter extends XmlAdapter<SelectResultAdapter.AdaptedM
   public Map<GenerationDataType, Possibility> unmarshal(AdaptedMap adaptedMap) throws Exception {
     HashMap<GenerationDataType, Possibility> map = new HashMap<>();
     for (Element element : adaptedMap.elements) {
-      final Possibility possibility = Possibility.possibility(
-          Double.parseDouble(element.getAttribute("possibility")));
       for (String s : element.getTextContent().split("\\s")) {
         final DataType key = DataType.valueOf(s.toUpperCase());
         if (DataType.notInSelectList(key)) {
           throw new IllegalArgumentException("Invalid data type in select list");
         }
-        map.put(key,
-            possibility);
+        map.put(key, Possibility.CERTAIN);
       }
     }
+    addImpossible(map);
     return map;
+  }
+
+  private void addImpossible(HashMap<GenerationDataType, Possibility> map) {
+    map.put(DataType.BOOL, Possibility.IMPOSSIBLE);
   }
 
   @Override

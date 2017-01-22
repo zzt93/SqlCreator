@@ -1,5 +1,6 @@
 package io.transwarp.generate.common;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.SequenceDataType;
 import io.transwarp.parse.sql.DDLParser;
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 public class TableUtilTest {
   @Test
   public void randomCol() throws Exception {
-    final Table table = DDLParser.getTable(table, dialect)[0];
+    final Table table = DDLParser.getTable("src/main/resources/default_oracle.sql", Dialect.ORACLE)[0];
     assertTrue(TableUtil.sameTypeRandomCol(table, DataType.DECIMAL).isPresent());
     assertTrue(TableUtil.sameTypeRandomCol(table, DataType.UNIX_DATE).isPresent());
     assertTrue(TableUtil.sameTypeRandomCol(table, SequenceDataType.CHARS).isPresent());

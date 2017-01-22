@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
  * <h3></h3>
  */
 @XmlType(name = "relationOperand")
-public class RelationOperandConfig extends SetOperatorConfig {
+public class RelationOperandConfig extends SetOperandConfig {
   private String table;
 
   @XmlElement

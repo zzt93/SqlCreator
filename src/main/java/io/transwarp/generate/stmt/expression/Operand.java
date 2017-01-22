@@ -14,6 +14,7 @@ import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
 
 import java.util.EnumMap;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -44,28 +45,42 @@ public class Operand {
   }
 
   private static Operand makeOperand(GenerationDataType resultType, Table src, ExprConfig config, int depth) {
+    List<ExprConfig> nextConfig = null;
     if (depth == FunctionDepth.SINGLE) {
-      final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
-      if (col.isPresent()) {
-        final Column column = col.get();
-        return new Operand(resultType, column.getNameOrConst(GlobalConfig.getCmpBase()));
+      if (config.hasNestedConfig()) {
+        nextConfig = config.getOperands();
       } else {
-        if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
-          return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getCmpBase()));
+        final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
+        if (col.isPresent()) {
+          final Column column = col.get();
+          return new Operand(resultType, column.getNameOrConst(GlobalConfig.getCmpBase()));
+        } else {
+          if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
+            return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getCmpBase()));
+          }
+          return new Operand(resultType, resultType.randomData(GlobalConfig.getCmpBase()));
         }
-        return new Operand(resultType, resultType.randomData(GlobalConfig.getCmpBase()));
+      }
+    }
+    final Function function = FunctionMap.random(resultType, config.getUdfFilter());
+    final GenerationDataType[] inputs = function.inputTypes(resultType);
+    Operand[] ops = new Operand[inputs.length];
+    final GenerationDataType[] nextResultType = config.getInputRelation().refine(inputs);
+    if (nextConfig != null) {
+      for (int i = 0; i < nextResultType.length; i++) {
+        ExprConfig nextC = new ExprConfig();
+        if (i < nextConfig.size()) {
+          nextC = nextConfig.get(i);
+        }
+        ops[i] = makeOperand(nextResultType[i], src, nextC, nextC.getUdfDepth());
       }
     } else {
-      final Function function = FunctionMap.random(resultType, config.getUdfFilter());
-      final GenerationDataType[] inputs = function.inputTypes(resultType);
-      Operand[] ops = new Operand[inputs.length];
-      final GenerationDataType[] nextResultType = config.getInputRelation().refine(inputs);
       for (int i = 0; i < nextResultType.length; i++) {
         ops[i] = makeOperand(nextResultType[i], src, config, depth - 1);
       }
-      return function.apply(GlobalConfig.getCmpBase(), resultType, ops)
-          .setType(resultType);
     }
+    return function.apply(GlobalConfig.getCmpBase(), resultType, ops)
+        .setType(resultType);
   }
 
   public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, ExprConfig config) {
