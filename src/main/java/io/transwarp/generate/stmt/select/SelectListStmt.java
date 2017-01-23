@@ -6,13 +6,13 @@ import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.stmt.expression.Operand;
-import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by zzt on 12/12/16.
@@ -21,23 +21,26 @@ import java.util.Map;
  */
 public class SelectListStmt implements SqlGeneration {
   private ArrayList<Column> cols;
+  private boolean useStar = false;
 
   SelectListStmt(Table from, SelectConfig config) {
-    final int colLimit = config.getSelectNum();
-    if (config.hasResultLimit()) {
-      final Map<GenerationDataType, Possibility> results = config.getResults();
-      cols = new ArrayList<>(config.getSelectNum());
-      for (GenerationDataType type : results.keySet()) {
-        if (results.get(type).chooseFirstOrRandom(true, false)) {
-          cols.addAll(Arrays.asList(Column.fromOperand(Operand.getOperands(from, 1, type, config.getOperand()))));
-        }
-      }
-      cols.addAll(TableUtil.randomSubCols(from, colLimit - results.size()));
-    } else {
+    if (config.selectAll()) {
+      cols = from.columns();
+      // use star or list all columns
+      useStar = Possibility.HALF.chooseFirstOrRandom(true, false);
+    } else if (config.selectRandom()) {
+      final int colLimit = config.getSelectNum();
       cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {
-        final int num = Math.min(colLimit - cols.size(), config.getExprNum());
-        cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, num, config.getOperand()))));
+        final int num = colLimit - cols.size();
+        cols.addAll(Arrays.asList(Column.fromOperand(Operand.randomOperand(from, num, config.defaultExpr()))));
+      }
+    } else {
+      final List<TypedExprConfig> operands = config.getOperands();
+      cols = new ArrayList<>(operands.size());
+      for (TypedExprConfig operand : operands) {
+        cols.addAll(Arrays.asList(Column.fromOperand(
+            Operand.getOperands(from, 1, operand.getType(), operand))));
       }
     }
   }
@@ -50,6 +53,10 @@ public class SelectListStmt implements SqlGeneration {
   @Override
   public StringBuilder sql(Dialect dialect) {
     final StringBuilder res = new StringBuilder("select ");
+    if (useStar) {
+      res.append("*");
+      return res;
+    }
     for (Column col : cols) {
       res.append(col.getNameWithAlias(dialect)).append(", ");
     }

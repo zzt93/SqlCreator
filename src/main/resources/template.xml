@@ -34,7 +34,15 @@
     <test>
         <query num="1000" id="test">
             <select>
-                <results>int long</results>
+                <operand>
+                    <column udfDepth="1"/>
+                    <const udfDepth="3">
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </const>
+                    <type>int</type>
+                </operand>
             </select>
             <groupBy/>
             <having/>
@@ -46,12 +54,16 @@
     <test transaction="true" threads="3">
         <query id="intQuery" queryDepth="1" num="0">
             <select>
-                <results>int</results>
+                <operand>
+                    <type>int</type>
+                </operand>
             </select>
         </query>
         <query id="longQuery" queryDepth="1" num="0">
             <select>
-                <results>long</results>
+                <operand>
+                    <type>long</type>
+                </operand>
             </select>
         </query>
         <setOperator type="UNION">

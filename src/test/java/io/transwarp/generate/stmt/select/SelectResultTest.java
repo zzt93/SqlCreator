@@ -32,9 +32,10 @@ public class SelectResultTest {
   private Table from;
   private PrintWriter oracle;
   private PrintWriter inceptor;
-  private QueryConfig config;
+  private QueryConfig queryConfig;
 
   public SelectResultTest(InputRelation relation) {
+    queryConfig = new QueryConfig();
   }
 
   @Parameterized.Parameters
@@ -48,9 +49,8 @@ public class SelectResultTest {
     final Table[] table = DDLParser.getTable("src/main/resources/default_oracle.sql", Dialect.ORACLE);
     from = table[0];
     selectResults = new SelectResult[count];
-    final QueryConfig config = new QueryConfig();
     for (int i = 0; i < selectResults.length; i++) {
-      selectResults[i] = SelectResult.selectResult(config, table);
+      selectResults[i] = SelectResult.selectResult(queryConfig, table);
     }
     oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));
@@ -58,13 +58,12 @@ public class SelectResultTest {
 
   @Test
   public void selectResult() throws Exception {
-    config = new QueryConfig();
+    QueryConfig simpleQuery = new QueryConfig();
     final SelectConfig select = new SelectConfig();
-    select.setExprNum(2);
-    config.setSelect(select);
+    simpleQuery.setSelect(select);
     for (int i = 1; i < 10; i++) {
       select.setSelectNum(i);
-      final SelectResult selectResult = SelectResult.simpleQuery(config);
+      final SelectResult selectResult = SelectResult.simpleQuery(simpleQuery);
       final int size = selectResult.columns().size();
       Assert.assertTrue(size > 0 && size <= i);
     }
@@ -80,7 +79,7 @@ public class SelectResultTest {
   @Test
   public void columns() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      assert selectResult.columns().size() <= from.columns().size() + config.getSelect().getExprNum();
+      assert selectResult.columns().size() <= from.columns().size();
     }
   }
 

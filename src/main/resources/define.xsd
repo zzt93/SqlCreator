@@ -114,7 +114,7 @@
             <xs:element name="expr" type="exprConfig"/>
             <xs:element name="const" type="const"/>
             <xs:element name="column" type="column"/>
-            <xs:element name="udfConfig" maxOccurs="1" type="udfConfig"/>
+            <xs:element name="udfConfig" maxOccurs="1" minOccurs="0" type="udfConfig"/>
         </xs:choice>
         <xs:attribute name="udfDepth" default="3">
             <xs:simpleType>
@@ -153,7 +153,7 @@
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="desc" type="xs:string"/>
-        <xs:attribute name="constOrColumnPossibility" type="xs:float" default="0.5"/>
+        <xs:attribute name="constOrColumnPossibility" type="xs:double" default="0.5"/>
         <xs:attribute name="inputRelation" default="SAME">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -164,6 +164,16 @@
             </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
+    <xs:complexType name="typedExprConfig">
+        <xs:complexContent>
+            <xs:extension base="exprConfig">
+                <xs:choice>
+                    <xs:element name="type" type="stringList" minOccurs="0" maxOccurs="1"/>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
 
     <xs:complexType name="const">
         <xs:complexContent>
@@ -171,7 +181,7 @@
                 <xs:all>
                     <xs:element name="udfConfig" type="udfConfig" maxOccurs="1"/>
                 </xs:all>
-                <xs:attribute name="constOrColumnPossibility" fixed="1" use="prohibited"/>
+                <xs:attribute name="constOrColumnPossibility" fixed="1" type="xs:double"/>
             </xs:restriction>
         </xs:complexContent>
     </xs:complexType>
@@ -179,9 +189,9 @@
         <xs:complexContent>
             <xs:restriction base="exprConfig">
                 <xs:all>
-                    <xs:element name="udfConfig" type="udfConfig" maxOccurs="1"/>
+                    <xs:element name="udfConfig" type="udfConfig" maxOccurs="1" minOccurs="0"/>
                 </xs:all>
-                <xs:attribute name="constOrColumnPossibility" fixed="0" use="prohibited"/>
+                <xs:attribute name="constOrColumnPossibility" fixed="0" type="xs:double"/>
             </xs:restriction>
         </xs:complexContent>
     </xs:complexType>
@@ -192,29 +202,29 @@
             <xs:element name="operand" type="exprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:simpleType name="positiveByte">
+        <xs:restriction base="xs:unsignedByte">
+            <xs:maxExclusive value="127"/>
+            <xs:minInclusive value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:complexType name="selectConfig">
-        <xs:sequence>
-            <xs:choice>
-                <xs:element name="results" type="stringList" maxOccurs="1" minOccurs="0"/>
-                <xs:element name="selectNum" default="-1">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:byte">
-                            <xs:maxInclusive value="30"/>
-                            <!--this min value represent all available-->
-                            <xs:minInclusive value="-1"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:element>
-            </xs:choice>
-            <xs:element name="operand" type="exprConfig" maxOccurs="unbounded" minOccurs="0"/>
-        </xs:sequence>
-        <xs:attribute name="exprNum">
-            <xs:simpleType>
-                <xs:restriction base="xs:unsignedByte">
-                    <xs:maxInclusive value="10"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
+        <xs:choice>
+            <xs:element name="selectNum" default="all">
+                <xs:simpleType>
+                    <xs:union memberTypes="positiveByte">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="all"/>
+                                <xs:enumeration value="random"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:union>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="operand" type="typedExprConfig" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="setOperatorConfig">
@@ -222,6 +232,7 @@
             <xs:element name="operand" type="setOperand" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="type" type="tableOp" use="required"/>
+        <xs:attribute name="num" type="xs:unsignedInt"/>
     </xs:complexType>
     <xs:complexType name="joinConfig">
         <xs:sequence>
@@ -255,11 +266,18 @@
 
     <xs:complexType name="udfConfig">
         <xs:choice>
-            <xs:element name="udfList" type="possibilityMap" maxOccurs="4"/>
+            <xs:element name="udfList" type="possibilityEntry" maxOccurs="4"/>
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="possibilityMap">
+
+    <xs:simpleType name="oneStringList">
+        <xs:restriction base="stringList">
+            <xs:length value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="possibilityEntry">
         <xs:simpleContent>
             <xs:extension base="stringList">
                 <xs:attribute name="possibility" type="possibility" use="required"/>

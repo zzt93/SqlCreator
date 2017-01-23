@@ -40,7 +40,7 @@ public class UdfFilterAdapter extends XmlAdapter<UdfFilterAdapter.AdaptedMap, Ud
       for (String s : element.getTextContent().split("\\s")) {
         final Function udfByName = FunctionMap.getUdfByName(s);
         if (udfByName == null) {
-          throw new IllegalArgumentException("Invalid udf name");
+          throw new IllegalArgumentException("Invalid udf name: " + s);
         }
         map.put(udfByName,
             possibility);
