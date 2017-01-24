@@ -217,7 +217,6 @@
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
                                 <xs:enumeration value="all"/>
-                                <xs:enumeration value="random"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:union>

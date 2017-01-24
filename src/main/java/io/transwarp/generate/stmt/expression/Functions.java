@@ -1,9 +1,9 @@
 package io.transwarp.generate.stmt.expression;
 
+import com.google.common.base.Preconditions;
 import io.transwarp.generate.config.expr.UdfFilter;
 
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 1/3/17.
@@ -12,7 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Functions {
 
-  private static ThreadLocalRandom random = ThreadLocalRandom.current();
   private ArrayList<Function> functions;
 
   Functions(int i) {
@@ -32,14 +31,10 @@ public class Functions {
   }
 
   public Function random(UdfFilter udfFilter) {
+    Preconditions.checkArgument(!functions.isEmpty());
     if (shouldNotFilter()) {
       return functions.get(0);
     }
-    for (Function function : functions) {
-      if (udfFilter.want(function)) {
-
-      }
-    }
-    return functions.get(random.nextInt(functions.size()));
+    return udfFilter.getMostPossible(functions);
   }
 }

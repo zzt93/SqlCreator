@@ -47,8 +47,8 @@ public class SelectConfig implements SubQueryConfig {
     return selectNum == SelectNumAdapter.SELECT_ALL;
   }
 
-  public boolean selectRandom() {
-    return selectNum == SelectNumAdapter.RANDOM;
+  public boolean selectNum() {
+    return selectNum > 0;
   }
 
   public TypedExprConfig defaultExpr() {

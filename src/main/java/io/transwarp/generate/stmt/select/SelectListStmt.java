@@ -28,7 +28,7 @@ public class SelectListStmt implements SqlGeneration {
       cols = from.columns();
       // use star or list all columns
       useStar = Possibility.HALF.chooseFirstOrRandom(true, false);
-    } else if (config.selectRandom()) {
+    } else if (config.selectNum()) {
       final int colLimit = config.getSelectNum();
       cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {

@@ -32,9 +32,11 @@ public class FromStmt implements SqlGeneration {
 
   private void initFromTable(FromConfig config, Table[] src) {
     if (config.noJion()) {
+      // generate subQuery
+
       this.fromObj = TableUtil.randomTable(src);
+
     } else {
-//      initFromTable(joinTimes - 1, src);
       // TODO 12/13/16 add join condition; add alias
 //      from = from.join(TableUtil.randomTable(src), );
     }

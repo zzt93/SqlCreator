@@ -3,8 +3,11 @@ package io.transwarp.generate.config.expr;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Function;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by zzt on 12/30/16.
@@ -19,6 +22,7 @@ public class UdfFilter {
    * <li>specific function requirement: non-equal join; no sub-query</li>
    */
   private final Map<Function, Possibility> preference = new HashMap<>();
+  private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   public UdfFilter(UdfFilter udfFilter) {
     preference.putAll(udfFilter.preference);
@@ -42,16 +46,27 @@ public class UdfFilter {
     return this;
   }
 
-  UdfFilter removePreference(Function f) {
-    preference.remove(f);
-    return this;
-  }
-
-  public boolean want(Function function) {
+  private Possibility possibility(Function function) {
     Possibility possibility = preference.get(function);
     if (possibility == null) {
       possibility = Possibility.NORMAL;
     }
-    return possibility.chooseFirstOrRandom(true, false);
+    return possibility;
+  }
+
+
+  public Function getMostPossible(ArrayList<Function> functions) {
+    List<Function> fs = new ArrayList<>(functions.size());
+    Possibility max = Possibility.IMPOSSIBLE;
+    for (Function function : functions) {
+      final int res = possibility(function).compareTo(max);
+      if (res > 0) {
+        fs.clear();
+        fs.add(function);
+      } else if (res == 0) {
+        fs.add(function);
+      }
+    }
+    return fs.get(random.nextInt(fs.size()));
   }
 }

@@ -10,14 +10,11 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 public class SelectNumAdapter extends XmlAdapter<String, Integer> {
 
   static final int SELECT_ALL = -1;
-  static final int RANDOM = -2;
 
   @Override
   public Integer unmarshal(String v) throws Exception {
     if (v.equals("all")) {
       return SELECT_ALL;
-    } else if (v.equals("random")) {
-      return RANDOM;
     }
     return Integer.parseInt(v);
   }

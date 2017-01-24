@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * <p>
  * <h3></h3>
  */
-public class Possibility {
+public class Possibility implements Comparable<Possibility> {
 
   public static final Possibility CERTAIN = new Possibility(1);
   public static final Possibility PREFER = new Possibility(0.95);
@@ -69,5 +69,12 @@ public class Possibility {
       v -= possibility[i];
     }
     return choice[i];
+  }
+
+  @Override
+  public int compareTo(Possibility o) {
+    checkArgument(possibility.length == o.possibility.length
+        && possibility.length == 1);
+    return Double.compare(possibility[0], o.possibility[0]);
   }
 }
