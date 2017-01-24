@@ -1,5 +1,6 @@
 package io.transwarp.generate.config.op;
 
+import io.transwarp.generate.config.HasSubQuery;
 import io.transwarp.generate.config.stmt.QueryConfig;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -13,7 +14,7 @@ import javax.xml.bind.annotation.XmlType;
  * <h3></h3>
  */
 @XmlType(name = "setOperand")
-public class SetOperandConfig {
+public class SetOperandConfig implements HasSubQuery {
   private QueryConfig subQuery;
 
   private String desc;
@@ -35,5 +36,11 @@ public class SetOperandConfig {
 
   public void setDesc(String desc) {
     this.desc = desc;
+  }
+
+  @Override
+  public QueryConfig defaultConfig() {
+    QueryConfig res = new QueryConfig();
+    return res;
   }
 }

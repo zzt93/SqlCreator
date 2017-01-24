@@ -5,6 +5,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.expr.InputRelation;
 import io.transwarp.generate.config.op.SelectConfig;
+import io.transwarp.generate.config.op.SetOperandConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.parse.sql.DDLParser;
 import org.junit.After;
@@ -35,7 +36,7 @@ public class SelectResultTest {
   private QueryConfig queryConfig;
 
   public SelectResultTest(InputRelation relation) {
-    queryConfig = new QueryConfig();
+    queryConfig = new SetOperandConfig().defaultConfig();
   }
 
   @Parameterized.Parameters
@@ -46,7 +47,7 @@ public class SelectResultTest {
 
   @Before
   public void setUp() throws Exception {
-    final Table[] table = DDLParser.getTable("src/main/resources/default_oracle.sql", Dialect.ORACLE);
+    final Table[] table = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
     from = table[0];
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {

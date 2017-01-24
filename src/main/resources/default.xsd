@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:include schemaLocation="define.xsd"/>
+
+    <xs:complexType name="defaultExprConfig">
+        <xs:complexContent>
+            <
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

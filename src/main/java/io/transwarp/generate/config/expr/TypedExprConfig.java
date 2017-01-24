@@ -6,7 +6,6 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Map;
 
 /**
  * Created by zzt on 1/23/17.
@@ -15,25 +14,29 @@ import java.util.Map;
  */
 public class TypedExprConfig extends ExprConfig {
 
-  private Map<Possibility, GenerationDataType[]> types;
+  private GenerationDataType[] types;
+  private GenerationDataType finalType;
 
   @XmlElement(name = "type")
   @XmlJavaTypeAdapter(SelectExprAdapter.class)
-  public Map<Possibility, GenerationDataType[]> getTypes() {
+  public GenerationDataType[] getTypes() {
     return types;
   }
 
-  public void setTypes(Map<Possibility, GenerationDataType[]> types) {
+  public void setTypes(GenerationDataType[] types) {
     this.types = types;
+    if (types.length > 1) {
+      final Possibility possibility = Possibility.evenPossibility(types.length);
+      finalType = possibility.chooseFirstOrRandom(types);
+    } else {
+      finalType = types[0];
+    }
   }
 
   @Override
   public GenerationDataType getType() {
-    assert types.size() == 1;
-    for (Possibility possibility : types.keySet()) {
-      return possibility.chooseFirstOrRandom(types.get(possibility));
-    }
-    throw new IllegalArgumentException();
+    return finalType;
   }
+
 
 }

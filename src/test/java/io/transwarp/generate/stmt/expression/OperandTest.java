@@ -29,7 +29,7 @@ public class OperandTest {
 
   @Test
   public void randomSameTypeOperand() throws Exception {
-    final Table test = DDLParser.getTable("src/main/resources/default_oracle.sql", Dialect.ORACLE)[0];
+    final Table test = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE)[0];
     final ExprConfig config = new ExprConfig();
     for (int i = 0; i < 1000; i++) {
       final Operand[] operands = Operand.getOperands(test, 3, testType, config);

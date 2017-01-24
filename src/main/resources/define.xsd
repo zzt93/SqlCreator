@@ -61,8 +61,8 @@
         <xs:complexContent>
             <xs:extension base="stmtConfig">
                 <xs:sequence>
-                    <xs:element name="select" type="selectConfig" minOccurs="0"/>
-                    <xs:element name="from" minOccurs="0">
+                    <xs:element name="select" type="selectConfig" minOccurs="1"/>
+                    <xs:element name="from" minOccurs="1">
                         <xs:complexType>
                             <xs:all>
                                 <xs:element name="join" type="joinConfig" minOccurs="0"/>
@@ -164,6 +164,14 @@
             </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
+
+    <xs:complexType name="selectExprConfig">
+        <xs:choice>
+            <xs:element name="expr" type="typedExprConfig"/>
+            <xs:element name="query" type="xs:IDREF"/>
+        </xs:choice>
+    </xs:complexType>
+
     <xs:complexType name="typedExprConfig">
         <xs:complexContent>
             <xs:extension base="exprConfig">
@@ -210,7 +218,7 @@
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="selectConfig">
-        <xs:choice>
+        <xs:choice minOccurs="0">
             <xs:element name="selectNum" default="all">
                 <xs:simpleType>
                     <xs:union memberTypes="positiveByte">
@@ -222,7 +230,7 @@
                     </xs:union>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="operand" type="typedExprConfig" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="operand" type="selectExprConfig" maxOccurs="unbounded" minOccurs="0"/>
         </xs:choice>
     </xs:complexType>
 

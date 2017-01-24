@@ -13,7 +13,7 @@ import org.junit.Test;
 public class DDLParserTest {
   @Test
   public void delimiterTest() throws Exception {
-    final Table parse = DDLParser.getTable("src/main/resources/default_oracle.sql", Dialect.ORACLE)[0];
+    final Table parse = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE)[0];
 
     assert parse.name().isPresent();
     assert parse.name().get().equals("test_udf");

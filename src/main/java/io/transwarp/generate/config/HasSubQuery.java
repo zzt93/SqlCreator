@@ -7,7 +7,7 @@ import io.transwarp.generate.config.stmt.QueryConfig;
  * <p>
  * <h3></h3>
  */
-public interface SubQueryConfig {
+public interface HasSubQuery {
 
   QueryConfig defaultConfig();
 }

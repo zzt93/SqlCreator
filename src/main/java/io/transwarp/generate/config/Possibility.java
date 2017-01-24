@@ -29,7 +29,7 @@ public class Possibility implements Comparable<Possibility> {
   public static Possibility evenPossibility(int n) {
     double[] possibility = new double[n - 1];
     Arrays.fill(possibility, 1.0 / n);
-    return new Possibility(Arrays.copyOf(possibility, possibility.length));
+    return new Possibility(possibility);
   }
 
   /**

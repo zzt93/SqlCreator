@@ -1,6 +1,6 @@
 package io.transwarp.generate.config.expr;
 
-import io.transwarp.generate.config.SubQueryConfig;
+import io.transwarp.generate.config.HasSubQuery;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.type.DataType;
@@ -18,7 +18,7 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-public class ExprConfig implements SubQueryConfig {
+public class ExprConfig implements HasSubQuery {
 
   private List<ExprConfig> operands;
 
@@ -123,6 +123,9 @@ public class ExprConfig implements SubQueryConfig {
 
   /**
    * SubQuery config for IN/EXISTS
+   * <h3>Requirement</h3>
+   * <li>only one column</li>
+   * <li>type is limited by first operand</li>
    *
    * @see io.transwarp.generate.stmt.expression.CmpOp#IN_QUERY
    * @see io.transwarp.generate.stmt.expression.CmpOp#EXISTS

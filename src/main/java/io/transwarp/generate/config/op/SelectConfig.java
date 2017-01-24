@@ -1,10 +1,9 @@
 package io.transwarp.generate.config.op;
 
-import io.transwarp.generate.config.SubQueryConfig;
-import io.transwarp.generate.config.expr.TypedExprConfig;
+import io.transwarp.generate.config.HasSubQuery;
+import io.transwarp.generate.config.expr.SelectExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
@@ -14,21 +13,21 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-public class SelectConfig implements SubQueryConfig {
+public class SelectConfig implements HasSubQuery {
 
-  private List<TypedExprConfig> operands;
+  private List<SelectExprConfig> operands;
   private int selectNum;
 
   @XmlElement(name = "operand")
-  public List<TypedExprConfig> getOperands() {
+  public List<SelectExprConfig> getOperands() {
     return operands;
   }
 
-  public void setOperands(List<TypedExprConfig> operands) {
+  public void setOperands(List<SelectExprConfig> operands) {
     this.operands = operands;
   }
 
-  @XmlAttribute
+  @XmlElement
   @XmlJavaTypeAdapter(type = int.class, value = SelectNumAdapter.class)
   public int getSelectNum() {
     return selectNum;
@@ -38,6 +37,11 @@ public class SelectConfig implements SubQueryConfig {
     this.selectNum = selectNum;
   }
 
+  /**
+   * <h3>Requirement</h3>
+   * <li>not bool</li>
+   * <li>aggregate function</li>
+   */
   @Override
   public QueryConfig defaultConfig() {
     return null;
@@ -51,7 +55,7 @@ public class SelectConfig implements SubQueryConfig {
     return selectNum > 0;
   }
 
-  public TypedExprConfig defaultExpr() {
+  public SelectExprConfig defaultExpr() {
     return null;
   }
 }
