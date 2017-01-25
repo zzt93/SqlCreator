@@ -1,7 +1,7 @@
 package io.transwarp.generate.config.op;
 
 import io.transwarp.generate.config.HasSubQuery;
-import io.transwarp.generate.config.expr.SelectExprConfig;
+import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -15,16 +15,26 @@ import java.util.List;
  */
 public class SelectConfig implements HasSubQuery {
 
-  private List<SelectExprConfig> operands;
+  private List<TypedExprConfig> operands;
+  private List<QueryConfig> queries;
   private int selectNum;
 
   @XmlElement(name = "operand")
-  public List<SelectExprConfig> getOperands() {
+  public List<TypedExprConfig> getOperands() {
     return operands;
   }
 
-  public void setOperands(List<SelectExprConfig> operands) {
+  public void setOperands(List<TypedExprConfig> operands) {
     this.operands = operands;
+  }
+
+  @XmlElement(name = "query")
+  public List<QueryConfig> getQueries() {
+    return queries;
+  }
+
+  public void setQueries(List<QueryConfig> queries) {
+    this.queries = queries;
   }
 
   @XmlElement
@@ -55,7 +65,7 @@ public class SelectConfig implements HasSubQuery {
     return selectNum > 0;
   }
 
-  public SelectExprConfig defaultExpr() {
+  public TypedExprConfig defaultExpr() {
     return null;
   }
 }

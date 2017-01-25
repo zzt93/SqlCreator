@@ -20,7 +20,7 @@ public class SelectExprAdapter extends XmlAdapter<String, GenerationDataType[]> 
       String s = split[i];
       final DataType key = DataType.valueOf(s.toUpperCase());
       if (DataType.notInSelectList(key)) {
-        throw new IllegalArgumentException("Invalid data type in select list");
+        throw new IllegalArgumentException("Invalid data type in select list: " + s);
       }
       list[i] = key;
     }
