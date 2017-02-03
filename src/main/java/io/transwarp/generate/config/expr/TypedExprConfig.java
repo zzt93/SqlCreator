@@ -37,5 +37,8 @@ public class TypedExprConfig extends ExprConfig {
     return finalType;
   }
 
+  public static TypedExprConfig defaultSelectExpr() {
+    return null;
+  }
 
 }

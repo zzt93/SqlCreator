@@ -4,6 +4,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
+import io.transwarp.generate.config.op.JoinConfig;
 import io.transwarp.generate.config.stmt.FromConfig;
 
 /**
@@ -14,31 +15,38 @@ import io.transwarp.generate.config.stmt.FromConfig;
 public class FromStmt implements SqlGeneration {
 
   private static final String FROM = " from ";
-  private Table fromObj;
+  private Table[] fromObj;
 
-  public FromStmt(FromConfig config, Table[] tables) {
-    initFromTable(config, tables);
+  public FromStmt(FromConfig config) {
+    initFromTable(config, config.getSrc());
   }
 
   @Override
   public StringBuilder sql(Dialect dialect) {
-    return new StringBuilder(FROM).append(fromObj.sql(dialect));
+    final StringBuilder res = new StringBuilder(FROM);
+    for (Table table : fromObj) {
+      res.append(table.sql(dialect).append(", "));
+    }
+    res.setLength(res.length() - 2);
+    return res;
   }
 
-  public Table getTable() {
+  public Table[] getTable() {
     return fromObj;
   }
 
 
   private void initFromTable(FromConfig config, Table[] src) {
-    if (config.noJion()) {
-      // generate subQuery
-
-      this.fromObj = TableUtil.randomTable(src);
-
+    if (config.noJoin()) {
+      // TODO generate and add subQuery
+      fromObj = src;
     } else {
-      // TODO 12/13/16 add join condition; add alias
-//      from = from.join(TableUtil.randomTable(src), );
+      final JoinConfig join = config.getJoin();
+      Table[] tables = TableUtil.getTablesByName(src, join.getOperands());
+      Table first = tables[0];
+      final Condition condition = new Condition(src, join.getCondition());
+      first = first.join(tables[1], condition);
+      fromObj = new Table[]{first};
     }
   }
 }

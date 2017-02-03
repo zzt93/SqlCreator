@@ -16,7 +16,7 @@ public class WhereStmt implements SqlGeneration {
   private static final String WHERE = " where ";
   private final Condition condition;
 
-  public WhereStmt(Table from, FilterOperatorConfig config) {
+  public WhereStmt(Table[] from, FilterOperatorConfig config) {
     condition = new Condition(from, config.getOperand());
   }
 

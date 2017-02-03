@@ -7,7 +7,9 @@
             <select/>
             <from>
                 <join>
-                    <operand desc="default: table or query"/>
+                    <operand desc="default: table or query">
+                        <table>test</table>
+                    </operand>
                     <operand>
                         <subQuery>simpleQuery</subQuery>
                     </operand>
@@ -78,5 +80,16 @@
         </setOperator>
     </test>
 
+    <test>
+        <query id="testJoin">
+            <select></select>
+            <from>
+                <join>
+                    <operand/>
+                    <operand/>
+                </join>
+            </from>
+        </query>
+    </test>
 
 </tests>

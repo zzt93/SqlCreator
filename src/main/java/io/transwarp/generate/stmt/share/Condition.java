@@ -16,8 +16,8 @@ public class Condition implements SqlGeneration {
 
   private final Operand condition;
 
-  public Condition(Table from, ExprConfig config) {
-    final Operand[] operands = Operand.getOperands(from, 1, DataType.BOOL, config);
+  public Condition(Table[] src, ExprConfig config) {
+    final Operand[] operands = Operand.getOperands(src, 1, DataType.BOOL, config);
     condition = operands[0];
   }
 

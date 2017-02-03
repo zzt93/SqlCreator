@@ -50,7 +50,7 @@ public class Column {
   public static Column[] fromOperand(Operand... operands) {
     Column[] res = new Column[operands.length];
     for (int i = 0; i < operands.length; i++) {
-      res[i] = new Column(operands[i], TableUtil.nextAlias());
+      res[i] = new Column(operands[i], TableUtil.nextColAlias());
     }
     return res;
   }

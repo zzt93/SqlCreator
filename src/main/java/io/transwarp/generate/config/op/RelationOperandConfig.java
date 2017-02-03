@@ -1,5 +1,7 @@
 package io.transwarp.generate.config.op;
 
+import io.transwarp.generate.config.DefaultConfig;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -9,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
  * <h3></h3>
  */
 @XmlType(name = "relationOperand")
-public class RelationOperandConfig extends SetOperandConfig {
+public class RelationOperandConfig extends SetOperandConfig implements DefaultConfig<RelationOperandConfig> {
   private String table;
 
   @XmlElement
@@ -21,4 +23,13 @@ public class RelationOperandConfig extends SetOperandConfig {
     this.table = table;
   }
 
+  @Override
+  public boolean noConfig() {
+    return table == null && getSubQuery() == null;
+  }
+
+  @Override
+  public RelationOperandConfig setThisToDefaultConfig() {
+    return this;
+  }
 }

@@ -1,6 +1,6 @@
 package io.transwarp.generate.config.op;
 
-import io.transwarp.generate.config.HasSubQuery;
+import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 
@@ -14,11 +14,18 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-public class SelectConfig implements HasSubQuery {
+public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   private List<TypedExprConfig> operands;
   private List<QueryConfig> queries;
   private int selectNum;
+
+  public SelectConfig() {
+  }
+
+  private SelectConfig(int selectNum) {
+    this.selectNum = selectNum;
+  }
 
   @XmlElement(name = "operand")
   public List<TypedExprConfig> getOperands() {
@@ -49,15 +56,6 @@ public class SelectConfig implements HasSubQuery {
     this.selectNum = selectNum;
   }
 
-  /**
-   * <h3>Requirement</h3>
-   * <li>not bool</li>
-   * <li>aggregate function</li>
-   */
-  @Override
-  public QueryConfig defaultConfig() {
-    return null;
-  }
 
   public boolean selectAll() {
     return selectNum == SelectNumAdapter.SELECT_ALL;
@@ -67,7 +65,17 @@ public class SelectConfig implements HasSubQuery {
     return selectNum > 0;
   }
 
-  public TypedExprConfig defaultExpr() {
-    return null;
+  public boolean noConfig() {
+    return selectNum == 0 &&
+        (operands == null && queries == null);
+  }
+
+  @Override
+  public SelectConfig setThisToDefaultConfig() {
+    return this;
+  }
+
+  public static SelectConfig defaultSelect() {
+    return new SelectConfig(SelectNumAdapter.SELECT_ALL);
   }
 }

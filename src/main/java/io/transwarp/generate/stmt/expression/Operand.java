@@ -44,11 +44,12 @@ public class Operand {
     }
   }
 
-  private static Operand makeOperand(GenerationDataType resultType, Table src, ExprConfig config, int depth) {
+  private static Operand makeOperand(GenerationDataType resultType, Table[] src, ExprConfig config, int depth) {
     List<ExprConfig> nextConfig = null;
     if (depth == FunctionDepth.SINGLE) {
       if (config.hasNestedConfig()) {
         nextConfig = config.getOperands();
+        // use nested config later to reuse code
       } else {
         final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
         if (col.isPresent()) {
@@ -83,7 +84,7 @@ public class Operand {
         .setType(resultType);
   }
 
-  public static Operand[] getOperands(Table src, int num, GenerationDataType resultType, ExprConfig config) {
+  public static Operand[] getOperands(Table[] src, int num, GenerationDataType resultType, ExprConfig config) {
     checkArgument(DataType.outerVisible(resultType));
 
     final Operand[] res = new Operand[num];
@@ -93,10 +94,10 @@ public class Operand {
     return res;
   }
 
-  public static Operand[] randomOperand(Table src, int num, ExprConfig config) {
+  public static Operand[] randomOperand(Table[] src, int num, ExprConfig config) {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      GenerationDataType type = TableUtil.randomCol(src).getType();
+      GenerationDataType type = DataTypeGroup.ALL_GROUP.randomType();
       res[i] = makeOperand(type, src, config, config.getUdfDepth());
       assert type == res[i].type;
     }

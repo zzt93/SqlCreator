@@ -237,7 +237,7 @@
     </xs:complexType>
     <xs:complexType name="joinConfig">
         <xs:sequence>
-            <xs:element name="operand" type="relationOperand" maxOccurs="2" minOccurs="2"/>
+            <xs:element name="operand" type="relationOperand" maxOccurs="2" minOccurs="0"/>
             <xs:element name="condition" type="exprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>

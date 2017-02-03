@@ -2,9 +2,12 @@ package io.transwarp.generate.common;
 
 import com.google.common.base.Optional;
 import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.op.RelationOperandConfig;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,7 +25,7 @@ public class TableUtil {
     return cols.get(random.nextInt(cols.size()));
   }
 
-  public static Optional<Column> sameTypeRandomCol(Table table, GenerationDataType type) {
+  public static Optional<Column> sameTypeRandomCol(Table[] table, GenerationDataType type) {
     final ArrayList<Column> cols = sameTypeSubCols(table, type);
     if (cols.isEmpty()) {
       return Optional.absent();
@@ -38,9 +41,9 @@ public class TableUtil {
     return res;
   }
 
-  public static ArrayList<Column> sameTypeSubCols(Table table, GenerationDataType type) {
+  private static ArrayList<Column> sameTypeSubCols(Table[] table, GenerationDataType type) {
     final ArrayList<Column> res = new ArrayList<>();
-    for (Column column : table.columns()) {
+    for (Column column : columns(table)) {
       if (type.equals(column.getType())) {
         res.add(column);
       }
@@ -63,15 +66,41 @@ public class TableUtil {
     return " col_alias" + colCounter.getAndAdd(1);
   }
 
-  public static ArrayList<Column> randomSubCols(Table from, Possibility possibility, int colLimit) {
+  public static ArrayList<Column> randomSubCols(Table[] from, Possibility possibility, int colLimit) {
     final ArrayList<Column> res = new ArrayList<>();
-    for (Column column : from.columns()) {
+    for (Column column : columns(from)) {
       if (possibility.chooseFirstOrRandom(true, false)) {
         res.add(column);
       }
       if (res.size() >= colLimit) {
         break;
       }
+    }
+    return res;
+  }
+
+  public static Table[] getTablesByName(Table[] src, List<RelationOperandConfig> operands) {
+    HashMap<String, Table> map = new HashMap<>(operands.size());
+    for (Table table : src) {
+      assert table.name().isPresent();
+      map.put(table.name().get(), table);
+    }
+    Table[] res = new Table[operands.size()];
+    for (int i = 0; i < operands.size(); i++) {
+      final RelationOperandConfig operand = operands.get(i);
+      final String name = operand.getTable();
+      res[i] = map.get(name);
+      if (res[i] == null) {
+        throw new IllegalArgumentException("Illegal table name: " + name);
+      }
+    }
+    return res;
+  }
+
+  public static ArrayList<Column> columns(Table[] from) {
+    ArrayList<Column> res = new ArrayList<>();
+    for (Table table : from) {
+      res.addAll(table.columns());
     }
     return res;
   }

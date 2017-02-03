@@ -31,6 +31,9 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
+    if (select.noConfig()) {
+      select = SelectConfig.defaultSelect();
+    }
     return select;
   }
 
@@ -67,11 +70,44 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
-    return from;
+    return from.setSrc(getSrc());
   }
 
   public void setFrom(FromConfig from) {
     this.from = from;
   }
 
+
+  /**
+   * <h3>Requirement</h3>
+   * <li>not bool</li>
+   * <li>aggregate function</li>
+   */
+  public static QueryConfig defaultSelectExpr() {
+    return null;
+  }
+
+  /**
+   * SubQuery config for IN/EXISTS
+   * <h3>Requirement</h3>
+   * <li>only one column</li>
+   * <li>type is limited by first operand</li>
+   *
+   * @see io.transwarp.generate.stmt.expression.CmpOp#IN_QUERY
+   * @see io.transwarp.generate.stmt.expression.CmpOp#EXISTS
+   */
+  public static QueryConfig defaultWhereExpr() {
+    return null;
+  }
+
+
+  public QueryConfig defaultSetConfig(QueryConfig config) {
+    QueryConfig res = new QueryConfig();
+    return res;
+  }
+
+  public QueryConfig randomQuery() {
+    QueryConfig res = new QueryConfig();
+    return res;
+  }
 }

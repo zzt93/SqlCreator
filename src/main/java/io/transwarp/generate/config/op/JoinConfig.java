@@ -3,6 +3,7 @@ package io.transwarp.generate.config.op;
 import io.transwarp.generate.config.expr.ExprConfig;
 
 import javax.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
 public class JoinConfig {
 
   private ExprConfig condition;
-  private List<RelationOperandConfig> operands;
+  private List<RelationOperandConfig> operands = new ArrayList<>(2);
 
   @XmlElement
   public ExprConfig getCondition() {

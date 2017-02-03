@@ -1,6 +1,5 @@
 package io.transwarp.generate.config.expr;
 
-import io.transwarp.generate.config.HasSubQuery;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-public class ExprConfig implements HasSubQuery {
+public class ExprConfig {
 
   private List<ExprConfig> operands;
 
@@ -43,7 +42,7 @@ public class ExprConfig implements HasSubQuery {
   @XmlIDREF
   public QueryConfig getSubQuery() {
     if (subQuery == null) {
-      subQuery = defaultConfig();
+      subQuery = QueryConfig.defaultWhereExpr();
     }
     return subQuery;
   }
@@ -111,20 +110,6 @@ public class ExprConfig implements HasSubQuery {
 
   public void setInputRelation(InputRelation inputRelation) {
     this.inputRelation = inputRelation;
-  }
-
-  /**
-   * SubQuery config for IN/EXISTS
-   * <h3>Requirement</h3>
-   * <li>only one column</li>
-   * <li>type is limited by first operand</li>
-   *
-   * @see io.transwarp.generate.stmt.expression.CmpOp#IN_QUERY
-   * @see io.transwarp.generate.stmt.expression.CmpOp#EXISTS
-   */
-  @Override
-  public QueryConfig defaultConfig() {
-    return null;
   }
 
   public boolean hasNestedConfig() {

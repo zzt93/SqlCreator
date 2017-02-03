@@ -26,8 +26,8 @@ public class SelectResult implements Table {
 
 
   private SelectResult(QueryConfig config) {
-    fromStmt = new FromStmt(config.getFrom(), config.getSrc());
-    Table from = fromStmt.getTable();
+    fromStmt = new FromStmt(config.getFrom());
+    Table[] from = fromStmt.getTable();
 
     selectListStmt = new SelectListStmt(from, config.getSelect());
     whereStmt = new WhereStmt(from, config.getWhere());
