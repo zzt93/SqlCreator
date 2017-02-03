@@ -4,7 +4,7 @@ import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.adapter.SelectExprAdapter;
 import io.transwarp.generate.type.GenerationDataType;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
@@ -17,7 +17,7 @@ public class TypedExprConfig extends ExprConfig {
   private GenerationDataType[] types;
   private GenerationDataType finalType;
 
-  @XmlElement(name = "type")
+  @XmlAttribute(name = "type")
   @XmlJavaTypeAdapter(SelectExprAdapter.class)
   public GenerationDataType[] getTypes() {
     return types;
@@ -33,7 +33,6 @@ public class TypedExprConfig extends ExprConfig {
     }
   }
 
-  @Override
   public GenerationDataType getType() {
     return finalType;
   }

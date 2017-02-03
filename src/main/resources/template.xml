@@ -27,8 +27,7 @@
         </query>
         <updateStmt id="update"/>
         <query id="simpleQuery" queryDepth="2" num="0">
-            <select>
-            </select>
+            <select/>
             <from/>
             <where/>
         </query>
@@ -38,14 +37,13 @@
     <test>
         <query num="1000" id="test">
             <select>
-                <operand>
+                <operand type="int">
                     <column udfDepth="1"/>
                     <const udfDepth="3">
                         <udfConfig>
                             <udfList possibility="1">PLUS</udfList>
                         </udfConfig>
                     </const>
-                    <type>int</type>
                 </operand>
                 <query>simpleQuery</query>
             </select>
@@ -60,17 +58,13 @@
     <test transaction="true" threads="3">
         <query id="intQuery" queryDepth="1" num="0">
             <select>
-                <operand>
-                    <type>int</type>
-                </operand>
+                <operand type="int"/>
             </select>
             <from/>
         </query>
         <query id="longQuery" queryDepth="1" num="0">
             <select>
-                <operand>
-                    <type>long</type>
-                </operand>
+                <operand type="long"/>
             </select>
             <from/>
         </query>

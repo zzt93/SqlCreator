@@ -5,6 +5,7 @@ import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class SelectConfig implements HasSubQuery {
     this.operands = operands;
   }
 
+  @XmlIDREF
   @XmlElement(name = "query")
   public List<QueryConfig> getQueries() {
     return queries;

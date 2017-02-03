@@ -3,8 +3,6 @@ package io.transwarp.generate.config.expr;
 import io.transwarp.generate.config.HasSubQuery;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
-import io.transwarp.generate.type.DataType;
-import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -31,12 +29,6 @@ public class ExprConfig implements HasSubQuery {
 
   private int queryDepth;
   private QueryConfig subQuery;
-
-  private GenerationDataType type = DataType.BOOL;
-
-  public GenerationDataType getType() {
-    return type;
-  }
 
   @XmlAttribute
   public int getQueryDepth() {

@@ -168,9 +168,7 @@
     <xs:complexType name="typedExprConfig">
         <xs:complexContent>
             <xs:extension base="exprConfig">
-                <xs:choice>
-                    <xs:element name="type" type="stringList" minOccurs="0" maxOccurs="1"/>
-                </xs:choice>
+                <xs:attribute name="type" type="stringList"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
