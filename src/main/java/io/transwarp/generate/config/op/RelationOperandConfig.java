@@ -1,6 +1,11 @@
 package io.transwarp.generate.config.op;
 
+import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.DefaultConfig;
+import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.stmt.QueryConfig;
+import io.transwarp.generate.stmt.select.SelectResult;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -12,24 +17,51 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "relationOperand")
 public class RelationOperandConfig extends SetOperandConfig implements DefaultConfig<RelationOperandConfig> {
-  private String table;
+  private String tableName;
+  private Table[] src;
+  private Table operand;
+
+  public RelationOperandConfig() {
+  }
+
+  RelationOperandConfig(Table[] src) {
+    this.src = src;
+    addDefaultConfig(null);
+  }
 
   @XmlElement
-  public String getTable() {
-    return table;
+  public String getTableName() {
+    return tableName;
   }
 
-  public void setTable(String table) {
-    this.table = table;
-  }
-
-  @Override
-  public boolean noConfig() {
-    return table == null && getSubQuery() == null;
+  public void setTableName(String tableName) {
+    this.tableName = tableName;
   }
 
   @Override
-  public RelationOperandConfig setThisToDefaultConfig() {
+  public boolean lackConfig() {
+    return tableName == null && getSubQuery() == null;
+  }
+
+  @Override
+  public RelationOperandConfig addDefaultConfig(RelationOperandConfig t) {
+    if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+      operand = TableUtil.randomTable(src);
+    } else {
+      setSubQuery(QueryConfig.randomQuery(src));
+    }
     return this;
+  }
+
+  Table toTable() {
+    if (operand != null) {
+      return operand;
+    }
+
+    if (tableName == null) {
+      assert getSubQuery() != null;
+      return SelectResult.generateQuery(getSubQuery());
+    }
+    return TableUtil.getTableByName(src, tableName);
   }
 }

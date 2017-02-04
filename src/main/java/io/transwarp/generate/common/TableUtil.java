@@ -2,12 +2,9 @@ package io.transwarp.generate.common;
 
 import com.google.common.base.Optional;
 import io.transwarp.generate.config.Possibility;
-import io.transwarp.generate.config.op.RelationOperandConfig;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -79,22 +76,14 @@ public class TableUtil {
     return res;
   }
 
-  public static Table[] getTablesByName(Table[] src, List<RelationOperandConfig> operands) {
-    HashMap<String, Table> map = new HashMap<>(operands.size());
+  public static Table getTableByName(Table[] src, String tableName) {
     for (Table table : src) {
       assert table.name().isPresent();
-      map.put(table.name().get(), table);
-    }
-    Table[] res = new Table[operands.size()];
-    for (int i = 0; i < operands.size(); i++) {
-      final RelationOperandConfig operand = operands.get(i);
-      final String name = operand.getTable();
-      res[i] = map.get(name);
-      if (res[i] == null) {
-        throw new IllegalArgumentException("Illegal table name: " + name);
+      if (table.name().get().equals(tableName)) {
+        return table;
       }
     }
-    return res;
+    throw new IllegalArgumentException("Illegal table name: " + tableName);
   }
 
   public static ArrayList<Column> columns(Table[] from) {

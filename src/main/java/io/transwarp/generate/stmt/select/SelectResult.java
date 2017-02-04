@@ -19,10 +19,11 @@ import java.util.ArrayList;
  */
 public class SelectResult implements Table {
 
+  public static final String EMPTY = "";
   private Optional<String> name = Optional.absent();
   private final SelectListStmt selectListStmt;
   private final FromStmt fromStmt;
-  private final WhereStmt whereStmt;
+  private WhereStmt whereStmt;
 
 
   private SelectResult(QueryConfig config) {
@@ -30,16 +31,15 @@ public class SelectResult implements Table {
     Table[] from = fromStmt.getTable();
 
     selectListStmt = new SelectListStmt(from, config.getSelect());
-    whereStmt = new WhereStmt(from, config.getWhere());
+    // optional statement
+    if (config.hasWhere()) {
+      whereStmt = new WhereStmt(from, config.getWhere());
+    }
 
     addSetOp();
   }
 
-  static SelectResult selectResult(QueryConfig config, Table... src) {
-    return new SelectResult(config);
-  }
-
-  public static SelectResult simpleQuery(QueryConfig config) {
+  public static SelectResult generateQuery(QueryConfig config) {
     return new SelectResult(config);
   }
 
@@ -78,7 +78,8 @@ public class SelectResult implements Table {
     return new StringBuilder()
         .append(selectListStmt.sql(dialect))
         .append(fromStmt.sql(dialect))
-        .append(whereStmt.sql(dialect));
+        .append(whereStmt != null ? whereStmt.sql(dialect) : EMPTY)
+        ;
   }
 
   public String[] subQueries(Dialect[] dialects) {

@@ -7,7 +7,11 @@ package io.transwarp.generate.config;
  */
 public interface DefaultConfig<T> {
 
-  boolean noConfig();
+  /**
+   * test whether this config class lack minimal configuration information
+   * to let generation works
+   */
+  boolean lackConfig();
 
-  T setThisToDefaultConfig();
+  T addDefaultConfig(T t);
 }

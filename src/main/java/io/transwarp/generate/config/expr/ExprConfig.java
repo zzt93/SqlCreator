@@ -1,5 +1,7 @@
 package io.transwarp.generate.config.expr;
 
+import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
 
@@ -15,7 +17,7 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-public class ExprConfig {
+public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private List<ExprConfig> operands;
 
@@ -28,6 +30,15 @@ public class ExprConfig {
 
   private int queryDepth;
   private QueryConfig subQuery;
+
+  private Table[] src;
+
+  public ExprConfig() {
+  }
+
+  public ExprConfig(Table[] src) {
+    this.src = src;
+  }
 
   @XmlAttribute
   public int getQueryDepth() {
@@ -42,7 +53,7 @@ public class ExprConfig {
   @XmlIDREF
   public QueryConfig getSubQuery() {
     if (subQuery == null) {
-      subQuery = QueryConfig.defaultWhereExpr();
+      subQuery = QueryConfig.defaultWhereExpr(src);
     }
     return subQuery;
   }
@@ -114,5 +125,15 @@ public class ExprConfig {
 
   public boolean hasNestedConfig() {
     return operands != null && !operands.isEmpty();
+  }
+
+  @Override
+  public boolean lackConfig() {
+    return false;
+  }
+
+  @Override
+  public ExprConfig addDefaultConfig(ExprConfig config) {
+    return null;
   }
 }

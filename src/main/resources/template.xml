@@ -8,7 +8,7 @@
             <from>
                 <join>
                     <operand desc="default: table or query">
-                        <table>test</table>
+                        <tableName>test</tableName>
                     </operand>
                     <operand>
                         <subQuery>simpleQuery</subQuery>
@@ -86,9 +86,15 @@
             <from>
                 <join>
                     <operand/>
-                    <operand/>
                 </join>
             </from>
+        </query>
+    </test>
+    <test>
+        <query id="testWhere">
+            <select></select>
+            <from></from>
+            <where></where>
         </query>
     </test>
 

@@ -1,5 +1,7 @@
 package io.transwarp.generate.config.op;
 
+import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -9,9 +11,10 @@ import javax.xml.bind.annotation.XmlElement;
  * <p>
  * <h3></h3>
  */
-public class FilterOperatorConfig {
+public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>{
 
   private ExprConfig operand;
+  private Table[] src;
 
   @XmlElement
   public ExprConfig getOperand() {
@@ -20,6 +23,22 @@ public class FilterOperatorConfig {
 
   public FilterOperatorConfig setOperand(ExprConfig operand) {
     this.operand = operand;
+    return this;
+  }
+
+  public FilterOperatorConfig setSrc(Table[] src) {
+    this.src = src;
+    return this;
+  }
+
+  @Override
+  public boolean lackConfig() {
+    return operand == null;
+  }
+
+  @Override
+  public FilterOperatorConfig addDefaultConfig(FilterOperatorConfig filterOperatorConfig) {
+    operand = new ExprConfig(src);
     return this;
   }
 }

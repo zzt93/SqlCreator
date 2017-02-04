@@ -3,7 +3,6 @@ package io.transwarp.generate.stmt.share;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.op.JoinConfig;
 import io.transwarp.generate.config.stmt.FromConfig;
 
@@ -18,7 +17,7 @@ public class FromStmt implements SqlGeneration {
   private Table[] fromObj;
 
   public FromStmt(FromConfig config) {
-    initFromTable(config, config.getSrc());
+    initFromTable(config, config.getTables());
   }
 
   @Override
@@ -37,16 +36,13 @@ public class FromStmt implements SqlGeneration {
 
 
   private void initFromTable(FromConfig config, Table[] src) {
-    if (config.noJoin()) {
+    if (config.lackConfig()) {
       // TODO generate and add subQuery
       fromObj = src;
     } else {
       final JoinConfig join = config.getJoin();
-      Table[] tables = TableUtil.getTablesByName(src, join.getOperands());
-      Table first = tables[0];
-      final Condition condition = new Condition(src, join.getCondition());
-      first = first.join(tables[1], condition);
-      fromObj = new Table[]{first};
+      Table table = join.getJoinedTables();
+      fromObj = new Table[]{table};
     }
   }
 }

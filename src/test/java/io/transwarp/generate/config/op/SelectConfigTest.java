@@ -40,7 +40,7 @@ public class SelectConfigTest {
 
   @Test
   public void isEmpty() throws Exception {
-    Assert.assertTrue(empty.noConfig());
+    Assert.assertTrue(empty.lackConfig());
   }
 
   @Test

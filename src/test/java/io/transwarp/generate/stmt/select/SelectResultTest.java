@@ -5,7 +5,6 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.expr.InputRelation;
 import io.transwarp.generate.config.op.SelectConfig;
-import io.transwarp.generate.config.op.SetOperandConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.parse.sql.DDLParser;
 import org.junit.After;
@@ -36,7 +35,6 @@ public class SelectResultTest {
   private QueryConfig queryConfig;
 
   public SelectResultTest(InputRelation relation) {
-    queryConfig = new SetOperandConfig().defaultConfig();
   }
 
   @Parameterized.Parameters
@@ -48,10 +46,11 @@ public class SelectResultTest {
   @Before
   public void setUp() throws Exception {
     final Table[] table = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
+    queryConfig = QueryConfig.randomQuery(table);
     from = table[0];
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
-      selectResults[i] = SelectResult.selectResult(queryConfig, table);
+      selectResults[i] = SelectResult.generateQuery(queryConfig);
     }
     oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));
@@ -64,7 +63,7 @@ public class SelectResultTest {
     simpleQuery.setSelect(select);
     for (int i = 1; i < 10; i++) {
       select.setSelectNum(i);
-      final SelectResult selectResult = SelectResult.simpleQuery(simpleQuery);
+      final SelectResult selectResult = SelectResult.generateQuery(simpleQuery);
       final int size = selectResult.columns().size();
       Assert.assertTrue(size > 0 && size <= i);
     }

@@ -37,7 +37,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   @XmlIDREF
-  @XmlElement(name = "query")
+  @XmlElement(name = "generateQuery")
   public List<QueryConfig> getQueries() {
     return queries;
   }
@@ -65,17 +65,15 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return selectNum > 0;
   }
 
-  public boolean noConfig() {
+  public boolean lackConfig() {
     return selectNum == 0 &&
         (operands == null && queries == null);
   }
 
   @Override
-  public SelectConfig setThisToDefaultConfig() {
+  public SelectConfig addDefaultConfig(SelectConfig t) {
+    selectNum = SelectNumAdapter.SELECT_ALL;
     return this;
   }
 
-  public static SelectConfig defaultSelect() {
-    return new SelectConfig(SelectNumAdapter.SELECT_ALL);
-  }
 }

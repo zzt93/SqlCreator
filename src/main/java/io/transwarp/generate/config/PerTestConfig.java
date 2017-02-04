@@ -35,7 +35,7 @@ public class PerTestConfig {
   }
 
   @XmlElements({
-      @XmlElement(name = "query", type = QueryConfig.class),
+      @XmlElement(name = "generateQuery", type = QueryConfig.class),
       @XmlElement(name = "updateStmt", type = UpdateStmtConfig.class)
   })
   public List<StmtConfig> getStmtConfigs() {

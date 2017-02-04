@@ -1,6 +1,7 @@
 package io.transwarp.generate.config.stmt;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.op.JoinConfig;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -10,7 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
  * <p>
  * <h3></h3>
  */
-public class FromConfig {
+public class FromConfig implements DefaultConfig<FromConfig> {
 
   private JoinConfig join;
   private Table[] src;
@@ -24,16 +25,25 @@ public class FromConfig {
     this.join = join;
   }
 
-  public boolean noJoin() {
-    return join == null;
-  }
-
   public FromConfig setSrc(Table[] src) {
     this.src = src;
+    join.setSrc(src);
     return this;
   }
 
-  public Table[] getSrc() {
+  public Table[] getTables() {
     return src;
+  }
+
+  @Override
+  public boolean lackConfig() {
+    return join == null;
+  }
+
+  @Override
+  public FromConfig addDefaultConfig(FromConfig t) {
+    join = new JoinConfig();
+    join.addDefaultConfig(null);
+    return this;
   }
 }

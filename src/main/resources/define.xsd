@@ -252,7 +252,7 @@
         <xs:complexContent>
             <xs:extension base="setOperand">
                 <xs:choice>
-                    <xs:element name="table" type="xs:string" minOccurs="0"/>
+                    <xs:element name="tableName" type="xs:string" minOccurs="0"/>
                 </xs:choice>
             </xs:extension>
         </xs:complexContent>

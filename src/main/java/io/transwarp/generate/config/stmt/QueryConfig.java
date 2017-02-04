@@ -1,6 +1,7 @@
 package io.transwarp.generate.config.stmt;
 
 
+import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 
@@ -31,8 +32,8 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
-    if (select.noConfig()) {
-      select = SelectConfig.defaultSelect();
+    if (select.lackConfig()) {
+      select.addDefaultConfig(null);
     }
     return select;
   }
@@ -43,7 +44,14 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FilterOperatorConfig getWhere() {
+    checkFilter(where);
     return where;
+  }
+
+  private void checkFilter(FilterOperatorConfig filter) {
+    if (filter.lackConfig()) {
+      filter.setSrc(getSrc()).addDefaultConfig(null);
+    }
   }
 
   public void setWhere(FilterOperatorConfig where) {
@@ -83,7 +91,7 @@ public class QueryConfig extends StmtConfig {
    * <li>not bool</li>
    * <li>aggregate function</li>
    */
-  public static QueryConfig defaultSelectExpr() {
+  public static QueryConfig defaultSelectExpr(Table[] src) {
     return null;
   }
 
@@ -96,18 +104,22 @@ public class QueryConfig extends StmtConfig {
    * @see io.transwarp.generate.stmt.expression.CmpOp#IN_QUERY
    * @see io.transwarp.generate.stmt.expression.CmpOp#EXISTS
    */
-  public static QueryConfig defaultWhereExpr() {
+  public static QueryConfig defaultWhereExpr(Table[] src) {
     return null;
   }
 
 
-  public QueryConfig defaultSetConfig(QueryConfig config) {
+  public static QueryConfig defaultSetConfig(QueryConfig config) {
     QueryConfig res = new QueryConfig();
     return res;
   }
 
-  public QueryConfig randomQuery() {
+  public static QueryConfig randomQuery(Table[] src) {
     QueryConfig res = new QueryConfig();
     return res;
+  }
+
+  public boolean hasWhere() {
+    return where == null;
   }
 }
