@@ -20,13 +20,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   private List<QueryConfig> queries;
   private int selectNum;
 
-  public SelectConfig() {
-  }
-
-  private SelectConfig(int selectNum) {
-    this.selectNum = selectNum;
-  }
-
   @XmlElement(name = "operand")
   public List<TypedExprConfig> getOperands() {
     return operands;
@@ -37,7 +30,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   @XmlIDREF
-  @XmlElement(name = "generateQuery")
+  @XmlElement(name = "query")
   public List<QueryConfig> getQueries() {
     return queries;
   }

@@ -62,7 +62,16 @@ public abstract class StmtConfig {
     return this;
   }
 
+  private Table[] tables;
+
   public Table[] getSrc() {
+    if (tables != null) {
+      return tables;
+    }
     return DDLParser.getTable(table, dialect);
+  }
+
+  public void setSrc(Table[] src) {
+    tables = src;
   }
 }

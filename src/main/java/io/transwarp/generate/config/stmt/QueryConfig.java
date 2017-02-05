@@ -116,6 +116,7 @@ public class QueryConfig extends StmtConfig {
 
   public static QueryConfig randomQuery(Table[] src) {
     QueryConfig res = new QueryConfig();
+    res.setSrc(src);
     return res;
   }
 
