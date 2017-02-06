@@ -25,7 +25,7 @@ public class FromStmt implements SqlGeneration {
   public StringBuilder sql(Dialect dialect) {
     final StringBuilder res = new StringBuilder(FROM);
     for (Table table : fromObj) {
-      res.append(table.sql(dialect).append(", "));
+      res.append(table.sql(dialect)).append(", ");
     }
     res.setLength(res.length() - 2);
     return res;
@@ -42,7 +42,7 @@ public class FromStmt implements SqlGeneration {
       final int tableSize = config.getJoinTimes() + 1;
       Table[] tmp = new Table[tableSize];
       for (int i = 0; i < tableSize; i++) {
-        tmp[i] = TableUtil.randomTable(src);
+        tmp[i] = TableUtil.randomTable(src).setAlias(TableUtil.nextAlias());
       }
       fromObj = tmp;
     } else {

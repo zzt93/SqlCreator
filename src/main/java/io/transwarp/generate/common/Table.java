@@ -19,4 +19,5 @@ public interface Table extends SqlGeneration {
 
   ArrayList<Column> columns();
 
+  Table setAlias(String alias);
 }

@@ -7,6 +7,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 
 /**
  * Created by zzt on 12/2/16.
@@ -15,14 +16,16 @@ import java.util.ArrayList;
  */
 public class FromObj implements Table {
 
-  private final String name;
+  private String name;
   private ArrayList<Column> columns = new ArrayList<>();
-  private StringBuilder sql = new StringBuilder();
+  private EnumMap<Dialect, StringBuilder> versions = new EnumMap<>(Dialect.class);
 
   public FromObj(String tableName, ArrayList<Column> columns) {
     this.name = tableName;
     this.columns = columns;
-    sql.append(name);
+    for (Dialect dialect : GlobalConfig.getCmpBase()) {
+      versions.put(dialect, new StringBuilder(name));
+    }
   }
 
 
@@ -32,12 +35,13 @@ public class FromObj implements Table {
       // update columns
       columns.addAll(table.columns());
       // update sql
-      final Dialect base = GlobalConfig.getBase();
-      sql(base)
-          .append(" join ")
-          .append(table.sql(base))
-          .append(" on ")
-          .append(condition.sql(base));
+      for (Dialect dialect : GlobalConfig.getCmpBase()) {
+        sql(dialect)
+            .append(" join ")
+            .append(table.sql(dialect))
+            .append(" on ")
+            .append(condition.sql(dialect));
+      }
     }
 
     return this;
@@ -51,8 +55,17 @@ public class FromObj implements Table {
     return columns;
   }
 
+  @Override
+  public Table setAlias(String alias) {
+    this.name = alias;
+    for (StringBuilder builder : versions.values()) {
+      builder.append(alias);
+    }
+    return this;
+  }
+
   public StringBuilder sql(Dialect dialect) {
-    return sql;
+    return versions.get(dialect);
   }
 
 }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class SelectResult implements Table {
 
-  public static final String EMPTY = "";
+  private static final String EMPTY = "";
   private Optional<String> name = Optional.absent();
   private final SelectListStmt selectListStmt;
   private final FromStmt fromStmt;
@@ -62,6 +62,12 @@ public class SelectResult implements Table {
 
   public ArrayList<Column> columns() {
     return selectListStmt.getCols();
+  }
+
+  @Override
+  public Table setAlias(String alias) {
+    this.name = Optional.of(alias);
+    return this;
   }
 
   /**
