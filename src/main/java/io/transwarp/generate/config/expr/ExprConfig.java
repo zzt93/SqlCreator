@@ -16,19 +16,19 @@ import java.util.List;
  * Created by zzt on 1/16/17.
  * <p>
  * <h3></h3>
+ * The default value is from xsd file
  */
 public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private List<ExprConfig> operands;
 
-  private UdfFilter udfFilter;
+  private UdfFilter udfFilter = new UdfFilter();
 
-  private int udfDepth;
+  private int udfDepth = 3;
   private String desc;
-  private double constOrColumnPossibility;
-  private InputRelation inputRelation;
+  private double constOrColumnPossibility = 0.5;
+  private InputRelation inputRelation = InputRelation.SAME;
 
-  private int queryDepth;
   private QueryConfig subQuery;
 
   private Table[] src;
@@ -38,23 +38,12 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   public ExprConfig(Table[] src) {
     this.src = src;
-  }
-
-  @XmlAttribute
-  public int getQueryDepth() {
-    return queryDepth;
-  }
-
-  public void setQueryDepth(int queryDepth) {
-    this.queryDepth = queryDepth;
+    addDefaultConfig();
   }
 
   @XmlAttribute
   @XmlIDREF
   public QueryConfig getSubQuery() {
-    if (subQuery == null) {
-      subQuery = QueryConfig.defaultWhereExpr(src);
-    }
     return subQuery;
   }
 
@@ -128,12 +117,22 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   @Override
-  public boolean lackConfig() {
+  public boolean lackChildConfig() {
     return false;
   }
 
   @Override
-  public ExprConfig addDefaultConfig(ExprConfig config) {
-    return null;
+  public ExprConfig addDefaultConfig() {
+    return this;
+  }
+
+  @Override
+  public ExprConfig setSrc(Table[] tables) {
+    src = tables;
+    return this;
+  }
+
+  public Table[] getTables() {
+    return src;
   }
 }

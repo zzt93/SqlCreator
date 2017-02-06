@@ -32,7 +32,7 @@ public class OperandTest {
     final Table[] test = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
     final ExprConfig config = new ExprConfig();
     for (int i = 0; i < 1000; i++) {
-      final Operand[] operands = Operand.getOperands(test, 3, testType, config);
+      final Operand[] operands = Operand.getOperands(3, testType, config);
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
         System.out.println(operand.getType());

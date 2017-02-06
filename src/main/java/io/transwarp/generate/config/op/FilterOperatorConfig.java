@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlElement;
  * <p>
  * <h3></h3>
  */
-public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>{
+public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig> {
 
   private ExprConfig operand;
   private Table[] src;
@@ -32,12 +32,12 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
   }
 
   @Override
-  public boolean lackConfig() {
+  public boolean lackChildConfig() {
     return operand == null;
   }
 
   @Override
-  public FilterOperatorConfig addDefaultConfig(FilterOperatorConfig filterOperatorConfig) {
+  public FilterOperatorConfig addDefaultConfig() {
     operand = new ExprConfig(src);
     return this;
   }

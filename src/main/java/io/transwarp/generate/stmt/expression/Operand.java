@@ -44,14 +44,14 @@ public class Operand {
     }
   }
 
-  private static Operand makeOperand(GenerationDataType resultType, Table[] src, ExprConfig config, int depth) {
+  private static Operand makeOperand(GenerationDataType resultType, ExprConfig config, int depth) {
     List<ExprConfig> nextConfig = null;
     if (depth == FunctionDepth.SINGLE) {
       if (config.hasNestedConfig()) {
         nextConfig = config.getOperands();
         // use nested config later to reuse code
       } else {
-        final Optional<Column> col = TableUtil.sameTypeRandomCol(src, resultType);
+        final Optional<Column> col = TableUtil.sameTypeRandomCol(config.getTables(), resultType);
         if (col.isPresent()) {
           final Column column = col.get();
           return new Operand(resultType, column.getNameOrConst(GlobalConfig.getCmpBase()));
@@ -73,23 +73,23 @@ public class Operand {
         if (i < nextConfig.size()) {
           nextC = nextConfig.get(i);
         }
-        ops[i] = makeOperand(nextResultType[i], src, nextC, nextC.getUdfDepth());
+        ops[i] = makeOperand(nextResultType[i], nextC, nextC.getUdfDepth());
       }
     } else {
       for (int i = 0; i < nextResultType.length; i++) {
-        ops[i] = makeOperand(nextResultType[i], src, config, depth - 1);
+        ops[i] = makeOperand(nextResultType[i], config, depth - 1);
       }
     }
     return function.apply(GlobalConfig.getCmpBase(), resultType, ops)
         .setType(resultType);
   }
 
-  public static Operand[] getOperands(Table[] src, int num, GenerationDataType resultType, ExprConfig config) {
+  public static Operand[] getOperands(int num, GenerationDataType resultType, ExprConfig config) {
     checkArgument(DataType.outerVisible(resultType));
 
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = makeOperand(resultType, src, config, config.getUdfDepth());
+      res[i] = makeOperand(resultType, config, config.getUdfDepth());
     }
     return res;
   }
@@ -98,7 +98,7 @@ public class Operand {
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
       GenerationDataType type = DataTypeGroup.ALL_GROUP.randomType();
-      res[i] = makeOperand(type, src, config, config.getUdfDepth());
+      res[i] = makeOperand(type, config, config.getUdfDepth());
       assert type == res[i].type;
     }
     return res;

@@ -1,7 +1,9 @@
 package io.transwarp.generate.config.expr;
 
+import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.adapter.SelectExprAdapter;
+import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,6 +18,14 @@ public class TypedExprConfig extends ExprConfig {
 
   private GenerationDataType[] types;
   private GenerationDataType finalType;
+
+  public TypedExprConfig() {
+  }
+
+  public TypedExprConfig(Table[] src) {
+    super(src);
+    addDefaultConfig();
+  }
 
   @XmlAttribute(name = "type")
   @XmlJavaTypeAdapter(SelectExprAdapter.class)
@@ -37,8 +47,14 @@ public class TypedExprConfig extends ExprConfig {
     return finalType;
   }
 
-  public static TypedExprConfig defaultSelectExpr() {
-    return null;
+  @Override
+  public TypedExprConfig addDefaultConfig() {
+    setTypes(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST.types().toArray(new GenerationDataType[0]));
+    return this;
   }
 
+  @Override
+  public boolean lackChildConfig() {
+    return finalType == null;
+  }
 }

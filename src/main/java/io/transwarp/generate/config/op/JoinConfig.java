@@ -21,6 +21,14 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   private List<RelationOperandConfig> operands = new ArrayList<>(2);
   private Table[] src;
 
+  public JoinConfig() {
+  }
+
+  public JoinConfig(Table[] src) {
+    this.src = src;
+    addDefaultConfig();
+  }
+
   @XmlElement
   public ExprConfig getCondition() {
     return condition;
@@ -40,17 +48,19 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
     this.operands = operands;
   }
 
-  public void setSrc(Table[] src) {
+  @Override
+  public JoinConfig setSrc(Table[] src) {
     this.src = src;
+    return this;
   }
 
   public Table getJoinedTables() {
-    if (lackConfig()) {
-      addDefaultConfig(null);
+    if (lackChildConfig()) {
+      addDefaultConfig();
     }
     final Table[] tables = toTables();
     Table first = tables[0];
-    final Condition condition = new Condition(src, getCondition());
+    final Condition condition = new Condition(getCondition());
     first = first.join(tables[1], condition);
     return first;
   }
@@ -65,12 +75,12 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   }
 
   @Override
-  public boolean lackConfig() {
+  public boolean lackChildConfig() {
     return operands.size() != JOIN_OP_NUM || condition == null;
   }
 
   @Override
-  public JoinConfig addDefaultConfig(JoinConfig t) {
+  public JoinConfig addDefaultConfig() {
     while (operands.size() < JOIN_OP_NUM) {
       operands.add(new RelationOperandConfig(src));
     }

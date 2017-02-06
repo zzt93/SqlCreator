@@ -3,6 +3,7 @@ package io.transwarp.generate.config.stmt;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.parse.sql.DDLParser;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -15,7 +16,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * <h3></h3>
  */
 @XmlSeeAlso({QueryConfig.class, UpdateStmtConfig.class})
-public abstract class StmtConfig {
+public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
 
   private String id;
 
@@ -68,10 +69,21 @@ public abstract class StmtConfig {
     if (tables != null) {
       return tables;
     }
-    return DDLParser.getTable(table, dialect);
+    return tables = DDLParser.getTable(table, dialect);
   }
 
-  public void setSrc(Table[] src) {
+  public StmtConfig setSrc(Table[] src) {
     tables = src;
+    return this;
+  }
+
+  @Override
+  public boolean lackChildConfig() {
+    return false;
+  }
+
+  @Override
+  public StmtConfig addDefaultConfig() {
+    return this;
   }
 }

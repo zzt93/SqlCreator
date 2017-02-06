@@ -14,7 +14,16 @@ import javax.xml.bind.annotation.XmlElement;
 public class FromConfig implements DefaultConfig<FromConfig> {
 
   private JoinConfig join;
+  private int joinTimes;
   private Table[] src;
+
+  public FromConfig() {
+  }
+
+  public FromConfig(Table[] src) {
+    this.src = src;
+    addDefaultConfig();
+  }
 
   @XmlElement
   public JoinConfig getJoin() {
@@ -25,9 +34,17 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     this.join = join;
   }
 
+  @XmlElement
+  public int getJoinTimes() {
+    return joinTimes;
+  }
+
+  public void setJoinTimes(int joinTimes) {
+    this.joinTimes = joinTimes;
+  }
+
   public FromConfig setSrc(Table[] src) {
     this.src = src;
-    join.setSrc(src);
     return this;
   }
 
@@ -36,14 +53,17 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   @Override
-  public boolean lackConfig() {
-    return join == null;
+  public boolean lackChildConfig() {
+    return join == null && joinTimes == 0;
   }
 
   @Override
-  public FromConfig addDefaultConfig(FromConfig t) {
-    join = new JoinConfig();
-    join.addDefaultConfig(null);
+  public FromConfig addDefaultConfig() {
+    joinTimes = 1;
     return this;
+  }
+
+  public boolean implicitJoin() {
+    return join == null;
   }
 }

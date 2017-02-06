@@ -1,5 +1,6 @@
 package io.transwarp.generate.config.op;
 
+import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
@@ -19,6 +20,15 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   private List<TypedExprConfig> operands;
   private List<QueryConfig> queries;
   private int selectNum;
+  private Table[] src;
+
+  public SelectConfig() {
+  }
+
+  public SelectConfig(Table[] src) {
+    this.src = src;
+    addDefaultConfig();
+  }
 
   @XmlElement(name = "operand")
   public List<TypedExprConfig> getOperands() {
@@ -58,15 +68,24 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return selectNum > 0;
   }
 
-  public boolean lackConfig() {
+  public boolean lackChildConfig() {
     return selectNum == 0 &&
         (operands == null && queries == null);
   }
 
   @Override
-  public SelectConfig addDefaultConfig(SelectConfig t) {
+  public SelectConfig addDefaultConfig() {
     selectNum = SelectNumAdapter.SELECT_ALL;
     return this;
   }
 
+  @Override
+  public SelectConfig setSrc(Table[] tables) {
+    src = tables;
+    return this;
+  }
+
+  public Table[] getTables() {
+    return src;
+  }
 }

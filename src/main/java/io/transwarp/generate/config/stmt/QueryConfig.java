@@ -20,6 +20,13 @@ public class QueryConfig extends StmtConfig {
   private SelectConfig select;
   private FromConfig from;
 
+  public QueryConfig() {
+  }
+
+  private QueryConfig(Table[] src) {
+    setSrc(src);
+    addDefaultConfig();
+  }
 
   @XmlAttribute
   public int getQueryDepth() {
@@ -32,14 +39,14 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
-    if (select.lackConfig()) {
-      select.addDefaultConfig(null);
-    }
     return select;
   }
 
-  public void setSelect(SelectConfig select) {
-    this.select = select;
+  public void setSelect(SelectConfig config) {
+    select = config.setSrc(getSrc());
+    if (select.lackChildConfig()) {
+      select.addDefaultConfig();
+    }
   }
 
   @XmlElement
@@ -49,8 +56,8 @@ public class QueryConfig extends StmtConfig {
   }
 
   private void checkFilter(FilterOperatorConfig filter) {
-    if (filter.lackConfig()) {
-      filter.setSrc(getSrc()).addDefaultConfig(null);
+    if (filter != null && filter.lackChildConfig()) {
+      filter.setSrc(getSrc()).addDefaultConfig();
     }
   }
 
@@ -78,13 +85,23 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
-    return from.setSrc(getSrc());
+    return from;
   }
 
   public void setFrom(FromConfig from) {
-    this.from = from;
+    if (from.lackChildConfig()) {
+      from.addDefaultConfig();
+    }
+    this.from = from.setSrc(getSrc());
   }
 
+  @Override
+  public QueryConfig addDefaultConfig() {
+    Table[] src = getSrc();
+    setSelect(new SelectConfig(src));
+    setFrom(new FromConfig(src));
+    return this;
+  }
 
   /**
    * <h3>Requirement</h3>
@@ -109,18 +126,20 @@ public class QueryConfig extends StmtConfig {
   }
 
 
-  public static QueryConfig defaultSetConfig(QueryConfig config) {
-    QueryConfig res = new QueryConfig();
+  public static QueryConfig defaultSetConfig(QueryConfig config, Table[] src) {
+    QueryConfig res = new QueryConfig(src);
     return res;
   }
 
-  public static QueryConfig randomQuery(Table[] src) {
-    QueryConfig res = new QueryConfig();
-    res.setSrc(src);
-    return res;
+  /**
+   * @param src tables to operate on
+   * @return `select All from tables`
+   */
+  public static QueryConfig simpleQuery(Table[] src) {
+    return new QueryConfig(src);
   }
 
   public boolean hasWhere() {
-    return where == null;
+    return where != null;
   }
 }

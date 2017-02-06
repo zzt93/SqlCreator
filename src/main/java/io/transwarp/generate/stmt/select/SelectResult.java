@@ -28,12 +28,11 @@ public class SelectResult implements Table {
 
   private SelectResult(QueryConfig config) {
     fromStmt = new FromStmt(config.getFrom());
-    Table[] from = fromStmt.getTable();
 
-    selectListStmt = new SelectListStmt(from, config.getSelect());
+    selectListStmt = new SelectListStmt(config.getSelect());
     // optional statement
     if (config.hasWhere()) {
-      whereStmt = new WhereStmt(from, config.getWhere());
+      whereStmt = new WhereStmt(config.getWhere());
     }
 
     addSetOp();

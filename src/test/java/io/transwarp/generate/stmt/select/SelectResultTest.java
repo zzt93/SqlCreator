@@ -27,12 +27,12 @@ import java.io.PrintWriter;
 @RunWith(Parameterized.class)
 public class SelectResultTest {
 
-  private int count = 100;
+  private int count = 10;
   private SelectResult[] selectResults;
   private Table from;
   private PrintWriter oracle;
   private PrintWriter inceptor;
-  private QueryConfig queryConfig;
+  private Table[] table;
 
   public SelectResultTest(InputRelation relation) {
   }
@@ -45,8 +45,8 @@ public class SelectResultTest {
 
   @Before
   public void setUp() throws Exception {
-    final Table[] table = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
-    queryConfig = QueryConfig.randomQuery(table);
+    table = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
+    QueryConfig queryConfig = QueryConfig.simpleQuery(table);
     from = table[0];
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
@@ -58,7 +58,7 @@ public class SelectResultTest {
 
   @Test
   public void selectResult() throws Exception {
-    QueryConfig simpleQuery = new QueryConfig();
+    QueryConfig simpleQuery =  QueryConfig.simpleQuery(table);
     final SelectConfig select = new SelectConfig();
     simpleQuery.setSelect(select);
     for (int i = 1; i < 10; i++) {

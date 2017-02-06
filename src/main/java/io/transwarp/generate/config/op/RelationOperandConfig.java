@@ -26,7 +26,7 @@ public class RelationOperandConfig extends SetOperandConfig implements DefaultCo
 
   RelationOperandConfig(Table[] src) {
     this.src = src;
-    addDefaultConfig(null);
+    addDefaultConfig();
   }
 
   @XmlElement
@@ -39,17 +39,23 @@ public class RelationOperandConfig extends SetOperandConfig implements DefaultCo
   }
 
   @Override
-  public boolean lackConfig() {
+  public boolean lackChildConfig() {
     return tableName == null && getSubQuery() == null;
   }
 
   @Override
-  public RelationOperandConfig addDefaultConfig(RelationOperandConfig t) {
+  public RelationOperandConfig addDefaultConfig() {
     if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
       operand = TableUtil.randomTable(src);
     } else {
-      setSubQuery(QueryConfig.randomQuery(src));
+      setSubQuery(QueryConfig.simpleQuery(src));
     }
+    return this;
+  }
+
+  @Override
+  public RelationOperandConfig setSrc(Table[] tables) {
+    src = tables;
     return this;
   }
 

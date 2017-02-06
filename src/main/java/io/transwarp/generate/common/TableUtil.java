@@ -30,14 +30,6 @@ public class TableUtil {
     return Optional.of(cols.get(random.nextInt(cols.size())));
   }
 
-  public static ArrayList<Column> randomSubCols(Table table, int size) {
-    final ArrayList<Column> res = new ArrayList<>(size);
-    while (res.size() < size) {
-      res.add(randomCol(table));
-    }
-    return res;
-  }
-
   private static ArrayList<Column> sameTypeSubCols(Table[] table, GenerationDataType type) {
     final ArrayList<Column> res = new ArrayList<>();
     for (Column column : columns(table)) {
