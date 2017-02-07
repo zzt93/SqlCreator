@@ -3,9 +3,9 @@ package io.transwarp.generate.stmt.share;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.op.JoinConfig;
 import io.transwarp.generate.config.stmt.FromConfig;
+
+import java.util.List;
 
 /**
  * Created by zzt on 12/13/16.
@@ -15,10 +15,10 @@ import io.transwarp.generate.config.stmt.FromConfig;
 public class FromStmt implements SqlGeneration {
 
   private static final String FROM = " from ";
-  private Table[] fromObj;
+  private List<Table> fromObj;
 
   public FromStmt(FromConfig config) {
-    initFromTable(config, config.getTables());
+    fromObj = config.getFrom();
   }
 
   @Override
@@ -31,24 +31,4 @@ public class FromStmt implements SqlGeneration {
     return res;
   }
 
-  public Table[] getTable() {
-    return fromObj;
-  }
-
-
-  private void initFromTable(FromConfig config, Table[] src) {
-    if (config.implicitJoin()) {
-      // TODO generate and add subQuery
-      final int tableSize = config.getJoinTimes() + 1;
-      Table[] tmp = new Table[tableSize];
-      for (int i = 0; i < tableSize; i++) {
-        tmp[i] = TableUtil.randomTable(src).setAlias(TableUtil.nextAlias());
-      }
-      fromObj = tmp;
-    } else {
-      final JoinConfig join = config.getJoin();
-      Table table = join.getJoinedTables();
-      fromObj = new Table[]{table};
-    }
-  }
 }

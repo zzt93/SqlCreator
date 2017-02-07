@@ -17,6 +17,7 @@ import org.junit.runners.Parameterized;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * Created by zzt on 12/12/16.
@@ -32,7 +33,7 @@ public class SelectResultTest {
   private Table from;
   private PrintWriter oracle;
   private PrintWriter inceptor;
-  private Table[] table;
+  private List<Table> table;
 
   public SelectResultTest(InputRelation relation) {
   }
@@ -47,7 +48,7 @@ public class SelectResultTest {
   public void setUp() throws Exception {
     table = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
     QueryConfig queryConfig = QueryConfig.simpleQuery(table);
-    from = table[0];
+    from = table.get(0);
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);

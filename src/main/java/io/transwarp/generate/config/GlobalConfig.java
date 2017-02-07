@@ -1,6 +1,7 @@
 package io.transwarp.generate.config;
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.common.Table;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -43,6 +44,15 @@ public class GlobalConfig {
 
   public static int getRandomStrMaxLen() {
     return randomStrMaxLen;
+  }
+
+  public static <T extends DefaultConfig<T>> void checkConfig(DefaultConfig<T> defaultConfig, List<Table> from) {
+    if (defaultConfig != null) {
+      defaultConfig.setFrom(from);
+      if (defaultConfig.lackChildConfig()) {
+        defaultConfig.addDefaultConfig();
+      }
+    }
   }
 
   public GlobalConfig setRandomBitsMaxLen(int randomBitsMaxLen) {

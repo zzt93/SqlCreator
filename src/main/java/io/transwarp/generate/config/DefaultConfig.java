@@ -2,6 +2,8 @@ package io.transwarp.generate.config;
 
 import io.transwarp.generate.common.Table;
 
+import java.util.List;
+
 /**
  * Created by zzt on 2/3/17.
  * <p>
@@ -25,7 +27,16 @@ public interface DefaultConfig<T> {
   T addDefaultConfig();
 
   /**
-   * transmit tables from father config to child config
+   * @see #setCandidates(List) candidates.size() >= from.size();
+   * @param tables the range this element operate on
    */
-  T setSrc(Table[] tables);
+  T setFrom(List<Table> tables);
+
+  /**
+   * transmit candidates from father config to child config
+   *
+   * @param candidates the range descendant/nested element can operate on
+   */
+  T setCandidates(List<Table> candidates);
+
 }

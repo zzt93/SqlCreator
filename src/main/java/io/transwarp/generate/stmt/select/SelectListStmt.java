@@ -24,7 +24,7 @@ public class SelectListStmt implements SqlGeneration {
   private boolean useStar = false;
 
   SelectListStmt(SelectConfig config) {
-    Table[] from = config.getTables();
+    List<Table> from = config.getTables();
     if (config.selectAll()) {
       cols = TableUtil.columns(from);
       // use star or list all columns
@@ -35,7 +35,7 @@ public class SelectListStmt implements SqlGeneration {
       if (cols.size() < colLimit) {
         final int num = colLimit - cols.size();
         for (int i = 0; i < num; i++) {
-          final TypedExprConfig typedExprConfig = new TypedExprConfig(from);
+          final TypedExprConfig typedExprConfig = new TypedExprConfig(from, config.getCandidates());
           cols.addAll(Arrays.asList(Column.fromOperand(
               Operand.getOperands(1, typedExprConfig.getType(), typedExprConfig))));
         }

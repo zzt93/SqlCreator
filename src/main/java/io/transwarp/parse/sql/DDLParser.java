@@ -5,6 +5,7 @@ import io.transwarp.db_specific.base.DBType;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -14,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,9 +56,9 @@ public class DDLParser {
    *
    * @return the object defined by ddl
    */
-  public Table[] parse() {
+  public ArrayList<FromObj> parse() {
     final StmtIterator it = createSql();
-    ArrayList<Table> tables = new ArrayList<>();
+    ArrayList<FromObj> tables = new ArrayList<>();
     while (it.hasNext()) {
       final String stmt = it.next();
       final Optional<String> name = extractTableName(stmt);
@@ -68,7 +70,7 @@ public class DDLParser {
         final String group = matcher.group();
         final String[] cols = group.substring(1, group.length() - 1).split(",");
         ArrayList<Column> columns = new ArrayList<>();
-        final Table table = new FromObj(name.get(), columns);
+        final FromObj table = new FromObj(name.get(), columns);
         for (String col : cols) {
           columns.add(extractCol(col, table));
         }
@@ -77,7 +79,7 @@ public class DDLParser {
         throw new IllegalArgumentException("Can't find create stmt:" + stmt);
       }
     }
-    return tables.toArray(new Table[]{});
+    return tables;
   }
 
   private Column extractCol(String col, Table table) {
@@ -112,12 +114,8 @@ public class DDLParser {
   }
 
   private static class TableLoader {
-    private String fileName;
-    private Dialect dialect;
 
     TableLoader(String fileName, Dialect dialect) {
-      this.fileName = fileName;
-      this.dialect = dialect;
       DDLParser ddlParser = null;
       try {
         ddlParser = new DDLParser("src/main/resources/" + fileName, dialect);
@@ -127,16 +125,19 @@ public class DDLParser {
       table = ddlParser.parse();
     }
 
-    private final Table[] table;
+    private final List<FromObj> table;
     private static HashMap<String, TableLoader> map = new HashMap<>();
   }
 
-  public static Table[] getTable(String tableFile, Dialect dialect) {
+  public static List<Table> getTable(String tableFile, Dialect dialect) {
+    List<FromObj> tables;
     if (TableLoader.map.containsKey(tableFile)) {
-      return TableLoader.map.get(tableFile).table;
+      tables = TableLoader.map.get(tableFile).table;
+    } else {
+      final TableLoader value = new TableLoader(tableFile, dialect);
+      TableLoader.map.put(tableFile, value);
+      tables = value.table;
     }
-    final TableLoader value = new TableLoader(tableFile, dialect);
-    TableLoader.map.put(tableFile, value);
-    return value.table;
+    return TableUtil.deepCopy(tables);
   }
 }

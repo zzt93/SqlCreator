@@ -20,12 +20,12 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   private List<TypedExprConfig> operands;
   private List<QueryConfig> queries;
   private int selectNum;
-  private Table[] src;
+  private List<Table> src, candidates;
 
   public SelectConfig() {
   }
 
-  public SelectConfig(Table[] src) {
+  public SelectConfig(List<Table> src) {
     this.src = src;
     addDefaultConfig();
   }
@@ -79,13 +79,22 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return this;
   }
 
-  @Override
-  public SelectConfig setSrc(Table[] tables) {
+  public SelectConfig setFrom(List<Table> tables) {
     src = tables;
     return this;
   }
 
-  public Table[] getTables() {
+  @Override
+  public SelectConfig setCandidates(List<Table> candidates) {
+    this.candidates = candidates;
+    return this;
+  }
+
+  public List<Table> getCandidates() {
+    return candidates;
+  }
+
+  public List<Table> getTables() {
     return src;
   }
 }

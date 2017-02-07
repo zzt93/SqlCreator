@@ -5,6 +5,7 @@ import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
 
 import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
 
 /**
  * Created by zzt on 1/16/17.
@@ -14,7 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig> {
 
   private ExprConfig operand;
-  private Table[] src;
+  private List<Table> src, candidates;
 
   @XmlElement
   public ExprConfig getOperand() {
@@ -26,8 +27,14 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
     return this;
   }
 
-  public FilterOperatorConfig setSrc(Table[] src) {
-    this.src = src;
+  public FilterOperatorConfig setFrom(List<Table> candidates) {
+    this.src = candidates;
+    return this;
+  }
+
+  @Override
+  public FilterOperatorConfig setCandidates(List<Table> candidates) {
+    this.candidates = candidates;
     return this;
   }
 
@@ -38,7 +45,7 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
 
   @Override
   public FilterOperatorConfig addDefaultConfig() {
-    operand = new ExprConfig(src);
+    operand = new ExprConfig(src, candidates);
     return this;
   }
 }

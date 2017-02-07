@@ -18,14 +18,26 @@ public class FromObj implements Table {
 
   private String name;
   private ArrayList<Column> columns = new ArrayList<>();
-  private EnumMap<Dialect, StringBuilder> versions = new EnumMap<>(Dialect.class);
+  private EnumMap<Dialect, StringBuilder> sqls = new EnumMap<>(Dialect.class);
 
   public FromObj(String tableName, ArrayList<Column> columns) {
     this.name = tableName;
     this.columns = columns;
+    initSql();
+  }
+
+  private void initSql() {
     for (Dialect dialect : GlobalConfig.getCmpBase()) {
-      versions.put(dialect, new StringBuilder(name));
+      sqls.put(dialect, new StringBuilder(name));
     }
+  }
+
+  public FromObj(Table table) {
+    name = table.name().get();
+    for (Column column : table.columns()) {
+      columns.add(new Column(column, this));
+    }
+    initSql();
   }
 
 
@@ -58,14 +70,14 @@ public class FromObj implements Table {
   @Override
   public Table setAlias(String alias) {
     this.name = alias;
-    for (StringBuilder builder : versions.values()) {
+    for (StringBuilder builder : sqls.values()) {
       builder.append(alias);
     }
     return this;
   }
 
   public StringBuilder sql(Dialect dialect) {
-    return versions.get(dialect);
+    return sqls.get(dialect);
   }
 
 }

@@ -2,11 +2,13 @@ package io.transwarp.generate.config.stmt;
 
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
 
 /**
  * Created by zzt on 1/13/17.
@@ -23,8 +25,8 @@ public class QueryConfig extends StmtConfig {
   public QueryConfig() {
   }
 
-  private QueryConfig(Table[] src) {
-    setSrc(src);
+  private QueryConfig(List<Table> candidates) {
+    setCandidates(candidates);
     addDefaultConfig();
   }
 
@@ -39,26 +41,18 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
+    GlobalConfig.checkConfig(select, from.getFrom());
     return select;
   }
 
-  public void setSelect(SelectConfig config) {
-    select = config.setSrc(getSrc());
-    if (select.lackChildConfig()) {
-      select.addDefaultConfig();
-    }
+  public void setSelect(SelectConfig selectConfig) {
+    select = selectConfig.setCandidates(getCandidates());
   }
 
   @XmlElement
   public FilterOperatorConfig getWhere() {
-    checkFilter(where);
+    GlobalConfig.checkConfig(where, from.getFrom());
     return where;
-  }
-
-  private void checkFilter(FilterOperatorConfig filter) {
-    if (filter != null && filter.lackChildConfig()) {
-      filter.setSrc(getSrc()).addDefaultConfig();
-    }
   }
 
   public void setWhere(FilterOperatorConfig where) {
@@ -85,21 +79,19 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
+    GlobalConfig.checkConfig(from, from.getFrom());
     return from;
   }
 
   public void setFrom(FromConfig from) {
-    if (from.lackChildConfig()) {
-      from.addDefaultConfig();
-    }
-    this.from = from.setSrc(getSrc());
+    this.from = from.setCandidates(getCandidates());
   }
 
   @Override
   public QueryConfig addDefaultConfig() {
-    Table[] src = getSrc();
-    setSelect(new SelectConfig(src));
-    setFrom(new FromConfig(src));
+    List<Table> candidates = getCandidates();
+    setFrom(new FromConfig(candidates));
+    setSelect(new SelectConfig(getFrom().getFrom()));
     return this;
   }
 
@@ -126,17 +118,17 @@ public class QueryConfig extends StmtConfig {
   }
 
 
-  public static QueryConfig defaultSetConfig(QueryConfig config, Table[] src) {
-    QueryConfig res = new QueryConfig(src);
+  public static QueryConfig defaultSetConfig(QueryConfig config, List<Table> candidates) {
+    QueryConfig res = new QueryConfig(candidates);
     return res;
   }
 
   /**
-   * @param src tables to operate on
+   * @param candidates candidates table to choose, then operate on
    * @return `select All from tables`
    */
-  public static QueryConfig simpleQuery(Table[] src) {
-    return new QueryConfig(src);
+  public static QueryConfig simpleQuery(List<Table> candidates) {
+    return new QueryConfig(candidates);
   }
 
   public boolean hasWhere() {

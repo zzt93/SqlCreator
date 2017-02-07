@@ -9,6 +9,7 @@ import io.transwarp.parse.sql.DDLParser;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import java.util.List;
 
 /**
  * Created by zzt on 1/13/17.
@@ -63,17 +64,22 @@ public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
     return this;
   }
 
-  private Table[] tables;
+  private List<Table> candidates;
 
-  public Table[] getSrc() {
-    if (tables != null) {
-      return tables;
+  List<Table> getCandidates() {
+    if (candidates != null) {
+      return candidates;
     }
-    return tables = DDLParser.getTable(table, dialect);
+    return candidates = DDLParser.getTable(table, dialect);
   }
 
-  public StmtConfig setSrc(Table[] src) {
-    tables = src;
+  @Override
+  public StmtConfig setCandidates(List<Table> candidates) {
+    this.candidates = candidates;
+    return this;
+  }
+
+  public StmtConfig setFrom(List<Table> candidates) {
     return this;
   }
 

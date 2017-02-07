@@ -31,13 +31,15 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private QueryConfig subQuery;
 
-  private Table[] src;
+  private List<Table> src;
+  private List<Table> candidates;
 
   public ExprConfig() {
   }
 
-  public ExprConfig(Table[] src) {
+  public ExprConfig(List<Table> src, List<Table> candidates) {
     this.src = src;
+    this.candidates = candidates;
     addDefaultConfig();
   }
 
@@ -118,21 +120,27 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return false;
+    return candidates == null;
   }
 
   @Override
   public ExprConfig addDefaultConfig() {
+    subQuery = QueryConfig.simpleQuery(candidates);
     return this;
   }
 
-  @Override
-  public ExprConfig setSrc(Table[] tables) {
+  public ExprConfig setFrom(List<Table> tables) {
     src = tables;
     return this;
   }
 
-  public Table[] getTables() {
+  @Override
+  public ExprConfig setCandidates(List<Table> candidates) {
+    this.candidates = candidates;
+    return this;
+  }
+
+  public List<Table> getTables() {
     return src;
   }
 }

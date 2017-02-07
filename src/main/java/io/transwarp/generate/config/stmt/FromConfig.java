@@ -1,10 +1,14 @@
 package io.transwarp.generate.config.stmt;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.op.JoinConfig;
 
 import javax.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by zzt on 1/17/17.
@@ -15,13 +19,14 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   private JoinConfig join;
   private int joinTimes;
-  private Table[] src;
+
+  private List<Table> fromObj;
 
   public FromConfig() {
   }
 
-  public FromConfig(Table[] src) {
-    this.src = src;
+  FromConfig(List<Table> tables) {
+    setCandidates(tables);
     addDefaultConfig();
   }
 
@@ -43,13 +48,38 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     this.joinTimes = joinTimes;
   }
 
-  public FromConfig setSrc(Table[] src) {
-    this.src = src;
+  public FromConfig setFrom(List<Table> tables) {
+    this.fromObj = tables;
     return this;
   }
 
-  public Table[] getTables() {
-    return src;
+  @Override
+  public FromConfig setCandidates(List<Table> candidates) {
+    initFromObj(candidates);
+    return this;
+  }
+
+  private void initFromObj(List<Table> candidates) {
+    if (implicitJoin()) {
+      // TODO generate and add subQuery
+//      QueryConfig config = QueryConfig.simpleQuery(candidates);
+
+      final int tableSize = getJoinTimes() + 1;
+      List<Table> tmp = new ArrayList<>(tableSize);
+      for (int i = 0; i < tableSize; i++) {
+        tmp.add(TableUtil.deepCopy(TableUtil.randomTable(candidates)).setAlias(TableUtil.nextAlias()));
+      }
+      fromObj = tmp;
+    } else {
+      final JoinConfig join = getJoin();
+      Table table = join.getJoinedTables();
+      fromObj = Collections.singletonList(table);
+    }
+  }
+
+  public List<Table> getFrom() {
+    assert fromObj != null;
+    return fromObj;
   }
 
   @Override
@@ -63,7 +93,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     return this;
   }
 
-  public boolean implicitJoin() {
+  private boolean implicitJoin() {
     return join == null;
   }
 }

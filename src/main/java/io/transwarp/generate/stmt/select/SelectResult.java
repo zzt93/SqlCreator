@@ -87,6 +87,10 @@ public class SelectResult implements Table {
         ;
   }
 
+  public StringBuilder toTable(Dialect dialect) {
+    return subQuery(dialect).insert(0, '(').append(')').append(name.get());
+  }
+
   public String[] subQueries(Dialect[] dialects) {
     String[] res = new String[dialects.length];
     for (int i = 0; i < res.length; i++) {

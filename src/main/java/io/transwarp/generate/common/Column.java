@@ -16,11 +16,10 @@ public class Column {
 
   private static final String EMPTY = "";
   private final Possibility poss;
+
   private final Operand operand;
-
-  //  private Table table;
   private final String alias;
-
+  private Table table;
 
   private Column(String name, GenerationDataType type) {
     this(new Operand(type, name, name), EMPTY);
@@ -33,7 +32,13 @@ public class Column {
   }
 
   public Column(String name, GenerationDataType type, Table table) {
-    this(table.name().isPresent() ? table.name().get() + "." + name : name, type);
+    this(name, type);
+    this.table = table;
+  }
+
+  public Column(Column column, Table table) {
+    this(column.operand, column.alias);
+    this.table = table;
   }
 
   public String[] getNameOrConst(Dialect[] dialects) {
@@ -56,10 +61,8 @@ public class Column {
   }
 
   public StringBuilder getNameWithAlias(Dialect dialect) {
-    // not converted from expression/operand, so no need to append alias
-    if (alias.equals(EMPTY)) {
-      return operand.sql(dialect);
-    }
-    return new StringBuilder(operand.sql(dialect)).append(alias);
+    assert table != null;
+    return new StringBuilder(table.name().get()).append('.')
+        .append(operand.sql(dialect)).append(alias);
   }
 }

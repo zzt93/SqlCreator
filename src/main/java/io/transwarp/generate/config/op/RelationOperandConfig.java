@@ -9,6 +9,7 @@ import io.transwarp.generate.stmt.select.SelectResult;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.List;
 
 /**
  * Created by zzt on 1/20/17.
@@ -18,13 +19,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "relationOperand")
 public class RelationOperandConfig extends SetOperandConfig implements DefaultConfig<RelationOperandConfig> {
   private String tableName;
-  private Table[] src;
+  private List<Table> src;
   private Table operand;
 
   public RelationOperandConfig() {
   }
 
-  RelationOperandConfig(Table[] src) {
+  RelationOperandConfig(List<Table> src) {
     this.src = src;
     addDefaultConfig();
   }
@@ -53,10 +54,14 @@ public class RelationOperandConfig extends SetOperandConfig implements DefaultCo
     return this;
   }
 
-  @Override
-  public RelationOperandConfig setSrc(Table[] tables) {
+  public RelationOperandConfig setFrom(List<Table> tables) {
     src = tables;
     return this;
+  }
+
+  @Override
+  public RelationOperandConfig setCandidates(List<Table> candidates) {
+    return null;
   }
 
   Table toTable() {

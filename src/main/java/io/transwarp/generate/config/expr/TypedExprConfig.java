@@ -8,6 +8,7 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.List;
 
 /**
  * Created by zzt on 1/23/17.
@@ -22,8 +23,8 @@ public class TypedExprConfig extends ExprConfig {
   public TypedExprConfig() {
   }
 
-  public TypedExprConfig(Table[] src) {
-    super(src);
+  public TypedExprConfig(List<Table> from, List<Table> candidates) {
+    super(from, candidates);
     addDefaultConfig();
   }
 

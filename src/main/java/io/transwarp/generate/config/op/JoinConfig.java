@@ -19,12 +19,12 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   private static final int JOIN_OP_NUM = 2;
   private ExprConfig condition;
   private List<RelationOperandConfig> operands = new ArrayList<>(2);
-  private Table[] src;
+  private List<Table> src, candidates;
 
   public JoinConfig() {
   }
 
-  public JoinConfig(Table[] src) {
+  public JoinConfig(List<Table> src) {
     this.src = src;
     addDefaultConfig();
   }
@@ -48,10 +48,14 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
     this.operands = operands;
   }
 
-  @Override
-  public JoinConfig setSrc(Table[] src) {
-    this.src = src;
+  public JoinConfig setFrom(List<Table> candidates) {
+    this.src = candidates;
     return this;
+  }
+
+  @Override
+  public JoinConfig setCandidates(List<Table> candidates) {
+    return null;
   }
 
   public Table getJoinedTables() {
@@ -85,7 +89,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
       operands.add(new RelationOperandConfig(src));
     }
     if (condition == null) {
-      condition = new ExprConfig(src);
+      condition = new ExprConfig(src, candidates);
     }
     return this;
   }
