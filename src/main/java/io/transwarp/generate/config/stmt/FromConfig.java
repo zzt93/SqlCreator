@@ -21,6 +21,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   private int joinTimes;
 
   private List<Table> fromObj;
+  private List<Table> candidates;
 
   public FromConfig() {
   }
@@ -55,7 +56,10 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   @Override
   public FromConfig setCandidates(List<Table> candidates) {
-    initFromObj(candidates);
+    if (join != null) {
+      join.setCandidates(candidates);
+    }
+    this.candidates = candidates;
     return this;
   }
 
@@ -77,8 +81,10 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     }
   }
 
-  public List<Table> getFrom() {
-    assert fromObj != null;
+  public List<Table> getFromObj() {
+    if (fromObj == null) {
+      initFromObj(candidates);
+    }
     return fromObj;
   }
 

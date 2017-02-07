@@ -2,7 +2,6 @@ package io.transwarp.generate.config.op;
 
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
@@ -17,16 +16,15 @@ import java.util.List;
  * <h3></h3>
  */
 @XmlType(name = "relationOperand")
-public class RelationOperandConfig extends SetOperandConfig implements DefaultConfig<RelationOperandConfig> {
+public class RelationOperandConfig extends SetOperandConfig {
   private String tableName;
-  private List<Table> src;
   private Table operand;
 
   public RelationOperandConfig() {
   }
 
   RelationOperandConfig(List<Table> src) {
-    this.src = src;
+    setFrom(src).setCandidates(src);
     addDefaultConfig();
   }
 
@@ -47,21 +45,11 @@ public class RelationOperandConfig extends SetOperandConfig implements DefaultCo
   @Override
   public RelationOperandConfig addDefaultConfig() {
     if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
-      operand = TableUtil.randomTable(src);
+      operand = TableUtil.randomTable(getCandidatesTables());
     } else {
-      setSubQuery(QueryConfig.simpleQuery(src));
+      setSubQuery(QueryConfig.simpleQuery(getCandidatesTables()));
     }
     return this;
-  }
-
-  public RelationOperandConfig setFrom(List<Table> tables) {
-    src = tables;
-    return this;
-  }
-
-  @Override
-  public RelationOperandConfig setCandidates(List<Table> candidates) {
-    return null;
   }
 
   Table toTable() {
@@ -73,6 +61,6 @@ public class RelationOperandConfig extends SetOperandConfig implements DefaultCo
       assert getSubQuery() != null;
       return SelectResult.generateQuery(getSubQuery());
     }
-    return TableUtil.getTableByName(src, tableName);
+    return TableUtil.getTableByName(getCandidatesTables(), tableName);
   }
 }

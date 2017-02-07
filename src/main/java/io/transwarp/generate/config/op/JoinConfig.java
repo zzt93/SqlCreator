@@ -55,7 +55,14 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   @Override
   public JoinConfig setCandidates(List<Table> candidates) {
-    return null;
+    for (RelationOperandConfig operand : operands) {
+      operand.setCandidates(candidates);
+    }
+    if (condition != null) {
+      condition.setCandidates(candidates);
+    }
+    this.candidates = candidates;
+    return this;
   }
 
   public Table getJoinedTables() {

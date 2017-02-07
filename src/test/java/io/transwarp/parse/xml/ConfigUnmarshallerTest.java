@@ -1,6 +1,7 @@
 package io.transwarp.parse.xml;
 
 import io.transwarp.generate.config.GlobalConfig;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +29,11 @@ public class ConfigUnmarshallerTest {
 
   @Test
   public void parse() throws Exception {
-    final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource("src/main/resources/template.xml"));
+    try {
+      final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource("src/main/resources/template.xml"));
+    } catch (IllegalArgumentException e) {
+      Assert.assertTrue(e.getMessage().startsWith("Illegal table name:"));
+    }
     System.out.println();
   }
 

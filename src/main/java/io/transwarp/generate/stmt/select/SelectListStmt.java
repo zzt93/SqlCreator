@@ -35,7 +35,7 @@ public class SelectListStmt implements SqlGeneration {
       if (cols.size() < colLimit) {
         final int num = colLimit - cols.size();
         for (int i = 0; i < num; i++) {
-          final TypedExprConfig typedExprConfig = new TypedExprConfig(from, config.getCandidates());
+          final TypedExprConfig typedExprConfig = new TypedExprConfig(from, config.getCandidatesTables());
           cols.addAll(Arrays.asList(Column.fromOperand(
               Operand.getOperands(1, typedExprConfig.getType(), typedExprConfig))));
         }

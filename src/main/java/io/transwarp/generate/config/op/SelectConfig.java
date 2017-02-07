@@ -90,7 +90,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return this;
   }
 
-  public List<Table> getCandidates() {
+  public List<Table> getCandidatesTables() {
     return candidates;
   }
 

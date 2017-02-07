@@ -18,7 +18,7 @@ public class FromStmt implements SqlGeneration {
   private List<Table> fromObj;
 
   public FromStmt(FromConfig config) {
-    fromObj = config.getFrom();
+    fromObj = config.getFromObj();
   }
 
   @Override

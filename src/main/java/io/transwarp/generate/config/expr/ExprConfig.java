@@ -136,6 +136,14 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public ExprConfig setCandidates(List<Table> candidates) {
+    if (hasNestedConfig()) {
+      for (ExprConfig operand : operands) {
+        operand.setCandidates(candidates);
+      }
+    }
+    if (subQuery != null) {
+      subQuery.setCandidates(candidates);
+    }
     this.candidates = candidates;
     return this;
   }

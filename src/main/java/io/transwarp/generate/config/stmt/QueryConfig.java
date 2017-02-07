@@ -41,7 +41,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
-    GlobalConfig.checkConfig(select, from.getFrom());
+    GlobalConfig.checkConfig(select, from.getFromObj());
     return select;
   }
 
@@ -51,7 +51,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FilterOperatorConfig getWhere() {
-    GlobalConfig.checkConfig(where, from.getFrom());
+    GlobalConfig.checkConfig(where, from.getFromObj());
     return where;
   }
 
@@ -79,7 +79,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
-    GlobalConfig.checkConfig(from, from.getFrom());
+    GlobalConfig.checkConfig(from, from.getFromObj());
     return from;
   }
 
@@ -91,7 +91,7 @@ public class QueryConfig extends StmtConfig {
   public QueryConfig addDefaultConfig() {
     List<Table> candidates = getCandidates();
     setFrom(new FromConfig(candidates));
-    setSelect(new SelectConfig(getFrom().getFrom()));
+    setSelect(new SelectConfig(getFrom().getFromObj()));
     return this;
   }
 

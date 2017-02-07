@@ -8,7 +8,7 @@
             <from>
                 <join>
                     <operand desc="default: table or query">
-                        <tableName>test</tableName>
+                        <tableName>test_udf</tableName>
                     </operand>
                     <operand>
                         <subQuery>simpleQuery</subQuery>
@@ -91,11 +91,24 @@
         </query>
     </test>
     <test>
+        <query id="testJoinInvalidTable">
+            <select></select>
+            <from>
+                <join>
+                    <operand>
+                        <tableName>test</tableName>
+                    </operand>
+                </join>
+            </from>
+        </query>
+    </test>
+    <test>
         <query id="testWhere">
             <select></select>
             <from></from>
             <where></where>
         </query>
     </test>
+
 
 </tests>
