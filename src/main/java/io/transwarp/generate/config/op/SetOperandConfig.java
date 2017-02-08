@@ -21,7 +21,7 @@ public class SetOperandConfig implements DefaultConfig<SetOperandConfig> {
 
   private String desc;
 
-  private List<Table> src, candidates;
+  private List<Table> candidates;
 
   @XmlIDREF
   @XmlElement
@@ -54,7 +54,7 @@ public class SetOperandConfig implements DefaultConfig<SetOperandConfig> {
   }
 
   public SetOperandConfig setFrom(List<Table> tables) {
-    src = tables;
+    // this class only has candidates
     return this;
   }
 
@@ -65,10 +65,6 @@ public class SetOperandConfig implements DefaultConfig<SetOperandConfig> {
     }
     this.candidates = candidates;
     return this;
-  }
-
-  public List<Table> getFromTables() {
-    return src;
   }
 
   List<Table> getCandidatesTables() {

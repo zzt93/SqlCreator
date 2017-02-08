@@ -4,6 +4,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
+import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -120,12 +121,19 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return candidates == null;
+    return false;
+  }
+
+  public QueryConfig getSubQuery(GenerationDataType dataType) {
+    assert candidates != null;
+    if (subQuery == null) {
+      subQuery = QueryConfig.defaultWhereExpr(candidates, dataType);
+    }
+    return subQuery;
   }
 
   @Override
   public ExprConfig addDefaultConfig() {
-    subQuery = QueryConfig.simpleQuery(candidates);
     return this;
   }
 

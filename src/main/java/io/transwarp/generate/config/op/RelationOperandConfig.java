@@ -23,8 +23,8 @@ public class RelationOperandConfig extends SetOperandConfig {
   public RelationOperandConfig() {
   }
 
-  RelationOperandConfig(List<Table> src) {
-    setFrom(src).setCandidates(src);
+  RelationOperandConfig(List<Table> candidates) {
+    setCandidates(candidates);
     addDefaultConfig();
   }
 

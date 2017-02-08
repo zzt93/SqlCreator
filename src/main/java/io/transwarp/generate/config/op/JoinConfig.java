@@ -93,7 +93,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   @Override
   public JoinConfig addDefaultConfig() {
     while (operands.size() < JOIN_OP_NUM) {
-      operands.add(new RelationOperandConfig(src));
+      operands.add(new RelationOperandConfig(candidates));
     }
     if (condition == null) {
       condition = new ExprConfig(src, candidates);

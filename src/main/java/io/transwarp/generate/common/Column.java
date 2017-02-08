@@ -61,8 +61,11 @@ public class Column {
   }
 
   public StringBuilder getNameWithAlias(Dialect dialect) {
-    assert table != null;
-    return new StringBuilder(table.name().get()).append('.')
-        .append(operand.sql(dialect)).append(alias);
+    StringBuilder sb = new StringBuilder();
+    if (table != null) {
+      assert table.name().isPresent();
+      sb = new StringBuilder(table.name().get()).append('.');
+    }
+    return sb.append(operand.sql(dialect)).append(alias);
   }
 }

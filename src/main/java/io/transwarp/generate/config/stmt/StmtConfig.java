@@ -92,4 +92,6 @@ public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
   public StmtConfig addDefaultConfig() {
     return this;
   }
+
+  public abstract String[] generate(Dialect[] dialects);
 }

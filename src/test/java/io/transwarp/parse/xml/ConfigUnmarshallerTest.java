@@ -1,6 +1,8 @@
 package io.transwarp.parse.xml;
 
 import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.PerTestConfig;
+import io.transwarp.generate.config.stmt.StmtConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,21 +22,40 @@ import java.io.IOException;
  */
 public class ConfigUnmarshallerTest {
 
-  private ConfigUnmarshaller configUnmarshaller;
+  private static ConfigUnmarshaller configUnmarshaller = new ConfigUnmarshaller();
 
   @Before
   public void setUp() throws Exception {
-    configUnmarshaller = new ConfigUnmarshaller();
   }
 
   @Test
   public void parse() throws Exception {
-    try {
-      final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource("src/main/resources/template.xml"));
-    } catch (IllegalArgumentException e) {
-      Assert.assertTrue(e.getMessage().startsWith("Illegal table name:"));
-    }
+    final GlobalConfig parse = getGlobalConfig("src/main/resources/template.xml");
     System.out.println();
+  }
+
+  private static GlobalConfig getGlobalConfig(String file) throws IOException, ValidationException {
+    return configUnmarshaller.parse(new XMLParserSource(file));
+  }
+
+  public static GlobalConfig getGlobalConfig() throws IOException, ValidationException {
+    return configUnmarshaller.parse(new XMLParserSource("src/main/resources/template.xml"));
+  }
+
+  @Test
+  public void parseError() throws Exception {
+    boolean rightError = false;
+    try {
+      GlobalConfig parse = getGlobalConfig("src/main/resources/error.xml");
+      for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
+        for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
+          stmtConfig.generate(GlobalConfig.getCmpBase());
+        }
+      }
+    } catch (IllegalArgumentException e) {
+      rightError = e.getMessage().contains("Illegal table name:");
+    }
+    Assert.assertTrue(rightError);
   }
 
   @Test

@@ -63,6 +63,7 @@ public class UdfFilter {
       if (res > 0) {
         fs.clear();
         fs.add(function);
+        max = possibility(function);
       } else if (res == 0) {
         fs.add(function);
       }

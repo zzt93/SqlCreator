@@ -7,7 +7,6 @@ import io.transwarp.generate.config.op.JoinConfig;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,7 +19,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   private JoinConfig join;
   private int joinTimes;
 
-  private List<Table> fromObj;
+  private List<Table> fromObj = new ArrayList<>();
   private List<Table> candidates;
 
   public FromConfig() {
@@ -33,6 +32,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   @XmlElement
   public JoinConfig getJoin() {
+    join.setFrom(fromObj);
     return join;
   }
 
@@ -49,8 +49,11 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     this.joinTimes = joinTimes;
   }
 
-  public FromConfig setFrom(List<Table> tables) {
-    this.fromObj = tables;
+  public FromConfig setFrom(List<Table> from) {
+    if (join != null) {
+      join.setFrom(from);
+    }
+    this.fromObj = from;
     return this;
   }
 
@@ -73,16 +76,16 @@ public class FromConfig implements DefaultConfig<FromConfig> {
       for (int i = 0; i < tableSize; i++) {
         tmp.add(TableUtil.deepCopy(TableUtil.randomTable(candidates)).setAlias(TableUtil.nextAlias()));
       }
-      fromObj = tmp;
+      fromObj.addAll(tmp);
     } else {
       final JoinConfig join = getJoin();
       Table table = join.getJoinedTables();
-      fromObj = Collections.singletonList(table);
+      fromObj.add(table);
     }
   }
 
   public List<Table> getFromObj() {
-    if (fromObj == null) {
+    if (fromObj.isEmpty()) {
       initFromObj(candidates);
     }
     return fromObj;

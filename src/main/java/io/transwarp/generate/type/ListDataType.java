@@ -44,7 +44,7 @@ public class ListDataType extends SequenceDataType {
       return res;
     }
     // TODO 1/20/17 add subQuery check
-    final SelectResult selectResult = SelectResult.generateQuery(config.getSubQuery());
+    final SelectResult selectResult = SelectResult.generateQuery(config.getSubQuery(getType()));
     return selectResult.subQueries(dialects);
   }
 

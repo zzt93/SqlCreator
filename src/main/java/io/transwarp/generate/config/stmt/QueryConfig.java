@@ -1,10 +1,13 @@
 package io.transwarp.generate.config.stmt;
 
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
+import io.transwarp.generate.stmt.select.SelectResult;
+import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -56,7 +59,7 @@ public class QueryConfig extends StmtConfig {
   }
 
   public void setWhere(FilterOperatorConfig where) {
-    this.where = where;
+    this.where = where.setCandidates(getCandidates());
   }
 
   @XmlElement
@@ -79,7 +82,10 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
-    GlobalConfig.checkConfig(from, from.getFromObj());
+    if (from.lackChildConfig()) {
+      from.addDefaultConfig();
+    }
+    from.getFromObj();
     return from;
   }
 
@@ -93,6 +99,16 @@ public class QueryConfig extends StmtConfig {
     setFrom(new FromConfig(candidates));
     setSelect(new SelectConfig(getFrom().getFromObj()));
     return this;
+  }
+
+  @Override
+  public String[] generate(Dialect[] dialects) {
+    final SelectResult result = SelectResult.generateQuery(this);
+    String[] res = new String[dialects.length];
+    for (int i = 0; i < res.length; i++) {
+      res[i] = result.sql(dialects[i]).toString();
+    }
+    return res;
   }
 
   /**
@@ -113,8 +129,10 @@ public class QueryConfig extends StmtConfig {
    * @see io.transwarp.generate.stmt.expression.CmpOp#IN_QUERY
    * @see io.transwarp.generate.stmt.expression.CmpOp#EXISTS
    */
-  public static QueryConfig defaultWhereExpr(Table[] src) {
-    return null;
+  public static QueryConfig defaultWhereExpr(List<Table> candidates, GenerationDataType dataType) {
+    QueryConfig res = new QueryConfig(candidates);
+    res.setSelect(new SelectConfig(res.getFrom().getFromObj(), dataType));
+    return res;
   }
 
 
@@ -132,7 +150,7 @@ public class QueryConfig extends StmtConfig {
   }
 
   /**
-   * from `query` can't use `select *`, must column name
+   * from `query` can't use `select *`, must using column name
    */
   public static QueryConfig fromQuery(List<Table> candidates) {
     // TODO 2/8/17 impl

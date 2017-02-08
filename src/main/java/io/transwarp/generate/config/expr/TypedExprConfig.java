@@ -25,7 +25,11 @@ public class TypedExprConfig extends ExprConfig {
 
   public TypedExprConfig(List<Table> from, List<Table> candidates) {
     super(from, candidates);
-    addDefaultConfig();
+  }
+
+  public TypedExprConfig(List<Table> fromObj, List<Table> candidates, GenerationDataType dataType) {
+    super(fromObj, candidates);
+    finalType = dataType;
   }
 
   @XmlAttribute(name = "type")

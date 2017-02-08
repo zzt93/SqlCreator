@@ -4,10 +4,12 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.expr.InputRelation;
+import io.transwarp.generate.config.PerTestConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
+import io.transwarp.generate.config.stmt.StmtConfig;
 import io.transwarp.parse.sql.DDLParser;
+import io.transwarp.parse.xml.ConfigUnmarshallerTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,6 +20,7 @@ import org.junit.runners.Parameterized;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +32,7 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class SelectResultTest {
 
+  private final QueryConfig queryConfig;
   private int count = 10;
   private SelectResult[] selectResults;
   private PrintWriter oracle;
@@ -36,31 +40,45 @@ public class SelectResultTest {
   private List<Table> candidates;
   private List<Table> fromObj;
 
-  public SelectResultTest(InputRelation relation) {
+  public SelectResultTest(QueryConfig config) {
+    this.queryConfig = config;
   }
 
-  @Parameterized.Parameters
-  public static InputRelation[] data() {
+//  @Parameterized.Parameters
+//  public static InputRelation[] data() {
 //    return InputRelation.values();
-    return new InputRelation[]{InputRelation.SAME};
+//    return new InputRelation[]{InputRelation.SAME};
+//  }
+
+  @Parameterized.Parameters
+  public static QueryConfig[] data() throws Exception {
+    final GlobalConfig parse = ConfigUnmarshallerTest.getGlobalConfig();
+    List<QueryConfig> list = new ArrayList<>();
+    for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
+      for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
+        if (stmtConfig instanceof QueryConfig) {
+          list.add((QueryConfig) stmtConfig);
+        }
+      }
+    }
+    return list.toArray(new QueryConfig[0]);
   }
 
   @Before
   public void setUp() throws Exception {
     candidates = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
-    QueryConfig queryConfig = QueryConfig.simpleQuery(candidates);
     fromObj = queryConfig.getFrom().getFromObj();
     selectResults = new SelectResult[count];
-    for (int i = 0; i < selectResults.length; i++) {
+    for (int i = 0; i < count; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);
     }
-    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("o.sql", true)));
-    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("i.sql", true)));
+    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".o.sql", true)));
+    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".i.sql", true)));
   }
 
   @Test
   public void selectResult() throws Exception {
-    QueryConfig simpleQuery =  QueryConfig.simpleQuery(candidates);
+    QueryConfig simpleQuery = QueryConfig.simpleQuery(candidates);
     final SelectConfig select = new SelectConfig();
     simpleQuery.setSelect(select);
     for (int i = 1; i < 10; i++) {

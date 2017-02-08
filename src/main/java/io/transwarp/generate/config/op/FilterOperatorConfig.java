@@ -27,8 +27,11 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
     return this;
   }
 
-  public FilterOperatorConfig setFrom(List<Table> candidates) {
-    this.src = candidates;
+  public FilterOperatorConfig setFrom(List<Table> from) {
+    if (operand != null) {
+      operand.setFrom(from);
+    }
+    this.src = from;
     return this;
   }
 

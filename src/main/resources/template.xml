@@ -3,58 +3,8 @@
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="define.xsd">
     <test>
-        <query id="nonEqualJoin">
-            <select/>
-            <from>
-                <join>
-                    <operand desc="default: table or query">
-                        <tableName>test_udf</tableName>
-                    </operand>
-                    <operand>
-                        <subQuery>simpleQuery</subQuery>
-                    </operand>
-                    <condition udfDepth="1">
-                        <udfConfig>
-                            <udfList possibility="1">AND</udfList>
-                        </udfConfig>
-                        <const udfDepth="1">
-                            <udfConfig>
-                                <udfList possibility="1">EQ</udfList>
-                            </udfConfig>
-                        </const>
-                        <expr desc="default: const/column/expr"/>
-                    </condition>
-                </join>
-            </from>
-        </query>
         <updateStmt id="update"/>
-        <query id="simpleQuery" queryDepth="2" num="0">
-            <select/>
-            <from/>
-            <where/>
-        </query>
     </test>
-
-
-    <test>
-        <query num="1000" id="test">
-            <select>
-                <operand type="int">
-                    <column udfDepth="1"/>
-                    <const udfDepth="3">
-                        <udfConfig>
-                            <udfList possibility="1">PLUS</udfList>
-                        </udfConfig>
-                    </const>
-                </operand>
-                <query>simpleQuery</query>
-            </select>
-            <from/>
-            <groupBy/>
-            <having/>
-        </query>
-    </test>
-
 
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
@@ -89,19 +39,17 @@
                 </join>
             </from>
         </query>
-    </test>
-    <test>
-        <query id="testJoinInvalidTable">
+        <query id="testJoin2">
             <select></select>
             <from>
                 <join>
-                    <operand>
-                        <tableName>test</tableName>
-                    </operand>
+                    <operand/>
+                    <operand/>
                 </join>
             </from>
         </query>
     </test>
+
     <test>
         <query id="testWhere">
             <select></select>
@@ -110,5 +58,55 @@
         </query>
     </test>
 
+    <test>
+        <query id="nonEqualJoin">
+            <select/>
+            <from>
+                <join>
+                    <operand desc="default: table or query">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <subQuery>simpleQuery</subQuery>
+                    </operand>
+                    <condition udfDepth="1">
+                        <udfConfig>
+                            <udfList possibility="1">AND</udfList>
+                        </udfConfig>
+                        <const udfDepth="1">
+                            <udfConfig>
+                                <udfList possibility="1">EQ</udfList>
+                            </udfConfig>
+                        </const>
+                        <expr desc="default: const/column/expr"/>
+                    </condition>
+                </join>
+            </from>
+        </query>
+        <query id="simpleQuery" queryDepth="2" num="0">
+            <select/>
+            <from/>
+            <where/>
+        </query>
+    </test>
+
+    <test>
+        <query num="1000" id="test">
+            <select>
+                <operand type="int">
+                    <column udfDepth="1"/>
+                    <const udfDepth="3">
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </const>
+                </operand>
+                <query>simpleQuery</query>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
+    </test>
 
 </tests>
