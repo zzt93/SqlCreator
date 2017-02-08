@@ -1,17 +1,22 @@
 package io.transwarp.generate.stmt.expression;
 
+import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.ListDataType;
 import io.transwarp.generate.type.SequenceDataType;
+import io.transwarp.parse.sql.DDLParser;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -26,7 +31,8 @@ public class OperandTest {
 
   @Test
   public void randomSameTypeOperand() throws Exception {
-    final ExprConfig config = new ExprConfig();
+    final List<Table> table = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
+    final ExprConfig config = new ExprConfig(table, table);
     for (int i = 0; i < 1000; i++) {
       final Operand[] operands = Operand.getOperands(3, testType, config);
       final GenerationDataType type = operands[0].getType();
@@ -52,5 +58,11 @@ public class OperandTest {
       list.add(((ListDataType) ListDataType.ALL_LIST).compoundType(value));
     }
     return list.toArray(new GenerationDataType[0]);
+  }
+
+  @Test
+  public void lackConfig() {
+    final ExprConfig config = new ExprConfig();
+    Assert.assertTrue(config.lackChildConfig());
   }
 }

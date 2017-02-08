@@ -2,6 +2,7 @@ package io.transwarp.generate.stmt.select;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.expr.InputRelation;
 import io.transwarp.generate.config.op.SelectConfig;
@@ -30,10 +31,10 @@ public class SelectResultTest {
 
   private int count = 10;
   private SelectResult[] selectResults;
-  private Table from;
   private PrintWriter oracle;
   private PrintWriter inceptor;
-  private List<Table> table;
+  private List<Table> candidates;
+  private List<Table> fromObj;
 
   public SelectResultTest(InputRelation relation) {
   }
@@ -46,9 +47,9 @@ public class SelectResultTest {
 
   @Before
   public void setUp() throws Exception {
-    table = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
-    QueryConfig queryConfig = QueryConfig.simpleQuery(table);
-    from = table.get(0);
+    candidates = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
+    QueryConfig queryConfig = QueryConfig.simpleQuery(candidates);
+    fromObj = queryConfig.getFrom().getFromObj();
     selectResults = new SelectResult[count];
     for (int i = 0; i < selectResults.length; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);
@@ -59,7 +60,7 @@ public class SelectResultTest {
 
   @Test
   public void selectResult() throws Exception {
-    QueryConfig simpleQuery =  QueryConfig.simpleQuery(table);
+    QueryConfig simpleQuery =  QueryConfig.simpleQuery(candidates);
     final SelectConfig select = new SelectConfig();
     simpleQuery.setSelect(select);
     for (int i = 1; i < 10; i++) {
@@ -80,7 +81,7 @@ public class SelectResultTest {
   @Test
   public void columns() throws Exception {
     for (SelectResult selectResult : selectResults) {
-      assert selectResult.columns().size() <= from.columns().size();
+      assert selectResult.columns().size() <= TableUtil.columns(fromObj).size();
     }
   }
 

@@ -47,7 +47,7 @@ public class RelationOperandConfig extends SetOperandConfig {
     if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
       operand = TableUtil.randomTable(getCandidatesTables());
     } else {
-      setSubQuery(QueryConfig.simpleQuery(getCandidatesTables()));
+      setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
     }
     return this;
   }

@@ -131,6 +131,14 @@ public class QueryConfig extends StmtConfig {
     return new QueryConfig(candidates);
   }
 
+  /**
+   * from `query` can't use `select *`, must column name
+   */
+  public static QueryConfig fromQuery(List<Table> candidates) {
+    // TODO 2/8/17 impl
+    return new QueryConfig(candidates);
+  }
+
   public boolean hasWhere() {
     return where != null;
   }
