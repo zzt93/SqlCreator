@@ -138,6 +138,11 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   public ExprConfig setFrom(List<Table> tables) {
+    if (hasNestedConfig()) {
+      for (ExprConfig operand : operands) {
+        operand.setFrom(tables);
+      }
+    }
     src = tables;
     return this;
   }

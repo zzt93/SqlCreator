@@ -4,6 +4,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.stmt.share.Condition;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   private static final int JOIN_OP_NUM = 2;
   private ExprConfig condition;
   private List<RelationConfig> operands = new ArrayList<>(JOIN_OP_NUM);
-  private List<Table> src = new ArrayList<>(JOIN_OP_NUM), candidates;
+  private List<Table> from = new ArrayList<>(JOIN_OP_NUM), candidates;
 
   public JoinConfig() {
   }
@@ -50,8 +51,8 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   }
 
   public JoinConfig setFrom(List<Table> from) {
-    this.src = from;
-    return this;
+    // only need candidates, from is generated
+    throw new NotImplementedException();
   }
 
   @Override
@@ -67,9 +68,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   }
 
   public Table explicitJoin() {
-    if (lackChildConfig()) {
-      addDefaultConfig();
-    }
+    assert !lackChildConfig();
     final Table[] tables = toTables();
     Table first = tables[0];
     final Condition condition = new Condition(getCondition());
@@ -88,27 +87,47 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return operands.size() != JOIN_OP_NUM || condition == null || condition.lackChildConfig();
+    return condition == null || condition.lackChildConfig() || operands.size() != JOIN_OP_NUM || lackConfig(operands);
+  }
+
+  private boolean lackConfig(List<RelationConfig> operands) {
+    for (RelationConfig operand : operands) {
+      if (operand.lackChildConfig()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override
   public JoinConfig addDefaultConfig() {
-    assert candidates != null;
-    while (operands.size() < JOIN_OP_NUM) {
-      operands.add(new RelationConfig(candidates));
+    if (!lackChildConfig()) {
+      return this;
     }
-    initConditionSrc();
+    assert candidates != null;
+    for (int i = 0; i < JOIN_OP_NUM; i++) {
+      if (i < operands.size()) {
+        final RelationConfig config = operands.get(i);
+        if (config.lackChildConfig()) {
+          config.addDefaultConfig();
+        }
+      } else {
+        operands.add(new RelationConfig(candidates));
+      }
+    }
+
+    initFrom();
+
     if (condition == null) {
-      condition = new ExprConfig(src, candidates);
+      condition = new ExprConfig(from, candidates);
     } else {
-      condition.setFrom(src);
+      condition.setFrom(from);
     }
     return this;
   }
 
-  private void initConditionSrc() {
-    if (src.isEmpty()) {
-      src.addAll(Arrays.asList(toTables()));
-    }
+  private void initFrom() {
+    assert from.isEmpty();
+    from.addAll(Arrays.asList(toTables()));
   }
 }

@@ -24,17 +24,17 @@ public class TableUtil {
     return cols.get(random.nextInt(cols.size()));
   }
 
-  public static Optional<Column> sameTypeRandomCol(List<Table> table, GenerationDataType type) {
-    final ArrayList<Column> cols = sameTypeSubCols(table, type);
+  public static Optional<Column> sameTypeRandomCol(List<Table> tables, GenerationDataType type) {
+    final ArrayList<Column> cols = sameTypeSubCols(tables, type);
     if (cols.isEmpty()) {
       return Optional.absent();
     }
     return Optional.of(cols.get(random.nextInt(cols.size())));
   }
 
-  private static ArrayList<Column> sameTypeSubCols(List<Table> table, GenerationDataType type) {
+  private static ArrayList<Column> sameTypeSubCols(List<Table> tables, GenerationDataType type) {
     final ArrayList<Column> res = new ArrayList<>();
-    for (Column column : columns(table)) {
+    for (Column column : columns(tables)) {
       if (type.equals(column.getType())) {
         res.add(column);
       }
@@ -80,9 +80,9 @@ public class TableUtil {
     throw new IllegalArgumentException("Illegal table name: " + tableName);
   }
 
-  public static ArrayList<Column> columns(List<Table> from) {
+  public static ArrayList<Column> columns(List<Table> tables) {
     ArrayList<Column> res = new ArrayList<>();
-    for (Table table : from) {
+    for (Table table : tables) {
       res.addAll(table.columns());
     }
     return res;

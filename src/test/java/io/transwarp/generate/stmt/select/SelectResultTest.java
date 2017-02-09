@@ -1,18 +1,12 @@
 package io.transwarp.generate.stmt.select;
 
-import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.PerTestConfig;
-import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.config.stmt.StmtConfig;
-import io.transwarp.parse.sql.DDLParser;
 import io.transwarp.parse.xml.ConfigUnmarshallerTest;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,11 +31,11 @@ public class SelectResultTest {
   private SelectResult[] selectResults;
   private PrintWriter oracle;
   private PrintWriter inceptor;
-  private List<Table> candidates;
   private List<Table> fromObj;
 
-  public SelectResultTest(QueryConfig config) {
+  public SelectResultTest(QueryConfig config) throws Exception {
     this.queryConfig = config;
+    setUp();
   }
 
 //  @Parameterized.Parameters
@@ -64,10 +58,8 @@ public class SelectResultTest {
     return list.toArray(new QueryConfig[0]);
   }
 
-  @Before
   public void setUp() throws Exception {
     System.err.println(queryConfig.getId());
-    candidates = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
     fromObj = queryConfig.getFrom().getFromObj();
     selectResults = new SelectResult[count];
     for (int i = 0; i < count; i++) {
@@ -77,27 +69,13 @@ public class SelectResultTest {
     inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".i.sql", false)));
   }
 
-  @Test
-  public void selectResult() throws Exception {
-    QueryConfig simpleQuery = QueryConfig.simpleQuery(candidates);
-    final SelectConfig select = new SelectConfig();
-    simpleQuery.setSelect(select);
-    for (int i = 1; i < 10; i++) {
-      select.setSelectNum(i);
-      final SelectResult selectResult = SelectResult.generateQuery(simpleQuery);
-      final int size = selectResult.columns().size();
-      Assert.assertTrue(size > 0 && size <= i);
-    }
-  }
 
-  @Test
   public void name() throws Exception {
     for (SelectResult selectResult : selectResults) {
       assert !selectResult.name().isPresent();
     }
   }
 
-  @Test
   public void columns() throws Exception {
     for (SelectResult selectResult : selectResults) {
       assert selectResult.columns().size() <= TableUtil.columns(fromObj).size();
@@ -106,13 +84,15 @@ public class SelectResultTest {
 
   @Test
   public void sql() throws Exception {
+    name();
+    columns();
     for (SelectResult selectResult : selectResults) {
       oracle.println(selectResult.sql(GlobalConfig.getBase()));
       inceptor.println(selectResult.sql(GlobalConfig.getCmp()));
     }
+    close();
   }
 
-  @After
   public void close() {
     oracle.close();
     inceptor.close();

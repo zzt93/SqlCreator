@@ -7,6 +7,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.share.Condition;
+import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.stmt.share.FromStmt;
 import io.transwarp.generate.stmt.share.WhereStmt;
 
@@ -48,12 +49,7 @@ public class SelectResult implements Table {
 
   @Override
   public Table join(Table table, Condition condition) {
-    assert table.name().isPresent();
-    if (!name().isPresent()) {
-      name = Optional.of(TableUtil.nextAlias());
-    }
-    // TODO 12/28/16 join: surround '() alias', add columns
-    return this;
+    return FromObj.join(this, table, condition);
   }
 
   public Optional<String> name() {
@@ -88,6 +84,9 @@ public class SelectResult implements Table {
   }
 
   public StringBuilder toTable(Dialect dialect) {
+    if (!name.isPresent()) {
+      setAlias(TableUtil.nextAlias());
+    }
     return subQuery(dialect).insert(0, '(').append(')').append(name.get());
   }
 

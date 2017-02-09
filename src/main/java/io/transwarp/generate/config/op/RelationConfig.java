@@ -19,7 +19,7 @@ import java.util.List;
 public class RelationConfig extends SetConfig {
   private static final String EMPTY = "";
   private String tableName = EMPTY;
-  private JoinConfig joinConfig;
+  private JoinConfig joinedTable;
 
   /**
    * the mapped table of tableName
@@ -46,44 +46,64 @@ public class RelationConfig extends SetConfig {
   }
 
   @XmlElement
-  public JoinConfig getJoinConfig() {
-    return joinConfig;
+  public JoinConfig getJoinedTable() {
+    return joinedTable;
   }
 
-  public void setJoinConfig(JoinConfig joinConfig) {
-    this.joinConfig = joinConfig;
+  public void setJoinedTable(JoinConfig joinedTable) {
+    this.joinedTable = joinedTable;
   }
 
   @Override
   public boolean lackChildConfig() {
-    return tableName.equals(EMPTY) && getSubQuery() == null && joinConfig == null;
+    return tableName.equals(EMPTY)
+        && (getSubQuery() == null || getSubQuery().lackChildConfig())
+        && (joinedTable == null || joinedTable.lackChildConfig());
   }
 
   @Override
   public RelationConfig addDefaultConfig() {
+    assert lackChildConfig();
+    if (joinedTable != null) {
+      joinedTable.addDefaultConfig();
+      return this;
+    }
+    if (getSubQuery() != null) {
+      getSubQuery().addDefaultConfig();
+      return this;
+    }
+
     final Class<?> random = Possibility.possibility(0.25, 0.125)
         .random(QueryConfig.class, JoinConfig.class, tableName.getClass());
     // also set candidates here
     if (random == String.class) {
       operand = TableUtil.randomTable(getCandidatesTables());
+      tableName = operand.name().get();
     } else if (random == QueryConfig.class) {
       setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
     } else {
-      joinConfig = new JoinConfig(getCandidatesTables());
+      joinedTable = new JoinConfig(getCandidatesTables());
     }
     return this;
   }
 
-  Table toTable() {
-    if (operand != null) {
-      return operand;
+  @Override
+  public SetConfig setCandidates(List<Table> candidates) {
+    if (joinedTable != null) {
+      joinedTable.setCandidates(candidates);
     }
+    return super.setCandidates(candidates);
+  }
 
+  Table toTable() {
     if (!tableName.equals(EMPTY)) {
+      if (operand != null) {
+        return operand;
+      }
       return TableUtil.getTableByName(getCandidatesTables(), tableName);
     }
-    if (joinConfig != null) {
-      return joinConfig.explicitJoin();
+    if (joinedTable != null) {
+      return joinedTable.explicitJoin();
     }
     assert getSubQuery() != null;
     return SelectResult.generateQuery(getSubQuery());

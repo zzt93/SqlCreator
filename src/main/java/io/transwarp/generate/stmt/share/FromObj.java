@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
 
 import java.util.ArrayList;
@@ -43,20 +44,27 @@ public class FromObj implements Table {
 
   @Override
   public Table join(Table table, Condition condition) {
-    if (table.name().isPresent()) {
-      // update columns
-      columns.addAll(table.columns());
-      // update sql
-      for (Dialect dialect : GlobalConfig.getCmpBase()) {
-        sql(dialect)
-            .append(" join ")
-            .append(table.sql(dialect))
-            .append(" on ")
-            .append(condition.sql(dialect));
-      }
-    }
+    final Table table1 = TableUtil.deepCopy(this).setAlias(TableUtil.nextAlias());
+    return join(table1, table, condition);
+  }
 
-    return this;
+  public static Table join(Table t1, Table t2, Condition condition) {
+    // update columns
+    t1.columns().addAll(t2.columns());
+    // update sql
+    for (Dialect dialect : GlobalConfig.getCmpBase()) {
+      t1.toTable(dialect)
+          .append(" join ")
+          .append(t2.toTable(dialect))
+          .append(" on ")
+          .append(condition.sql(dialect));
+    }
+    return t1;
+  }
+
+  @Override
+  public StringBuilder toTable(Dialect dialect) {
+    return sql(dialect);
   }
 
   public Optional<String> name() {

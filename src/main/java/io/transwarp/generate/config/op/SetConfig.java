@@ -60,6 +60,9 @@ public class SetConfig implements DefaultConfig<SetConfig> {
 
   @Override
   public SetConfig setCandidates(List<Table> candidates) {
+    if (subQuery != null) {
+      subQuery.setCandidates(candidates);
+    }
     this.candidates = candidates;
     return this;
   }

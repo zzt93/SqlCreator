@@ -5,6 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.parse.sql.DDLParser;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
@@ -79,8 +80,9 @@ public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
     return this;
   }
 
-  public StmtConfig setFrom(List<Table> candidates) {
-    return this;
+  public StmtConfig setFrom(List<Table> from) {
+    // only need candidates, from is generated
+    throw new NotImplementedException();
   }
 
   @Override

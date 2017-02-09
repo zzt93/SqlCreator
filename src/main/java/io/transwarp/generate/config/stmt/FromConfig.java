@@ -4,6 +4,7 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.op.JoinConfig;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
@@ -49,11 +50,8 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   public FromConfig setFrom(List<Table> from) {
-    if (join != null) {
-      join.setFrom(from);
-    }
-    this.fromObj = from;
-    return this;
+    // only need candidates, from is generated
+    throw new NotImplementedException();
   }
 
   @Override
@@ -99,7 +97,13 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   @Override
   public FromConfig addDefaultConfig() {
-    joinTimes = 1;
+    // check children first
+    if (join != null) {
+      join.addDefaultConfig();
+    } else {
+      joinTimes = 1;
+    }
+    // generate father node then
     if (fromObj.isEmpty()) {
       initFromObj(candidates);
     }

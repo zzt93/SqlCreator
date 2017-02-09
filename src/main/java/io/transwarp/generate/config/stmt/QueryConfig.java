@@ -12,7 +12,6 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
@@ -20,7 +19,6 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-@XmlType()
 public class QueryConfig extends StmtConfig {
 
   private int queryDepth;
@@ -29,7 +27,6 @@ public class QueryConfig extends StmtConfig {
   private FromConfig from;
 
   public QueryConfig() {
-    setCandidates(getCandidates());
   }
 
   private QueryConfig(List<Table> candidates) {
