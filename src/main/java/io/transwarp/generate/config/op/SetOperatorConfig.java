@@ -12,7 +12,7 @@ import java.util.List;
  * <h3></h3>
  */
 public class SetOperatorConfig {
-  private List<SetOperandConfig> operands;
+  private List<SetConfig> operands;
   private TableOp type;
 
   @XmlAttribute
@@ -25,11 +25,11 @@ public class SetOperatorConfig {
   }
 
   @XmlElement(name = "operand")
-  public List<SetOperandConfig> getOperands() {
+  public List<SetConfig> getOperands() {
     return operands;
   }
 
-  public void setOperands(List<SetOperandConfig> operands) {
+  public void setOperands(List<SetConfig> operands) {
     this.operands = operands;
   }
 

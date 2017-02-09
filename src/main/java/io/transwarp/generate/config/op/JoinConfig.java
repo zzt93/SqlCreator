@@ -18,7 +18,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   private static final int JOIN_OP_NUM = 2;
   private ExprConfig condition;
-  private List<RelationOperandConfig> operands = new ArrayList<>(2);
+  private List<RelationConfig> operands = new ArrayList<>(2);
   private List<Table> src, candidates;
 
   public JoinConfig() {
@@ -40,11 +40,11 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   }
 
   @XmlElement(name = "operand")
-  public List<RelationOperandConfig> getOperands() {
+  public List<RelationConfig> getOperands() {
     return operands;
   }
 
-  public void setOperands(List<RelationOperandConfig> operands) {
+  public void setOperands(List<RelationConfig> operands) {
     this.operands = operands;
   }
 
@@ -55,7 +55,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   @Override
   public JoinConfig setCandidates(List<Table> candidates) {
-    for (RelationOperandConfig operand : operands) {
+    for (RelationConfig operand : operands) {
       operand.setCandidates(candidates);
     }
     if (condition != null) {
@@ -65,7 +65,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
     return this;
   }
 
-  public Table getJoinedTables() {
+  public Table explicitJoin() {
     if (lackChildConfig()) {
       addDefaultConfig();
     }
@@ -93,7 +93,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   @Override
   public JoinConfig addDefaultConfig() {
     while (operands.size() < JOIN_OP_NUM) {
-      operands.add(new RelationOperandConfig(candidates));
+      operands.add(new RelationConfig(candidates));
     }
     if (condition == null) {
       condition = new ExprConfig(src, candidates);

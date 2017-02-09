@@ -43,10 +43,10 @@ public class ConfigUnmarshallerTest {
   }
 
   @Test
-  public void parseError() throws Exception {
+  public void generationError() throws Exception {
     boolean rightError = false;
     try {
-      GlobalConfig parse = getGlobalConfig("src/main/resources/error.xml");
+      GlobalConfig parse = getGlobalConfig("src/main/resources/generationError.xml");
       for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
         for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
           stmtConfig.generate(GlobalConfig.getCmpBase());
@@ -54,6 +54,19 @@ public class ConfigUnmarshallerTest {
       }
     } catch (IllegalArgumentException e) {
       rightError = e.getMessage().contains("Illegal table name:");
+    }
+    Assert.assertTrue(rightError);
+  }
+
+  @Test
+  public void parseError() throws Exception {
+    boolean rightError = false;
+    try {
+      getGlobalConfig("src/main/resources/parseError.xml");
+    } catch (ValidationException e) {
+//          ("The content of element 'operand' is not complete. One of '{subQuery, tableName}' is expected.");
+      e.printStackTrace();
+      rightError = true;
     }
     Assert.assertTrue(rightError);
   }

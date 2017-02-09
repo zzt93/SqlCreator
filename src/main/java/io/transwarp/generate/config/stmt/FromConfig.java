@@ -68,20 +68,25 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   private void initFromObj(List<Table> candidates) {
     if (implicitJoin()) {
-      // TODO generate and add subQuery
-//      QueryConfig config = QueryConfig.simpleQuery(candidates);
-
-      final int tableSize = getJoinTimes() + 1;
-      List<Table> tmp = new ArrayList<>(tableSize);
-      for (int i = 0; i < tableSize; i++) {
-        tmp.add(TableUtil.deepCopy(TableUtil.randomTable(candidates)).setAlias(TableUtil.nextAlias()));
-      }
+      List<Table> tmp = implicitJoin(candidates);
       fromObj.addAll(tmp);
     } else {
       final JoinConfig join = getJoin();
-      Table table = join.getJoinedTables();
+      Table table = join.explicitJoin();
       fromObj.add(table);
     }
+  }
+
+  private List<Table> implicitJoin(List<Table> candidates) {
+    // TODO generate and add subQuery
+//      QueryConfig config = QueryConfig.simpleQuery(candidates);
+
+    final int tableSize = getJoinTimes() + 1;
+    List<Table> tmp = new ArrayList<>(tableSize);
+    for (int i = 0; i < tableSize; i++) {
+      tmp.add(TableUtil.deepCopy(TableUtil.randomTable(candidates)).setAlias(TableUtil.nextAlias()));
+    }
+    return tmp;
   }
 
   public List<Table> getFromObj() {

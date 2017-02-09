@@ -32,19 +32,45 @@
 
     <test>
         <query id="testJoin">
-            <select></select>
+            <select/>
+            <from>
+                <join/>
+            </from>
+        </query>
+        <query id="testJoin1">
+            <select/>
             <from>
                 <join>
-                    <operand/>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
                 </join>
             </from>
         </query>
         <query id="testJoin2">
-            <select></select>
+            <select/>
             <from>
                 <join>
-                    <operand/>
-                    <operand/>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </join>
+            </from>
+        </query>
+        <query id="testJoin3">
+            <select/>
+            <from>
+                <join>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <subQuery>simpleQuery</subQuery>
+                    </operand>
+                    <condition/>
                 </join>
             </from>
         </query>
@@ -52,9 +78,9 @@
 
     <test>
         <query id="testWhere">
-            <select></select>
-            <from></from>
-            <where></where>
+            <select/>
+            <from/>
+            <where/>
         </query>
     </test>
 

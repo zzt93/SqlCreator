@@ -1,6 +1,5 @@
 package io.transwarp.parse.xml;
 
-import io.transwarp.parse.ParseException;
 import org.xml.sax.SAXException;
 
 /**
@@ -10,7 +9,7 @@ import org.xml.sax.SAXException;
  */
 public class ValidationException extends SAXException {
 
-  public ValidationException(Exception e) {
+  ValidationException(Exception e) {
     super(e);
   }
 

@@ -224,32 +224,31 @@
 
     <xs:complexType name="setOperatorConfig">
         <xs:sequence>
-            <xs:element name="operand" type="setOperand" maxOccurs="unbounded"/>
+            <xs:element name="operand" type="set" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="type" type="tableOp" use="required"/>
         <xs:attribute name="num" type="xs:unsignedInt"/>
     </xs:complexType>
     <xs:complexType name="joinConfig">
         <xs:sequence>
-            <xs:element name="operand" type="relationOperand" maxOccurs="2" minOccurs="0"/>
+            <xs:element name="operand" type="relation" maxOccurs="2" minOccurs="0"/>
             <xs:element name="condition" type="exprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="setOperand">
+    <xs:complexType name="set">
         <xs:choice>
             <xs:element name="subQuery" type="xs:IDREF" minOccurs="0"/>
         </xs:choice>
         <xs:attribute name="desc" type="xs:string"/>
     </xs:complexType>
-    <xs:complexType name="relationOperand">
-        <xs:complexContent>
-            <xs:extension base="setOperand">
-                <xs:choice>
-                    <xs:element name="tableName" type="xs:string" minOccurs="0"/>
-                </xs:choice>
-            </xs:extension>
-        </xs:complexContent>
+    <xs:complexType name="relation">
+        <xs:choice>
+            <xs:element name="subQuery" type="xs:IDREF" minOccurs="1"/>
+            <xs:element name="tableName" type="xs:string" minOccurs="1"/>
+            <xs:element name="joinedTable" type="joinConfig"/>
+        </xs:choice>
+        <xs:attribute name="desc" type="xs:string"/>
     </xs:complexType>
 
     <xs:simpleType name="dialects" final="restriction">

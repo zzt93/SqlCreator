@@ -15,8 +15,8 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-@XmlType(name = "setOperand")
-public class SetOperandConfig implements DefaultConfig<SetOperandConfig> {
+@XmlType(name = "set")
+public class SetConfig implements DefaultConfig<SetConfig> {
   private QueryConfig subQuery;
 
   private String desc;
@@ -49,17 +49,17 @@ public class SetOperandConfig implements DefaultConfig<SetOperandConfig> {
   }
 
   @Override
-  public SetOperandConfig addDefaultConfig() {
+  public SetConfig addDefaultConfig() {
     return null;
   }
 
-  public SetOperandConfig setFrom(List<Table> tables) {
+  public SetConfig setFrom(List<Table> tables) {
     // this class only has candidates
     return this;
   }
 
   @Override
-  public SetOperandConfig setCandidates(List<Table> candidates) {
+  public SetConfig setCandidates(List<Table> candidates) {
     if (subQuery != null) {
       subQuery.setCandidates(candidates);
     }

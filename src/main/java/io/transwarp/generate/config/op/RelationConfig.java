@@ -15,15 +15,15 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-@XmlType(name = "relationOperand")
-public class RelationOperandConfig extends SetOperandConfig {
+@XmlType(name = "relation")
+public class RelationConfig extends SetConfig {
   private String tableName;
   private Table operand;
 
-  public RelationOperandConfig() {
+  public RelationConfig() {
   }
 
-  RelationOperandConfig(List<Table> candidates) {
+  RelationConfig(List<Table> candidates) {
     setCandidates(candidates);
     addDefaultConfig();
   }
@@ -43,7 +43,7 @@ public class RelationOperandConfig extends SetOperandConfig {
   }
 
   @Override
-  public RelationOperandConfig addDefaultConfig() {
+  public RelationConfig addDefaultConfig() {
     if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
       operand = TableUtil.randomTable(getCandidatesTables());
     } else {
