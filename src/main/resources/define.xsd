@@ -246,7 +246,7 @@
         <xs:choice>
             <xs:element name="subQuery" type="xs:IDREF" minOccurs="1"/>
             <xs:element name="tableName" type="xs:string" minOccurs="1"/>
-            <xs:element name="joinedTable" type="joinConfig"/>
+            <xs:element name="joinedTable" type="joinConfig" minOccurs="1"/>
         </xs:choice>
         <xs:attribute name="desc" type="xs:string"/>
     </xs:complexType>

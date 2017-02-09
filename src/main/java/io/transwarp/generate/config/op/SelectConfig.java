@@ -3,6 +3,7 @@ package io.transwarp.generate.config.op;
 import com.google.common.collect.Lists;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.DefaultConfig;
+import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.type.GenerationDataType;
@@ -20,10 +21,18 @@ import java.util.List;
  */
 public class SelectConfig implements DefaultConfig<SelectConfig> {
 
+  /*
+  ------------- xml elements --------------
+   */
   private List<TypedExprConfig> operands = new ArrayList<>();
   private List<QueryConfig> queries = new ArrayList<>();
   private int selectNum;
+
+  /*
+  ------------ generation field ------------
+   */
   private List<Table> src, candidates;
+  private Possibility useStar = Possibility.HALF;
 
   public SelectConfig() {
   }
@@ -117,5 +126,13 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public List<Table> getTables() {
     return src;
+  }
+
+  public Possibility useStar() {
+    return useStar;
+  }
+
+  public void setUseStar(Possibility useStar) {
+    this.useStar = useStar;
   }
 }

@@ -32,7 +32,6 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   @XmlElement
   public JoinConfig getJoin() {
-    join.setFrom(fromObj);
     return join;
   }
 
@@ -90,20 +89,20 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   public List<Table> getFromObj() {
-    if (fromObj.isEmpty()) {
-      initFromObj(candidates);
-    }
     return fromObj;
   }
 
   @Override
   public boolean lackChildConfig() {
-    return join == null && joinTimes == 0;
+    return (join == null || join.lackChildConfig()) && (joinTimes == 0);
   }
 
   @Override
   public FromConfig addDefaultConfig() {
     joinTimes = 1;
+    if (fromObj.isEmpty()) {
+      initFromObj(candidates);
+    }
     return this;
   }
 

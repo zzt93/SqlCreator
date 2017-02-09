@@ -66,14 +66,15 @@ public class SelectResultTest {
 
   @Before
   public void setUp() throws Exception {
+    System.err.println(queryConfig.getId());
     candidates = DDLParser.getTable("default_oracle.sql", Dialect.ORACLE);
     fromObj = queryConfig.getFrom().getFromObj();
     selectResults = new SelectResult[count];
     for (int i = 0; i < count; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);
     }
-    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".o.sql", true)));
-    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".i.sql", true)));
+    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".o.sql", false)));
+    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".i.sql", false)));
   }
 
   @Test

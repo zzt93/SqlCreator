@@ -14,6 +14,22 @@ CREATE TABLE test_udf (
   id2    SMALLINT
 );
 
+CREATE TABLE test_udf_2 (
+  cid_2    INT,
+  can_2    NUMBER(1),
+  name_2   VARCHAR(50),
+  birth_2  DATE,
+  seq_2    LONG,
+  price_2  BINARY_DOUBLE,
+  price2_2 BINARY_FLOAT,
+  name2_2  NVARCHAR2(50),
+  mon_2    NUMBER,
+  now_2    TIMESTAMP,
+  cname_2  CHAR(50),
+  cname2_2 NCHAR(50),
+  id2_2    SMALLINT
+);
+
 INSERT INTO test_udf VALUES (1, 0, 'zeng', DATE '2015-01-12', '1', 1000, 100, 'zeng zetang', 321.1, TIMESTAMP '2016-12-23 00:00:00', '曾泽堂', '曾', 12);
 INSERT INTO test_udf VALUES (2, 1, 'n1', DATE '2015-02-01', '1', 1001, 101, 'ng zetang', 321.1, TIMESTAMP '2016-12-23 00:00:01', '曾泽堂', '曾', 11);
 INSERT INTO test_udf VALUES (3, 0, 'e3g', DATE '2015-03-30','31', 1030, 130, 'eng zetang', 323.1, TIMESTAMP '2016-12-23 00:00:00', '曾泽堂', '曾',312);

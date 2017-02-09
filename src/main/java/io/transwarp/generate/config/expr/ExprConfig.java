@@ -121,7 +121,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return false;
+    return src == null;
   }
 
   public QueryConfig getSubQuery(GenerationDataType dataType) {

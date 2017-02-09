@@ -74,6 +74,34 @@
                 </join>
             </from>
         </query>
+        <query id="testJoin4">
+            <select/>
+            <from>
+                <join>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <joinedTable/>
+                    </operand>
+                    <condition/>
+                </join>
+            </from>
+        </query>
+        <query id="testJoin5">
+            <select/>
+            <from>
+                <join>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <condition/>
+                </join>
+            </from>
+        </query>
     </test>
 
     <test>

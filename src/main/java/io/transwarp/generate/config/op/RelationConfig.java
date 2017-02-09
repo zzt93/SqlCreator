@@ -17,7 +17,15 @@ import java.util.List;
  */
 @XmlType(name = "relation")
 public class RelationConfig extends SetConfig {
-  private String tableName;
+  private static final String EMPTY = "";
+  private String tableName = EMPTY;
+  private JoinConfig joinConfig;
+
+  /**
+   * the mapped table of tableName
+   *
+   * @see #tableName
+   */
   private Table operand;
 
   public RelationConfig() {
@@ -37,17 +45,31 @@ public class RelationConfig extends SetConfig {
     this.tableName = tableName;
   }
 
+  @XmlElement
+  public JoinConfig getJoinConfig() {
+    return joinConfig;
+  }
+
+  public void setJoinConfig(JoinConfig joinConfig) {
+    this.joinConfig = joinConfig;
+  }
+
   @Override
   public boolean lackChildConfig() {
-    return tableName == null && getSubQuery() == null;
+    return tableName.equals(EMPTY) && getSubQuery() == null && joinConfig == null;
   }
 
   @Override
   public RelationConfig addDefaultConfig() {
-    if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+    final Class<?> random = Possibility.possibility(0.25, 0.125)
+        .random(QueryConfig.class, JoinConfig.class, tableName.getClass());
+    // also set candidates here
+    if (random == String.class) {
       operand = TableUtil.randomTable(getCandidatesTables());
-    } else {
+    } else if (random == QueryConfig.class) {
       setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
+    } else {
+      joinConfig = new JoinConfig(getCandidatesTables());
     }
     return this;
   }
@@ -57,10 +79,13 @@ public class RelationConfig extends SetConfig {
       return operand;
     }
 
-    if (tableName == null) {
-      assert getSubQuery() != null;
-      return SelectResult.generateQuery(getSubQuery());
+    if (!tableName.equals(EMPTY)) {
+      return TableUtil.getTableByName(getCandidatesTables(), tableName);
     }
-    return TableUtil.getTableByName(getCandidatesTables(), tableName);
+    if (joinConfig != null) {
+      return joinConfig.explicitJoin();
+    }
+    assert getSubQuery() != null;
+    return SelectResult.generateQuery(getSubQuery());
   }
 }

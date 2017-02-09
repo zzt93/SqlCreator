@@ -27,13 +27,17 @@ public interface DefaultConfig<T> {
   T addDefaultConfig();
 
   /**
-   * @see #setCandidates(List) candidates.size() >= from.size();
+   * <li>set from after init tables in {@link io.transwarp.generate.config.stmt.FromConfig}</li>
    * @param tables the range this element operate on
+   * @see #setCandidates(List) candidates.size() >= from.size();
    */
   T setFrom(List<Table> tables);
 
   /**
    * transmit candidates from father config to child config
+   * <h3>To make sure the candidates not null when generation process start</h3>
+   * <li>set candidates as early as possible, i.e. in constructor</li>
+   * <li>or in the setter invoked by JAXB</li>
    *
    * @param candidates the range descendant/nested element can operate on
    */

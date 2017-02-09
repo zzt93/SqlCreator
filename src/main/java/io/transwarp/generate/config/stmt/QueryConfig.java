@@ -4,6 +4,7 @@ package io.transwarp.generate.config.stmt;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
@@ -11,6 +12,7 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
@@ -18,6 +20,7 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
+@XmlType()
 public class QueryConfig extends StmtConfig {
 
   private int queryDepth;
@@ -26,6 +29,7 @@ public class QueryConfig extends StmtConfig {
   private FromConfig from;
 
   public QueryConfig() {
+    setCandidates(getCandidates());
   }
 
   private QueryConfig(List<Table> candidates) {
@@ -82,15 +86,18 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
+    return from;
+  }
+
+  private void initFrom() {
     if (from.lackChildConfig()) {
       from.addDefaultConfig();
     }
-    from.getFromObj();
-    return from;
   }
 
   public void setFrom(FromConfig from) {
     this.from = from.setCandidates(getCandidates());
+    initFrom();
   }
 
   @Override
@@ -154,7 +161,9 @@ public class QueryConfig extends StmtConfig {
    */
   public static QueryConfig fromQuery(List<Table> candidates) {
     // TODO 2/8/17 impl
-    return new QueryConfig(candidates);
+    final QueryConfig config = new QueryConfig(candidates);
+    config.getSelect().setUseStar(Possibility.IMPOSSIBLE);
+    return config;
   }
 
   public boolean hasWhere() {
