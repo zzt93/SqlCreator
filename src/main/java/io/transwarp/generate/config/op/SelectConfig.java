@@ -101,9 +101,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     for (TypedExprConfig operand : operands) {
       operand.setFrom(from);
     }
-    for (QueryConfig query : queries) {
-      query.setFrom(from);
-    }
+    // no need to setFrom for child QueryConfig, it will be set by itself
     src = from;
     return this;
   }
