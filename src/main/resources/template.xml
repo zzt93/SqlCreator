@@ -105,10 +105,50 @@
     </test>
 
     <test>
-        <query id="testWhere">
+        <query id="whereSimpleQuery" queryDepth="2" num="0">
+            <select>
+                <selectNum>1</selectNum>
+            </select>
+            <from/>
+            <where/>
+        </query>
+
+        <query id="testDefaultWhere">
             <select/>
             <from/>
             <where/>
+        </query>
+        <query id="testWhereQuery">
+            <select/>
+            <from/>
+            <where>
+                <operand subQuery="whereSimpleQuery"/>
+            </where>
+        </query>
+        <query id="testWhereDepth">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfDepth>5</udfDepth>
+                </operand>
+            </where>
+        </query>
+        <query id="testWhere">
+            <select/>
+            <from/>
+            <where>
+                <operand subQuery="whereSimpleQuery">
+                    <column>
+                        <udfDepth>3</udfDepth>
+                    </column>
+                    <const>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </const>
+                </operand>
+            </where>
         </query>
     </test>
 
@@ -123,11 +163,11 @@
                     <operand>
                         <subQuery>simpleQuery</subQuery>
                     </operand>
-                    <condition udfDepth="1">
+                    <condition>
                         <udfConfig>
                             <udfList possibility="1">AND</udfList>
                         </udfConfig>
-                        <const udfDepth="1">
+                        <const>
                             <udfConfig>
                                 <udfList possibility="1">EQ</udfList>
                             </udfConfig>
@@ -145,11 +185,11 @@
     </test>
 
     <test>
-        <query num="1000" id="test">
+        <query num="100" id="testSelect">
             <select>
                 <operand type="int">
-                    <column udfDepth="1"/>
-                    <const udfDepth="3">
+                    <column/>
+                    <const>
                         <udfConfig>
                             <udfList possibility="1">PLUS</udfList>
                         </udfConfig>

@@ -6,11 +6,9 @@ import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.type.GenerationDataType;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,9 +17,12 @@ import java.util.List;
  * <h3></h3>
  * The default value is from xsd file
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class ExprConfig implements DefaultConfig<ExprConfig> {
 
-  private List<ExprConfig> operands;
+  private static final int NO_NESTED_UDF_DEPTH = 1;
+  private static final int HAS_NESTED_UDF_DEPTH = 1;
+  private List<ExprConfig> operands = new ArrayList<>();
 
   private UdfFilter udfFilter = new UdfFilter();
 
@@ -32,6 +33,9 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private QueryConfig subQuery;
 
+  /*
+  ---------------------- generate field -----------------
+   */
   private List<Table> src;
   private List<Table> candidates;
 
@@ -78,7 +82,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     this.udfFilter = udfFilter;
   }
 
-  @XmlAttribute
+  @XmlElement
   public int getUdfDepth() {
     return udfDepth;
   }
@@ -116,12 +120,21 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   public boolean hasNestedConfig() {
-    return operands != null && !operands.isEmpty();
+    return !operands.isEmpty();
   }
 
   @Override
   public boolean lackChildConfig() {
-    return src == null;
+    return udfDepth == 0 || src == null || opsConfig();
+  }
+
+  private boolean opsConfig() {
+    for (ExprConfig operand : operands) {
+      if (operand.lackChildConfig()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public QueryConfig getSubQuery(GenerationDataType dataType) {
@@ -134,14 +147,22 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public ExprConfig addDefaultConfig() {
+    assert src != null;
+    if (!hasNestedConfig()) {
+      udfDepth = NO_NESTED_UDF_DEPTH;
+      return this;
+    } else {
+      udfDepth = HAS_NESTED_UDF_DEPTH;
+    }
+    for (ExprConfig operand : operands) {
+      operand.setFrom(src);
+    }
     return this;
   }
 
   public ExprConfig setFrom(List<Table> tables) {
-    if (hasNestedConfig()) {
-      for (ExprConfig operand : operands) {
-        operand.setFrom(tables);
-      }
+    for (ExprConfig operand : operands) {
+      operand.setFrom(tables);
     }
     src = tables;
     return this;
@@ -149,10 +170,8 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public ExprConfig setCandidates(List<Table> candidates) {
-    if (hasNestedConfig()) {
-      for (ExprConfig operand : operands) {
-        operand.setCandidates(candidates);
-      }
+    for (ExprConfig operand : operands) {
+      operand.setCandidates(candidates);
     }
     if (subQuery != null) {
       subQuery.setCandidates(candidates);
@@ -161,7 +180,11 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return this;
   }
 
-  public List<Table> getTables() {
+  public List<Table> getFrom() {
     return src;
+  }
+
+  public static ExprConfig defaultExpr(ExprConfig config) {
+    return new ExprConfig(config.getFrom(), config.candidates);
   }
 }

@@ -37,18 +37,25 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
 
   @Override
   public FilterOperatorConfig setCandidates(List<Table> candidates) {
+    if (operand != null) {
+      operand.setCandidates(candidates);
+    }
     this.candidates = candidates;
     return this;
   }
 
   @Override
   public boolean lackChildConfig() {
-    return operand == null;
+    return operand == null || operand.lackChildConfig();
   }
 
   @Override
   public FilterOperatorConfig addDefaultConfig() {
-    operand = new ExprConfig(src, candidates);
+    if (operand == null) {
+      operand = new ExprConfig(src, candidates);
+    } else {
+      operand.addDefaultConfig();
+    }
     return this;
   }
 }

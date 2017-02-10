@@ -25,7 +25,9 @@ public interface DefaultConfig<T> {
   boolean lackChildConfig();
 
   /**
-   * default behaviour is to invoke {@link #setFrom(List)} on child element
+   * default behaviour is
+   * <li>to check children's {@link #lackChildConfig()}</li>
+   * <li>to invoke {@link #setFrom(List)} on child element</li>
    */
   T addDefaultConfig();
 

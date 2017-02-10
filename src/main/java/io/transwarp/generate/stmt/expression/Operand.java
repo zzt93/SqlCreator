@@ -51,7 +51,7 @@ public class Operand {
         nextConfig = config.getOperands();
         // use nested config later to reuse code
       } else {
-        final Optional<Column> col = TableUtil.sameTypeRandomCol(config.getTables(), resultType);
+        final Optional<Column> col = TableUtil.sameTypeRandomCol(config.getFrom(), resultType);
         if (col.isPresent()) {
           final Column column = col.get();
           return new Operand(resultType, column.getNameOrConst(GlobalConfig.getCmpBase()));
@@ -69,9 +69,11 @@ public class Operand {
     final GenerationDataType[] nextResultType = config.getInputRelation().refine(inputs);
     if (nextConfig != null) {
       for (int i = 0; i < nextResultType.length; i++) {
-        ExprConfig nextC = new ExprConfig();
+        ExprConfig nextC;
         if (i < nextConfig.size()) {
           nextC = nextConfig.get(i);
+        } else {
+          nextC = ExprConfig.defaultExpr(config);
         }
         ops[i] = makeOperand(nextResultType[i], nextC, nextC.getUdfDepth());
       }

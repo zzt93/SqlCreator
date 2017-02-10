@@ -14,6 +14,19 @@
                 </join>
             </from>
         </query>
+        <query id="testWhereQuery">
+            <select/>
+            <from/>
+            <where>
+                <operand subQuery="simpleQuery"/>
+            </where>
+        </query>
+
+        <query id="simpleQuery" queryDepth="2" num="0">
+            <select/>
+            <from/>
+            <where/>
+        </query>
 
     </test>
 

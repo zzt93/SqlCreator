@@ -116,28 +116,29 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:simpleType name="depthInt">
+        <xs:annotation>
+            <xs:appinfo>Sql Generator Note</xs:appinfo>
+            <xs:documentation xml:lang="en">
+                this attribute not affect the depth of containing recursive exprConfig depth settings
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:unsignedByte">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="10"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:complexType name="exprConfig">
-        <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element name="expr" type="exprConfig"/>
-            <xs:element name="const" type="const"/>
-            <xs:element name="column" type="column"/>
-            <xs:element name="udfConfig" maxOccurs="1" minOccurs="0" type="udfConfig"/>
+        <xs:choice minOccurs="0">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="expr" type="exprConfig"/>
+                <xs:element name="const" type="const"/>
+                <xs:element name="column" type="column"/>
+                <xs:element name="udfConfig" maxOccurs="1" minOccurs="0" type="udfConfig"/>
+            </xs:choice>
+            <xs:element name="udfDepth" type="depthInt"/>
         </xs:choice>
-        <xs:attribute name="udfDepth" default="3">
-            <xs:simpleType>
-                <xs:annotation>
-                    <xs:appinfo>Sql Generator Note</xs:appinfo>
-                    <xs:documentation xml:lang="en">
-                        this attribute not affect the depth of containing recursive exprConfig depth settings
-                    </xs:documentation>
-                </xs:annotation>
-                <xs:restriction base="xs:unsignedByte">
-                    <xs:minInclusive value="1"/>
-                    <xs:maxInclusive value="10"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:attribute>
         <xs:attribute name="subQuery" type="xs:IDREF">
             <xs:annotation xml:lang="en">
                 <xs:appinfo>Sql Generator Note</xs:appinfo>
@@ -147,7 +148,7 @@
             </xs:annotation>
         </xs:attribute>
         <xs:attribute name="desc" type="xs:string"/>
-        <xs:attribute name="constOrColumnPossibility" type="xs:double" default="0.5"/>
+        <xs:attribute name="constOrColumnPossibility" type="possibility" default="0.5"/>
         <xs:attribute name="inputRelation" default="SAME">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -171,20 +172,28 @@
     <xs:complexType name="const">
         <xs:complexContent>
             <xs:restriction base="exprConfig">
-                <xs:all>
-                    <xs:element name="udfConfig" type="udfConfig" maxOccurs="1"/>
-                </xs:all>
-                <xs:attribute name="constOrColumnPossibility" fixed="1" type="xs:double"/>
+                <xs:choice>
+                    <xs:choice maxOccurs="unbounded">
+                        <xs:element name="const" type="const"/>
+                        <xs:element name="udfConfig" type="udfConfig" maxOccurs="1"/>
+                    </xs:choice>
+                    <xs:element name="udfDepth" type="depthInt"/>
+                </xs:choice>
+                <xs:attribute name="constOrColumnPossibility" fixed="1" type="possibility"/>
             </xs:restriction>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="column">
         <xs:complexContent>
             <xs:restriction base="exprConfig">
-                <xs:all>
-                    <xs:element name="udfConfig" type="udfConfig" maxOccurs="1" minOccurs="0"/>
-                </xs:all>
-                <xs:attribute name="constOrColumnPossibility" fixed="0" type="xs:double"/>
+                <xs:choice>
+                    <xs:choice maxOccurs="unbounded">
+                        <xs:element name="column" type="column"/>
+                        <xs:element name="udfConfig" type="udfConfig" maxOccurs="1" minOccurs="0"/>
+                    </xs:choice>
+                    <xs:element name="udfDepth" type="depthInt"/>
+                </xs:choice>
+                <xs:attribute name="constOrColumnPossibility" fixed="0" type="possibility"/>
             </xs:restriction>
         </xs:complexContent>
     </xs:complexType>

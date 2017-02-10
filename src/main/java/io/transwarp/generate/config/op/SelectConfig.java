@@ -33,18 +33,19 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
    */
   private List<Table> src, candidates;
   private Possibility useStar = Possibility.HALF;
+  private int size = 0;
 
   public SelectConfig() {
   }
 
   public SelectConfig(List<Table> fromObj) {
-    this.src = fromObj;
+    setFrom(fromObj);
     addDefaultConfig();
   }
 
   public SelectConfig(List<Table> fromObj, GenerationDataType dataType) {
-    src = fromObj;
-    operands = Lists.newArrayList(new TypedExprConfig(fromObj, fromObj, dataType));
+    setFrom(fromObj);
+    setOperands(Lists.newArrayList(new TypedExprConfig(fromObj, fromObj, dataType)));
   }
 
   @XmlElement(name = "operand")
@@ -53,8 +54,8 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   public void setOperands(List<TypedExprConfig> operands) {
-
     this.operands = operands;
+    size += operands.size();
   }
 
   @XmlIDREF
@@ -65,6 +66,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setQueries(List<QueryConfig> queries) {
     this.queries = queries;
+    size += queries.size();
   }
 
   @XmlElement
@@ -75,6 +77,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setSelectNum(int selectNum) {
     this.selectNum = selectNum;
+    size = selectNum;
   }
 
 
@@ -87,13 +90,13 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   public boolean lackChildConfig() {
-    return selectNum == 0 &&
+    return !selectNum() &&
         (operands.isEmpty() && queries.isEmpty());
   }
 
   @Override
   public SelectConfig addDefaultConfig() {
-    selectNum = SelectNumAdapter.SELECT_ALL;
+    setSelectNum(SelectNumAdapter.SELECT_ALL);
     return this;
   }
 
@@ -132,5 +135,9 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setUseStar(Possibility useStar) {
     this.useStar = useStar;
+  }
+
+  public int size() {
+    return size;
   }
 }

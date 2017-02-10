@@ -5,6 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.ExprConfig;
+import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
 
 import java.util.List;
@@ -43,8 +44,11 @@ public class ListDataType extends SequenceDataType {
       }
       return res;
     }
-    // TODO 1/20/17 add subQuery check
-    final SelectResult selectResult = SelectResult.generateQuery(config.getSubQuery(getType()));
+    final QueryConfig subQuery = config.getSubQuery(getType());
+    if (subQuery.getSelect().size() != 1) {
+      throw new IllegalArgumentException("SubQuery in where statement has more than one column: " + subQuery.getId());
+    }
+    final SelectResult selectResult = SelectResult.generateQuery(subQuery);
     return selectResult.subQueries(dialects);
   }
 
