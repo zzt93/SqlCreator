@@ -46,7 +46,7 @@ public class ConfigUnmarshallerTest {
   public void generationError() throws Exception {
     boolean rightError = false;
     try {
-      GlobalConfig parse = getGlobalConfig("src/main/resources/generationError.xml");
+      GlobalConfig parse = getGlobalConfig("src/test/resources/generationError.xml");
       for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
         for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
           stmtConfig.generate(GlobalConfig.getCmpBase());
@@ -62,7 +62,7 @@ public class ConfigUnmarshallerTest {
   public void parseError() throws Exception {
     boolean rightError = false;
     try {
-      getGlobalConfig("src/main/resources/parseError.xml");
+      getGlobalConfig("src/test/resources/parseError.xml");
     } catch (ValidationException e) {
 //          ("The content of element 'operand' is not complete. One of '{subQuery, tableName}' is expected.");
       e.printStackTrace();
