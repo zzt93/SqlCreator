@@ -144,7 +144,7 @@ public enum DataTypeGroup implements GenerationDataType {
       list.addAll(group.types);
     }
     this.types = list;
-    this.typeCount = types.length;
+    this.typeCount = list.size();
   }
 
 

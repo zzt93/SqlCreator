@@ -56,7 +56,7 @@ public interface Function {
    * @param input   parameter  @return result
    * @see ParenWrapper
    * @see GenerationDataType#randomData(Dialect[]) -- generation should in one method call
-   * @see io.transwarp.generate.common.Column#getNameOrConst(Dialect[]) -- generation put in one call
+   * @see io.transwarp.generate.common.Column#getNameOrConst(Dialect[], io.transwarp.generate.config.Possibility) -- generation put in one call
    */
   Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input);
 

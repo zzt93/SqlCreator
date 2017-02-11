@@ -2,6 +2,8 @@ package io.transwarp.generate.config.expr;
 
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.DefaultConfig;
+import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.expr.adapter.PossibilityAdapter;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.type.GenerationDataType;
@@ -26,12 +28,12 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private UdfFilter udfFilter = new UdfFilter();
 
-  private int udfDepth = 3;
+  private int udfDepth = NO_NESTED_UDF_DEPTH;
   private String desc;
-  private double constOrColumnPossibility = 0.5;
+  private Possibility constOrColumnPossibility = Possibility.HALF;
   private InputRelation inputRelation = InputRelation.SAME;
 
-  private QueryConfig subQuery;
+  private QueryConfig candidateQuery;
 
   /*
   ---------------------- generate field -----------------
@@ -50,12 +52,12 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @XmlAttribute
   @XmlIDREF
-  public QueryConfig getSubQuery() {
-    return subQuery;
+  public QueryConfig getCandidateQuery() {
+    return candidateQuery;
   }
 
-  public void setSubQuery(QueryConfig subQuery) {
-    this.subQuery = subQuery;
+  public void setCandidateQuery(QueryConfig candidateQuery) {
+    this.candidateQuery = candidateQuery;
   }
 
   @XmlElements({
@@ -102,11 +104,12 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   @XmlAttribute
-  public double getConstOrColumnPossibility() {
+  @XmlJavaTypeAdapter(PossibilityAdapter.class)
+  public Possibility getConstOrColumnPossibility() {
     return constOrColumnPossibility;
   }
 
-  public void setConstOrColumnPossibility(double constOrColumnPossibility) {
+  public void setConstOrColumnPossibility(Possibility constOrColumnPossibility) {
     this.constOrColumnPossibility = constOrColumnPossibility;
   }
 
@@ -125,7 +128,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return udfDepth == 0 || src == null || opsConfig();
+    return src == null || opsConfig();
   }
 
   private boolean opsConfig() {
@@ -139,23 +142,20 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   public QueryConfig getSubQuery(GenerationDataType dataType) {
     assert candidates != null;
-    if (subQuery == null) {
-      subQuery = QueryConfig.defaultWhereExpr(candidates, dataType);
+    if (candidateQuery == null) {
+      candidateQuery = QueryConfig.defaultWhereExpr(candidates, dataType);
     }
-    return subQuery;
+    return candidateQuery;
   }
 
   @Override
   public ExprConfig addDefaultConfig() {
     assert src != null;
-    if (!hasNestedConfig()) {
-      udfDepth = NO_NESTED_UDF_DEPTH;
-      return this;
-    } else {
+    if (hasNestedConfig()) {
       udfDepth = HAS_NESTED_UDF_DEPTH;
-    }
-    for (ExprConfig operand : operands) {
-      operand.setFrom(src);
+      for (ExprConfig operand : operands) {
+        operand.setFrom(src);
+      }
     }
     return this;
   }
@@ -173,8 +173,8 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     for (ExprConfig operand : operands) {
       operand.setCandidates(candidates);
     }
-    if (subQuery != null) {
-      subQuery.setCandidates(candidates);
+    if (candidateQuery != null) {
+      candidateQuery.setCandidates(candidates);
     }
     this.candidates = candidates;
     return this;

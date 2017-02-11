@@ -54,7 +54,8 @@ public class Operand {
         final Optional<Column> col = TableUtil.sameTypeRandomCol(config.getFrom(), resultType);
         if (col.isPresent()) {
           final Column column = col.get();
-          return new Operand(resultType, column.getNameOrConst(GlobalConfig.getCmpBase()));
+          return new Operand(resultType,
+              column.getNameOrConst(GlobalConfig.getCmpBase(), config.getConstOrColumnPossibility()));
         } else {
           if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
             return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getCmpBase()));

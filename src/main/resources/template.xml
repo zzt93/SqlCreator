@@ -6,6 +6,25 @@
         <updateStmt id="update"/>
     </test>
 
+    <test>
+        <query id="testOperandGeneration">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">EQ</udfList>
+                    </udfConfig>
+                    <column>
+                        <udfDepth>0</udfDepth>
+                    </column>
+                    <const>
+                        <udfDepth>0</udfDepth>
+                    </const>
+                </operand>
+            </where>
+        </query>
+    </test>
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
         <query id="intQuery" queryDepth="1" num="0">
@@ -122,7 +141,7 @@
             <select/>
             <from/>
             <where>
-                <operand subQuery="whereSimpleQuery"/>
+                <operand candidateQuery="whereSimpleQuery"/>
             </where>
         </query>
         <query id="testWhereDepth">
@@ -138,7 +157,7 @@
             <select/>
             <from/>
             <where>
-                <operand subQuery="whereSimpleQuery">
+                <operand candidateQuery="whereSimpleQuery">
                     <column>
                         <udfDepth>3</udfDepth>
                     </column>

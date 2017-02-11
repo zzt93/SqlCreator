@@ -123,8 +123,8 @@
                 this attribute not affect the depth of containing recursive exprConfig depth settings
             </xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:unsignedByte">
-            <xs:minInclusive value="1"/>
+        <xs:restriction base="xs:byte">
+            <xs:minInclusive value="0"/>
             <xs:maxInclusive value="10"/>
         </xs:restriction>
     </xs:simpleType>
@@ -139,7 +139,7 @@
             </xs:choice>
             <xs:element name="udfDepth" type="depthInt"/>
         </xs:choice>
-        <xs:attribute name="subQuery" type="xs:IDREF">
+        <xs:attribute name="candidateQuery" type="xs:IDREF">
             <xs:annotation xml:lang="en">
                 <xs:appinfo>Sql Generator Note</xs:appinfo>
                 <xs:documentation xml:lang="en">

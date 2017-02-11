@@ -15,7 +15,6 @@ import io.transwarp.generate.type.GenerationDataType;
 public class Column {
 
   private static final String EMPTY = "";
-  private final Possibility poss;
 
   private final Operand operand;
   private final String alias;
@@ -28,7 +27,6 @@ public class Column {
   private Column(Operand operand, String alias) {
     this.operand = operand;
     this.alias = alias;
-    poss = Possibility.COL_CONST_POSSIBILITY;
   }
 
   public Column(String name, GenerationDataType type, Table table) {
@@ -41,7 +39,7 @@ public class Column {
     this.table = table;
   }
 
-  public String[] getNameOrConst(Dialect[] dialects) {
+  public String[] getNameOrConst(Dialect[] dialects, Possibility poss) {
     if (poss.chooseFirstOrRandom(true, false)) {
       return operand.sqls(dialects);
     }
