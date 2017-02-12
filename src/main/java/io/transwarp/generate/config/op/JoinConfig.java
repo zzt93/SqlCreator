@@ -28,7 +28,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   public JoinConfig(List<Table> candidates) {
     this.candidates = candidates;
-    addDefaultConfig();
+    addDefaultConfig(candidates, from);
   }
 
   @XmlElement
@@ -57,12 +57,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   @Override
   public JoinConfig setCandidates(List<Table> candidates) {
-    for (RelationConfig operand : operands) {
-      operand.setCandidates(candidates);
-    }
-    if (condition != null) {
-      condition.setCandidates(candidates);
-    }
+
     this.candidates = candidates;
     return this;
   }
@@ -100,28 +95,30 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   }
 
   @Override
-  public JoinConfig addDefaultConfig() {
+  public JoinConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    setCandidates(candidates);
+
     if (!lackChildConfig()) {
       return this;
     }
-    assert candidates != null;
+    assert this.candidates != null;
     for (int i = 0; i < JOIN_OP_NUM; i++) {
       if (i < operands.size()) {
         final RelationConfig config = operands.get(i);
         if (config.lackChildConfig()) {
-          config.addDefaultConfig();
+          config.addDefaultConfig(candidates, null);
         }
       } else {
-        operands.add(new RelationConfig(candidates));
+        operands.add(new RelationConfig(this.candidates));
       }
     }
 
     initFrom();
 
     if (condition == null) {
-      condition = new ExprConfig(from, candidates);
+      condition = new ExprConfig(this.from, this.candidates);
     } else {
-      condition.setFrom(from);
+      condition.addDefaultConfig(candidates, this.from);
     }
     return this;
   }

@@ -38,9 +38,8 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   public SelectConfig() {
   }
 
-  public SelectConfig(List<Table> fromObj) {
-    setFrom(fromObj);
-    addDefaultConfig();
+  public SelectConfig(List<Table> candidates, List<Table> from) {
+    addDefaultConfig(candidates, from);
   }
 
   public SelectConfig(List<Table> fromObj, GenerationDataType dataType) {
@@ -95,15 +94,22 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   @Override
-  public SelectConfig addDefaultConfig() {
+  public SelectConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    setCandidates(candidates);
+    setFrom(from);
+
+    for (TypedExprConfig operand : operands) {
+      operand.addDefaultConfig(candidates, from);
+    }
+    for (QueryConfig query : queries) {
+      query.addDefaultConfig(candidates, from);
+    }
+
     setSelectNum(SelectNumAdapter.SELECT_ALL);
     return this;
   }
 
   public SelectConfig setFrom(List<Table> from) {
-    for (TypedExprConfig operand : operands) {
-      operand.setFrom(from);
-    }
     // no need to setFrom for child QueryConfig, it will be set by itself
     src = from;
     return this;
@@ -111,12 +117,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   @Override
   public SelectConfig setCandidates(List<Table> candidates) {
-    for (TypedExprConfig operand : operands) {
-      operand.setCandidates(candidates);
-    }
-    for (QueryConfig query : queries) {
-      query.setCandidates(candidates);
-    }
     this.candidates = candidates;
     return this;
   }

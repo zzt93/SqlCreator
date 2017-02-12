@@ -26,9 +26,8 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   public FromConfig() {
   }
 
-  FromConfig(List<Table> tables) {
-    setCandidates(tables);
-    addDefaultConfig();
+  FromConfig(List<Table> candidates) {
+    addDefaultConfig(candidates, null);
   }
 
   @XmlElement
@@ -56,9 +55,6 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   @Override
   public FromConfig setCandidates(List<Table> candidates) {
-    if (join != null) {
-      join.setCandidates(candidates);
-    }
     this.candidates = candidates;
     return this;
   }
@@ -96,17 +92,20 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   @Override
-  public FromConfig addDefaultConfig() {
+  public FromConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    setCandidates(candidates);
+
     // check children first
     if (join != null) {
-      join.addDefaultConfig();
+      join.addDefaultConfig(candidates, null);
     } else {
       joinTimes = 1;
     }
     // generate father node then
     if (fromObj.isEmpty()) {
-      initFromObj(candidates);
+      initFromObj(this.candidates);
     }
+
     return this;
   }
 

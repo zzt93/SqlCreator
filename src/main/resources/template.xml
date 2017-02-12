@@ -7,7 +7,7 @@
     </test>
 
     <test>
-        <query id="testOperandGeneration">
+        <query id="testOperandGeneration0">
             <select/>
             <from/>
             <where>
@@ -20,6 +20,42 @@
                     </column>
                     <const>
                         <udfDepth>0</udfDepth>
+                    </const>
+                </operand>
+            </where>
+        </query>
+        <query id="testOperandGeneration1">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">EQ</udfList>
+                    </udfConfig>
+                </operand>
+            </where>
+        </query>
+        <query id="testOperandGeneration">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">AND</udfList>
+                    </udfConfig>
+                    <column>
+                        <udfDepth>3</udfDepth>
+                    </column>
+                    <const>
+                        <udfConfig>
+                            <udfList possibility="1">EQ</udfList>
+                        </udfConfig>
+                        <const>
+                            <udfDepth>0</udfDepth>
+                        </const>
+                        <const>
+                            <udfDepth>0</udfDepth>
+                        </const>
                     </const>
                 </operand>
             </where>

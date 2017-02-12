@@ -30,8 +30,7 @@ public class QueryConfig extends StmtConfig {
   }
 
   private QueryConfig(List<Table> candidates) {
-    setCandidates(candidates);
-    addDefaultConfig();
+    addDefaultConfig(candidates, null);
   }
 
   @XmlAttribute
@@ -45,7 +44,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
-    GlobalConfig.checkConfig(select, from.getFromObj());
+    GlobalConfig.checkConfig(select, super.getCandidates(), from.getFromObj());
     return select;
   }
 
@@ -55,7 +54,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FilterOperatorConfig getWhere() {
-    GlobalConfig.checkConfig(where, from.getFromObj());
+    GlobalConfig.checkConfig(where, super.getCandidates(), from.getFromObj());
     return where;
   }
 
@@ -86,22 +85,18 @@ public class QueryConfig extends StmtConfig {
     return from;
   }
 
-  private void initFrom() {
-    if (from.lackChildConfig()) {
-      from.addDefaultConfig();
-    }
-  }
 
   public void setFrom(FromConfig from) {
-    this.from = from.setCandidates(getCandidates());
-    initFrom();
+    this.from = from.addDefaultConfig(getCandidates(), null);
   }
 
   @Override
-  public QueryConfig addDefaultConfig() {
-    List<Table> candidates = getCandidates();
+  public QueryConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    assert from == null && candidates != null;
+    setCandidates(candidates);
+
     setFrom(new FromConfig(candidates));
-    setSelect(new SelectConfig(getFrom().getFromObj()));
+    setSelect(new SelectConfig(candidates, getFrom().getFromObj()));
     return this;
   }
 

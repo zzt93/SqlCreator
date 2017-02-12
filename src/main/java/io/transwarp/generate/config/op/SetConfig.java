@@ -49,7 +49,7 @@ public class SetConfig implements DefaultConfig<SetConfig> {
   }
 
   @Override
-  public SetConfig addDefaultConfig() {
+  public SetConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     return null;
   }
 

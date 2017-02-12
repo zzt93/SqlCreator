@@ -91,7 +91,7 @@ public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
   }
 
   @Override
-  public StmtConfig addDefaultConfig() {
+  public StmtConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     return this;
   }
 

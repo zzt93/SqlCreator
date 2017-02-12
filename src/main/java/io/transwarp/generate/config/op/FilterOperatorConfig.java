@@ -50,11 +50,11 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
   }
 
   @Override
-  public FilterOperatorConfig addDefaultConfig() {
+  public FilterOperatorConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     if (operand == null) {
-      operand = new ExprConfig(src, candidates);
+      operand = new ExprConfig(src, this.candidates);
     } else {
-      operand.addDefaultConfig();
+      operand.addDefaultConfig(candidates, from);
     }
     return this;
   }

@@ -46,11 +46,10 @@ public class GlobalConfig {
     return randomStrMaxLen;
   }
 
-  public static <T extends DefaultConfig<T>> void checkConfig(DefaultConfig<T> defaultConfig, List<Table> from) {
+  public static <T extends DefaultConfig<T>> void checkConfig(DefaultConfig<T> defaultConfig, List<Table> candidates, List<Table> from) {
     if (defaultConfig != null) {
-      defaultConfig.setFrom(from);
       if (defaultConfig.lackChildConfig()) {
-        defaultConfig.addDefaultConfig();
+        defaultConfig.addDefaultConfig(candidates, from);
       }
     }
   }

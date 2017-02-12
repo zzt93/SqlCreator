@@ -53,7 +53,8 @@ public class TypedExprConfig extends ExprConfig {
   }
 
   @Override
-  public TypedExprConfig addDefaultConfig() {
+  public TypedExprConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    super.addDefaultConfig(candidates, from);
     setTypes(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST.types().toArray(new GenerationDataType[0]));
     return this;
   }

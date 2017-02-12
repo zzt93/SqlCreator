@@ -32,8 +32,7 @@ public class RelationConfig extends SetConfig {
   }
 
   RelationConfig(List<Table> candidates) {
-    setCandidates(candidates);
-    addDefaultConfig();
+    addDefaultConfig(candidates, null);
   }
 
   @XmlElement
@@ -62,14 +61,16 @@ public class RelationConfig extends SetConfig {
   }
 
   @Override
-  public RelationConfig addDefaultConfig() {
+  public RelationConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    setCandidates(candidates);
+
     assert lackChildConfig();
     if (joinedTable != null) {
-      joinedTable.addDefaultConfig();
+      joinedTable.addDefaultConfig(candidates, from);
       return this;
     }
     if (getSubQuery() != null) {
-      getSubQuery().addDefaultConfig();
+      getSubQuery().addDefaultConfig(candidates, from);
       return this;
     }
 
@@ -89,9 +90,6 @@ public class RelationConfig extends SetConfig {
 
   @Override
   public SetConfig setCandidates(List<Table> candidates) {
-    if (joinedTable != null) {
-      joinedTable.setCandidates(candidates);
-    }
     return super.setCandidates(candidates);
   }
 

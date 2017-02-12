@@ -26,10 +26,13 @@ public interface DefaultConfig<T> {
 
   /**
    * default behaviour is
+   * <li>{@link #setCandidates(List)}</li>
    * <li>to check children's {@link #lackChildConfig()}</li>
    * <li>to invoke {@link #setFrom(List)} on child element</li>
+   * @param candidates
+   * @param from
    */
-  T addDefaultConfig();
+  T addDefaultConfig(List<Table> candidates, List<Table> from);
 
   /**
    * <li>set from after init tables in {@link io.transwarp.generate.config.stmt.FromConfig}</li>

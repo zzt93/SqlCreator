@@ -23,12 +23,13 @@ import java.util.List;
 public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private static final int NO_NESTED_UDF_DEPTH = 1;
-  private static final int HAS_NESTED_UDF_DEPTH = 1;
+  private static final int HAS_NESTED_UDF_DEPTH = 0;
+  public static final int INVALID = -1;
   private List<ExprConfig> operands = new ArrayList<>();
 
   private UdfFilter udfFilter = new UdfFilter();
 
-  private int udfDepth = NO_NESTED_UDF_DEPTH;
+  private int udfDepth = INVALID;
   private String desc;
   private Possibility constOrColumnPossibility = Possibility.HALF;
   private InputRelation inputRelation = InputRelation.SAME;
@@ -47,7 +48,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   public ExprConfig(List<Table> src, List<Table> candidates) {
     this.src = src;
     this.candidates = candidates;
-    addDefaultConfig();
+    addDefaultConfig(candidates, src);
   }
 
   @XmlAttribute
@@ -128,10 +129,11 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return src == null || opsConfig();
+    return src == null || udfDepth == INVALID
+        || recursiveConfig();
   }
 
-  private boolean opsConfig() {
+  private boolean recursiveConfig() {
     for (ExprConfig operand : operands) {
       if (operand.lackChildConfig()) {
         return true;
@@ -149,33 +151,32 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   @Override
-  public ExprConfig addDefaultConfig() {
+  public ExprConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    setCandidates(candidates);
+    setFrom(from);
+
     assert src != null;
     if (hasNestedConfig()) {
       udfDepth = HAS_NESTED_UDF_DEPTH;
       for (ExprConfig operand : operands) {
-        operand.setFrom(src);
+        operand.addDefaultConfig(candidates, from);
       }
+    } else {
+      udfDepth = NO_NESTED_UDF_DEPTH;
+    }
+    if (candidateQuery != null) {
+      candidateQuery.addDefaultConfig(candidates, from);
     }
     return this;
   }
 
   public ExprConfig setFrom(List<Table> tables) {
-    for (ExprConfig operand : operands) {
-      operand.setFrom(tables);
-    }
     src = tables;
     return this;
   }
 
   @Override
   public ExprConfig setCandidates(List<Table> candidates) {
-    for (ExprConfig operand : operands) {
-      operand.setCandidates(candidates);
-    }
-    if (candidateQuery != null) {
-      candidateQuery.setCandidates(candidates);
-    }
     this.candidates = candidates;
     return this;
   }
