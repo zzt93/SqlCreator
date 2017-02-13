@@ -23,12 +23,12 @@ public class TypedExprConfig extends ExprConfig {
   public TypedExprConfig() {
   }
 
-  public TypedExprConfig(List<Table> from, List<Table> candidates) {
-    super(from, candidates);
+  public TypedExprConfig(List<Table> candidates, List<Table> from) {
+    super(candidates, from);
   }
 
-  public TypedExprConfig(List<Table> fromObj, List<Table> candidates, GenerationDataType dataType) {
-    super(fromObj, candidates);
+  public TypedExprConfig(List<Table> candidates, List<Table> fromObj, GenerationDataType dataType) {
+    super(candidates, fromObj);
     finalType = dataType;
   }
 

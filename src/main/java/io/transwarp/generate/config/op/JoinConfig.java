@@ -116,7 +116,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
     initFrom();
 
     if (condition == null) {
-      condition = new ExprConfig(this.from, this.candidates);
+      condition = new ExprConfig(this.candidates, this.from);
     } else {
       condition.addDefaultConfig(candidates, this.from);
     }

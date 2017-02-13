@@ -29,13 +29,13 @@ public class SelectListStmt implements SqlGeneration {
       cols = TableUtil.columns(from);
       // use star or list all columns
       useStar = config.useStar().chooseFirstOrRandom(true, false);
-    } else if (config.selectNum()) {
+    } else if (config.setSelectNum()) {
       final int colLimit = config.getSelectNum();
       cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {
         final int num = colLimit - cols.size();
         for (int i = 0; i < num; i++) {
-          final TypedExprConfig typedExprConfig = new TypedExprConfig(from, config.getCandidatesTables());
+          final TypedExprConfig typedExprConfig = new TypedExprConfig(config.getCandidatesTables(), from);
           cols.addAll(Arrays.asList(Column.fromOperand(
               Operand.getOperands(1, typedExprConfig.getType(), typedExprConfig))));
         }

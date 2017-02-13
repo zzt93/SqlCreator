@@ -26,7 +26,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
    */
   private List<TypedExprConfig> operands = new ArrayList<>();
   private List<QueryConfig> queries = new ArrayList<>();
-  private int selectNum;
+  private int selectNum = 0;
 
   /*
   ------------ generation field ------------
@@ -84,13 +84,14 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return selectNum == SelectNumAdapter.SELECT_ALL;
   }
 
-  public boolean selectNum() {
+  public boolean setSelectNum() {
     return selectNum > 0;
   }
 
   public boolean lackChildConfig() {
-    return !selectNum() &&
-        (operands.isEmpty() && queries.isEmpty());
+    return candidates == null || src == null
+        || (!setSelectNum() &&
+        (operands.isEmpty() && queries.isEmpty()));
   }
 
   @Override
@@ -105,7 +106,9 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
       query.addDefaultConfig(candidates, from);
     }
 
-    setSelectNum(SelectNumAdapter.SELECT_ALL);
+    if (!setSelectNum()) {
+      setSelectNum(SelectNumAdapter.SELECT_ALL);
+    }
     return this;
   }
 

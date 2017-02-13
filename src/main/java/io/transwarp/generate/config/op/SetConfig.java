@@ -45,12 +45,18 @@ public class SetConfig implements DefaultConfig<SetConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return false;
+    return candidates == null;
   }
 
   @Override
   public SetConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    return null;
+    setCandidates(candidates);
+
+    if (subQuery != null) {
+      subQuery.addDefaultConfig(candidates, from);
+    }
+
+    return this;
   }
 
   public SetConfig setFrom(List<Table> tables) {
@@ -60,9 +66,6 @@ public class SetConfig implements DefaultConfig<SetConfig> {
 
   @Override
   public SetConfig setCandidates(List<Table> candidates) {
-    if (subQuery != null) {
-      subQuery.setCandidates(candidates);
-    }
     this.candidates = candidates;
     return this;
   }

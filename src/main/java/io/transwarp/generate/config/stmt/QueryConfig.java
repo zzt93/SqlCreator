@@ -30,6 +30,8 @@ public class QueryConfig extends StmtConfig {
   }
 
   private QueryConfig(List<Table> candidates) {
+    from = new FromConfig(candidates);
+    select = new SelectConfig(candidates, (List<Table>) null);
     addDefaultConfig(candidates, null);
   }
 
@@ -92,11 +94,11 @@ public class QueryConfig extends StmtConfig {
 
   @Override
   public QueryConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    assert from == null && candidates != null;
+    assert candidates != null;
     setCandidates(candidates);
 
-    setFrom(new FromConfig(candidates));
-    setSelect(new SelectConfig(candidates, getFrom().getFromObj()));
+    this.from.addDefaultConfig(candidates, null);
+    select.addDefaultConfig(candidates, getFrom().getFromObj());
     return this;
   }
 

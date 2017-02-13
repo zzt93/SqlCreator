@@ -55,16 +55,17 @@ public class RelationConfig extends SetConfig {
 
   @Override
   public boolean lackChildConfig() {
-    return tableName.equals(EMPTY)
+    return getCandidatesTables() == null
+        || (tableName.equals(EMPTY)
         && (getSubQuery() == null || getSubQuery().lackChildConfig())
-        && (joinedTable == null || joinedTable.lackChildConfig());
+        && (joinedTable == null || joinedTable.lackChildConfig()));
   }
 
   @Override
   public RelationConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    assert lackChildConfig();
     setCandidates(candidates);
 
-    assert lackChildConfig();
     if (joinedTable != null) {
       joinedTable.addDefaultConfig(candidates, from);
       return this;
@@ -88,10 +89,6 @@ public class RelationConfig extends SetConfig {
     return this;
   }
 
-  @Override
-  public SetConfig setCandidates(List<Table> candidates) {
-    return super.setCandidates(candidates);
-  }
 
   Table toTable() {
     if (!tableName.equals(EMPTY)) {

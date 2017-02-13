@@ -28,18 +28,12 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
   }
 
   public FilterOperatorConfig setFrom(List<Table> from) {
-    if (operand != null) {
-      operand.setFrom(from);
-    }
     this.src = from;
     return this;
   }
 
   @Override
   public FilterOperatorConfig setCandidates(List<Table> candidates) {
-    if (operand != null) {
-      operand.setCandidates(candidates);
-    }
     this.candidates = candidates;
     return this;
   }
@@ -51,8 +45,11 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
 
   @Override
   public FilterOperatorConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+    setCandidates(candidates);
+    setFrom(from);
+
     if (operand == null) {
-      operand = new ExprConfig(src, this.candidates);
+      operand = new ExprConfig(candidates, from);
     } else {
       operand.addDefaultConfig(candidates, from);
     }

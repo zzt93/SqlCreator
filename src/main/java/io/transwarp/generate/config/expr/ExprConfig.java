@@ -45,9 +45,9 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   public ExprConfig() {
   }
 
-  public ExprConfig(List<Table> src, List<Table> candidates) {
-    this.src = src;
+  public ExprConfig(List<Table> candidates, List<Table> src) {
     this.candidates = candidates;
+    this.src = src;
     addDefaultConfig(candidates, src);
   }
 
@@ -186,6 +186,6 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   public static ExprConfig defaultExpr(ExprConfig config) {
-    return new ExprConfig(config.getFrom(), config.candidates);
+    return new ExprConfig(config.candidates, config.getFrom());
   }
 }
