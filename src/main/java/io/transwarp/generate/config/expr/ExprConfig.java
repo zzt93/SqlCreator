@@ -22,9 +22,11 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ExprConfig implements DefaultConfig<ExprConfig> {
 
-  private static final int NO_NESTED_UDF_DEPTH = 1;
+  private static final int NO_NESTED_UDF_DEPTH = 3;
   private static final int HAS_NESTED_UDF_DEPTH = 0;
-  public static final int INVALID = -1;
+  private static final int NESTED_EXPR_UDF_DEPTH = 1;
+  private static final int INVALID = -1;
+
   private List<ExprConfig> operands = new ArrayList<>();
 
   private UdfFilter udfFilter = new UdfFilter();
@@ -185,7 +187,9 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return src;
   }
 
-  public static ExprConfig defaultExpr(ExprConfig config) {
-    return new ExprConfig(config.candidates, config.getFrom());
+  public static ExprConfig defaultNestedExpr(ExprConfig config) {
+    final ExprConfig exprConfig = new ExprConfig(config.candidates, config.getFrom());
+    exprConfig.setUdfDepth(NESTED_EXPR_UDF_DEPTH);
+    return exprConfig;
   }
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../main/resources/define.xsd">
+
+    <test>
+        <query id="selectQuery">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">COUNT</udfList>
+                    </udfConfig>
+                </operand>
+            </select>
+            <from/>
+        </query>
+        <query num="100" id="testSelect0">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <operand type="long">
+                    <columnExpr/>
+                    <columnExpr/>
+                </operand>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
+        <query num="100" id="testSelect">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <query>selectQuery</query>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
+    </test>
+
+
+</tests>

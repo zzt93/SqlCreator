@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="define.xsd">
+       xsi:noNamespaceSchemaLocation="../../main/resources/define.xsd">
 
     <test>
         <query id="testJoinInvalidTable">
@@ -14,11 +14,20 @@
                 </join>
             </from>
         </query>
-        <query id="testWhereQuery">
+        <query id="testInvalidWhereQuery">
             <select/>
             <from/>
             <where>
-                <operand subQuery="simpleQuery"/>
+                <operand candidateQuery="simpleQuery"/>
+            </where>
+        </query>
+        <query id="testInvalidSelectQuery">
+            <select>
+                <query>simpleQuery</query>
+            </select>
+            <from/>
+            <where>
+                <operand candidateQuery="simpleQuery"/>
             </where>
         </query>
 

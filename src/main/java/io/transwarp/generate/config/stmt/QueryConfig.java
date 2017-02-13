@@ -163,4 +163,12 @@ public class QueryConfig extends StmtConfig {
   public boolean hasWhere() {
     return where != null;
   }
+
+  public boolean whereQuery() {
+    return select.size() == 1;
+  }
+
+  public boolean selectQuery() {
+    return select.selectQuery();
+  }
 }

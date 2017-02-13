@@ -33,7 +33,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
    */
   private List<Table> src, candidates;
   private Possibility useStar = Possibility.HALF;
-  private int size = 0;
 
   public SelectConfig() {
   }
@@ -54,7 +53,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setOperands(List<TypedExprConfig> operands) {
     this.operands = operands;
-    size += operands.size();
+    selectNum += operands.size();
   }
 
   @XmlIDREF
@@ -65,7 +64,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setQueries(List<QueryConfig> queries) {
     this.queries = queries;
-    size += queries.size();
+    selectNum += queries.size();
   }
 
   @XmlElement
@@ -76,7 +75,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setSelectNum(int selectNum) {
     this.selectNum = selectNum;
-    size = selectNum;
   }
 
 
@@ -113,7 +111,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   public SelectConfig setFrom(List<Table> from) {
-    // no need to setFrom for child QueryConfig, it will be set by itself
     src = from;
     return this;
   }
@@ -141,6 +138,30 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   public int size() {
-    return size;
+    return selectNum;
+  }
+
+  /**
+   * <li>only one column -- operand
+   * <ul>
+   *   <li>not bool, not list</li>
+   * </ul>
+   * </li>
+   * <li>only one row -- oracle/mysql scalar operand
+   * <ul>
+   *   <li>limit 1(mysql); </li>
+   *   <li>aggregate function</li>
+   * </ul>
+   * </li>
+   *
+   * @return whether this is a valid selectList of a subQuery in selectList
+   */
+  public boolean selectQuery() {
+    if (operands.size() != 1 || size() != 1) {
+      return false;
+    }
+    final TypedExprConfig typedExprConfig = operands.get(0);
+//    typedExprConfig.
+    return true;
   }
 }

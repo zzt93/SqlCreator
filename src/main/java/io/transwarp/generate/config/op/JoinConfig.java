@@ -57,7 +57,6 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   @Override
   public JoinConfig setCandidates(List<Table> candidates) {
-
     this.candidates = candidates;
     return this;
   }

@@ -1,6 +1,7 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 /**
@@ -8,21 +9,25 @@ import io.transwarp.generate.type.GenerationDataType;
  * <p>
  * <h3></h3>
  */
-public enum  AggregateOp implements Function{
-  ;
+public enum AggregateOp implements Function {
+  COUNT, SUM, AVG, MIN, MAX;
 
   @Override
   public void register() {
-
+    FunctionMap.register(this, DataTypeGroup.NUM_GROUP);
   }
 
   @Override
   public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
-    return null;
+    for (Dialect dialect : dialects) {
+      input[0].sql(dialect)
+          .insert(0, name() + OPEN_PAREN).append(CLOSE_PAREN);
+    }
+    return input[0];
   }
 
   @Override
   public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-    return new GenerationDataType[0];
+    return new GenerationDataType[]{DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST};
   }
 }

@@ -133,8 +133,8 @@
         <xs:choice minOccurs="0">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="expr" type="exprConfig"/>
-                <xs:element name="const" type="const"/>
-                <xs:element name="column" type="column"/>
+                <xs:element name="constExpr" type="const"/>
+                <xs:element name="columnExpr" type="column"/>
                 <xs:element name="udfConfig" maxOccurs="1" minOccurs="0" type="udfConfig"/>
             </xs:choice>
             <xs:element name="udfDepth" type="depthInt"/>
@@ -174,7 +174,7 @@
             <xs:restriction base="exprConfig">
                 <xs:choice>
                     <xs:choice maxOccurs="unbounded">
-                        <xs:element name="const" type="const"/>
+                        <xs:element name="constExpr" type="const"/>
                         <xs:element name="udfConfig" type="udfConfig" maxOccurs="1"/>
                     </xs:choice>
                     <xs:element name="udfDepth" type="depthInt"/>
@@ -188,7 +188,7 @@
             <xs:restriction base="exprConfig">
                 <xs:choice>
                     <xs:choice maxOccurs="unbounded">
-                        <xs:element name="column" type="column"/>
+                        <xs:element name="columnExpr" type="column"/>
                         <xs:element name="udfConfig" type="udfConfig" maxOccurs="1" minOccurs="0"/>
                     </xs:choice>
                     <xs:element name="udfDepth" type="depthInt"/>

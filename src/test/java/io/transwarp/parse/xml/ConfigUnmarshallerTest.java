@@ -39,23 +39,25 @@ public class ConfigUnmarshallerTest {
   }
 
   public static GlobalConfig getGlobalConfig() throws IOException, ValidationException {
-    return configUnmarshaller.parse(new XMLParserSource("src/main/resources/template.xml"));
+    return configUnmarshaller.parse(new XMLParserSource("src/main/resources/test.xml"));
   }
 
   @Test
   public void generationError() throws Exception {
     boolean rightError = false;
-    try {
-      GlobalConfig parse = getGlobalConfig("src/test/resources/generationError.xml");
-      for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
-        for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
+    GlobalConfig parse = getGlobalConfig("src/test/resources/generationError.xml");
+    for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
+      for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
+        try {
           stmtConfig.generate(GlobalConfig.getCmpBase());
+        } catch (IllegalArgumentException e) {
+          final String msg = e.getMessage();
+          rightError = msg.contains("Illegal table name:")
+              || msg.contains("SubQuery in where statement has more than one column");
+          Assert.assertTrue(rightError);
         }
       }
-    } catch (IllegalArgumentException e) {
-      rightError = e.getMessage().contains("Illegal table name:");
     }
-    Assert.assertTrue(rightError);
   }
 
   @Test

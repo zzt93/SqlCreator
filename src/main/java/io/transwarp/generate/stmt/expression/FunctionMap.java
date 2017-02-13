@@ -102,5 +102,8 @@ public class FunctionMap {
     for (ConversionOp conversionOp : ConversionOp.values()) {
       conversionOp.register();
     }
+    for (AggregateOp aggregateOp : AggregateOp.values()) {
+      aggregateOp.register();
+    }
   }
 }

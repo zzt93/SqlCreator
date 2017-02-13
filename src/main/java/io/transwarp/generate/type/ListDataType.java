@@ -45,7 +45,7 @@ public class ListDataType extends SequenceDataType {
       return res;
     }
     final QueryConfig subQuery = config.getSubQuery(getType());
-    if (subQuery.getSelect().size() != 1) {
+    if (!subQuery.whereQuery()) {
       throw new IllegalArgumentException("SubQuery in where statement has more than one column: " + subQuery.getId());
     }
     final SelectResult selectResult = SelectResult.generateQuery(subQuery);

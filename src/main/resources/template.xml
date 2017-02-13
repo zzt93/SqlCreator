@@ -15,12 +15,12 @@
                     <udfConfig>
                         <udfList possibility="1">EQ</udfList>
                     </udfConfig>
-                    <column>
+                    <columnExpr>
                         <udfDepth>0</udfDepth>
-                    </column>
-                    <const>
+                    </columnExpr>
+                    <constExpr>
                         <udfDepth>0</udfDepth>
-                    </const>
+                    </constExpr>
                 </operand>
             </where>
         </query>
@@ -43,20 +43,20 @@
                     <udfConfig>
                         <udfList possibility="1">AND</udfList>
                     </udfConfig>
-                    <column>
+                    <expr>
                         <udfDepth>3</udfDepth>
-                    </column>
-                    <const>
+                    </expr>
+                    <constExpr>
                         <udfConfig>
                             <udfList possibility="1">EQ</udfList>
                         </udfConfig>
-                        <const>
+                        <constExpr>
                             <udfDepth>0</udfDepth>
-                        </const>
-                        <const>
+                        </constExpr>
+                        <constExpr>
                             <udfDepth>0</udfDepth>
-                        </const>
-                    </const>
+                        </constExpr>
+                    </constExpr>
                 </operand>
             </where>
         </query>
@@ -69,12 +69,14 @@
             </select>
             <from/>
         </query>
+
         <query id="longQuery" queryDepth="1" num="0">
             <select>
                 <operand type="long"/>
             </select>
             <from/>
         </query>
+
         <setOperator type="UNION">
             <operand>
                 <subQuery>intQuery</subQuery>
@@ -194,16 +196,64 @@
             <from/>
             <where>
                 <operand candidateQuery="whereSimpleQuery">
-                    <column>
+                    <columnExpr>
                         <udfDepth>3</udfDepth>
-                    </column>
-                    <const>
+                    </columnExpr>
+                    <constExpr>
                         <udfConfig>
                             <udfList possibility="1">PLUS</udfList>
                         </udfConfig>
-                    </const>
+                    </constExpr>
                 </operand>
             </where>
+        </query>
+    </test>
+
+    <test>
+        <query id="selectQuery">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">COUNT</udfList>
+                    </udfConfig>
+                </operand>
+            </select>
+            <from/>
+        </query>
+        <query num="100" id="testSelect0">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <operand type="long">
+                    <columnExpr/>
+                    <columnExpr/>
+                </operand>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
+        <query num="100" id="testSelect">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <query>selectQuery</query>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
         </query>
     </test>
 
@@ -222,11 +272,11 @@
                         <udfConfig>
                             <udfList possibility="1">AND</udfList>
                         </udfConfig>
-                        <const>
+                        <constExpr>
                             <udfConfig>
                                 <udfList possibility="1">EQ</udfList>
                             </udfConfig>
-                        </const>
+                        </constExpr>
                         <expr desc="default: const/column/expr"/>
                     </condition>
                 </join>
@@ -236,25 +286,6 @@
             <select/>
             <from/>
             <where/>
-        </query>
-    </test>
-
-    <test>
-        <query num="100" id="testSelect">
-            <select>
-                <operand type="int">
-                    <column/>
-                    <const>
-                        <udfConfig>
-                            <udfList possibility="1">PLUS</udfList>
-                        </udfConfig>
-                    </const>
-                </operand>
-                <query>simpleQuery</query>
-            </select>
-            <from/>
-            <groupBy/>
-            <having/>
         </query>
     </test>
 

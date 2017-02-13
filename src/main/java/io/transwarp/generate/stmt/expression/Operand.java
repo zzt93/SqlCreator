@@ -74,7 +74,7 @@ public class Operand {
         if (i < nextConfig.size()) {
           nextC = nextConfig.get(i);
         } else {
-          nextC = ExprConfig.defaultExpr(config);
+          nextC = ExprConfig.defaultNestedExpr(config);
         }
         ops[i] = makeOperand(nextResultType[i], nextC, nextC.getUdfDepth());
       }

@@ -8,6 +8,7 @@ import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.op.SelectConfig;
+import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.expression.Operand;
 
 import java.util.ArrayList;
@@ -42,10 +43,17 @@ public class SelectListStmt implements SqlGeneration {
       }
     } else {
       final List<TypedExprConfig> operands = config.getOperands();
-      cols = new ArrayList<>(operands.size());
+      cols = new ArrayList<>(config.size());
       for (TypedExprConfig operand : operands) {
         cols.addAll(Arrays.asList(Column.fromOperand(
             Operand.getOperands(1, operand.getType(), operand))));
+      }
+      for (QueryConfig queryConfig : config.getQueries()) {
+        if (!queryConfig.selectQuery()) {
+          throw new IllegalArgumentException("SubQuery in select statement has more than one column and one row");
+        }
+        final SelectResult result = SelectResult.generateQuery(queryConfig);
+//        cols.add()
       }
     }
   }
