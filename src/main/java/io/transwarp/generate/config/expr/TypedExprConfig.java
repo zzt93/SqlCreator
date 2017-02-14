@@ -30,8 +30,8 @@ public class TypedExprConfig extends ExprConfig {
     super(candidates, from);
   }
 
-  public TypedExprConfig(List<Table> candidates, List<Table> fromObj, GenerationDataType dataType) {
-    super(candidates, fromObj);
+  public TypedExprConfig(List<Table> candidates, List<Table> from, GenerationDataType dataType) {
+    super(candidates, from);
     finalType = dataType;
   }
 
@@ -58,13 +58,19 @@ public class TypedExprConfig extends ExprConfig {
   @Override
   public TypedExprConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     super.addDefaultConfig(candidates, from);
-    setTypes(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST.types().toArray(new GenerationDataType[0]));
+    if (noTypeSetting()) {
+      setTypes(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST.types().toArray(new GenerationDataType[0]));
+    }
     return this;
+  }
+
+  private boolean noTypeSetting() {
+    return types == null;
   }
 
   @Override
   public boolean lackChildConfig() {
-    return finalType == null;
+    return super.lackChildConfig() || noTypeSetting();
   }
 
   public boolean aggregateOp() {

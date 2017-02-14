@@ -130,7 +130,7 @@ public enum ConversionOp implements Function {
 
     @Override
     public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-      return new GenerationDataType[]{ListDataType.ALL_ONE_COL_QUERY};
+      return new GenerationDataType[]{resultType};
     }
   },;
 

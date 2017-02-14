@@ -171,14 +171,29 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return typedExprConfig.aggregateOp();
   }
 
+  /**
+   * the order of select list:
+   * <li>operands first, queries followed</li>
+   * <li>in operands or quires: in context order</li>
+   *
+   * @see io.transwarp.generate.stmt.select.SelectListStmt#SelectListStmt(SelectConfig)
+   * @see #addResType(GenerationDataType)
+   */
   public GenerationDataType getResType(int i) {
-    if (size() == SelectNumAdapter.SELECT_ALL || i >= size()) {
-      return DataTypeGroup.ALL_GROUP;
-    }
-    // fake order: operands, queries
+    if (invalidIndex(i)) return DataTypeGroup.ALL_GROUP;
+    // fake order: operands first, queries followed
     if (i < operands.size()) {
       return operands.get(i).getType();
     }
     return queries.get(i - operands.size()).getResType(i);
+  }
+
+  private boolean invalidIndex(int i) {
+    return size() == SelectNumAdapter.SELECT_ALL || i >= size();
+  }
+
+  public void addResType(GenerationDataType dataType) {
+    assert candidates != null && src != null;
+    operands.add(new TypedExprConfig(candidates, src, dataType));
   }
 }

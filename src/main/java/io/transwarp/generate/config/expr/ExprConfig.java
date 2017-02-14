@@ -64,9 +64,9 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   @XmlElements({
-      @XmlElement(name = "const", type = ExprConfig.class),
+      @XmlElement(name = "constExpr", type = ExprConfig.class),
       @XmlElement(name = "expr", type = ExprConfig.class),
-      @XmlElement(name = "column", type = ExprConfig.class)
+      @XmlElement(name = "columnExpr", type = ExprConfig.class)
   })
   public List<ExprConfig> getOperands() {
     return operands;
@@ -129,12 +129,6 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return !operands.isEmpty();
   }
 
-  @Override
-  public boolean lackChildConfig() {
-    return src == null || udfDepth == INVALID
-        || recursiveConfig();
-  }
-
   private boolean recursiveConfig() {
     for (ExprConfig operand : operands) {
       if (operand.lackChildConfig()) {
@@ -152,10 +146,19 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     }
     if (!candidateQuery.singleColumn()) {
       throw new IllegalArgumentException("SubQuery in where statement has more than one column: " + candidateQuery.getId());
+    }
+    if (candidateQuery.noResType()) {
+      return candidateQuery.addResType(dataType);
     } else if (candidateQuery.getResType(0) != dataType) {
       return QueryConfig.defaultWhereExpr(candidates, dataType);
     }
     return candidateQuery;
+  }
+
+  @Override
+  public boolean lackChildConfig() {
+    return candidates == null || src == null || udfDepth == INVALID
+        || recursiveConfig();
   }
 
   @Override

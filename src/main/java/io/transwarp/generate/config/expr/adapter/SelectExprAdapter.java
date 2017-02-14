@@ -15,16 +15,16 @@ public class SelectExprAdapter extends XmlAdapter<String, GenerationDataType[]> 
   @Override
   public GenerationDataType[] unmarshal(String content) throws Exception {
     final String[] split = content.split("\\s");
-    GenerationDataType[] list = new GenerationDataType[split.length];
+    GenerationDataType[] types = new GenerationDataType[split.length];
     for (int i = 0; i < split.length; i++) {
       String s = split[i];
       final DataType key = DataType.valueOf(s.toUpperCase());
       if (DataType.notInSelectList(key)) {
         throw new IllegalArgumentException("Invalid data type in select list: " + s);
       }
-      list[i] = key;
+      types[i] = key;
     }
-    return list;
+    return types;
   }
 
 

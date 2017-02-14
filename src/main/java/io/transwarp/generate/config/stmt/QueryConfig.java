@@ -175,4 +175,13 @@ public class QueryConfig extends StmtConfig {
   public GenerationDataType getResType(int i) {
     return select.getResType(i);
   }
+
+  public boolean noResType() {
+    return select.getOperands().isEmpty() && select.getQueries().isEmpty();
+  }
+
+  public QueryConfig addResType(GenerationDataType dataType) {
+    select.addResType(dataType);
+    return this;
+  }
 }

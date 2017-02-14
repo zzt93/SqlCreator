@@ -65,8 +65,8 @@ public class SelectResultTest {
     for (int i = 0; i < count; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);
     }
-    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".o.sql", false)));
-    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream(queryConfig.getId() + ".i.sql", false)));
+    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("oracle/" + queryConfig.getId() + ".sql", false)));
+    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("inceptor/" + queryConfig.getId() + ".sql", false)));
   }
 
 
