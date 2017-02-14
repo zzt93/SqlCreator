@@ -6,6 +6,7 @@ import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
+import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -33,6 +34,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
    */
   private List<Table> src, candidates;
   private Possibility useStar = Possibility.HALF;
+  private int size;
 
   public SelectConfig() {
   }
@@ -53,7 +55,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setOperands(List<TypedExprConfig> operands) {
     this.operands = operands;
-    selectNum += operands.size();
+    size += operands.size();
   }
 
   @XmlIDREF
@@ -64,7 +66,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setQueries(List<QueryConfig> queries) {
     this.queries = queries;
-    selectNum += queries.size();
+    size += queries.size();
   }
 
   @XmlElement
@@ -75,15 +77,19 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setSelectNum(int selectNum) {
     this.selectNum = selectNum;
+    size = selectNum;
   }
-
 
   public boolean selectAll() {
     return selectNum == SelectNumAdapter.SELECT_ALL;
   }
 
-  public boolean setSelectNum() {
+  public boolean setPositiveSelectNum() {
     return selectNum > 0;
+  }
+
+  private boolean setSelectNum() {
+    return selectNum > 0 || selectAll();
   }
 
   public boolean lackChildConfig() {
@@ -104,7 +110,8 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
       query.addDefaultConfig(candidates, from);
     }
 
-    if (!setSelectNum()) {
+    // default setting when on setting
+    if (!setSelectNum() && operands.isEmpty() && queries.isEmpty()) {
       setSelectNum(SelectNumAdapter.SELECT_ALL);
     }
     return this;
@@ -138,19 +145,19 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   public int size() {
-    return selectNum;
+    return size;
   }
 
   /**
    * <li>only one column -- operand
    * <ul>
-   *   <li>not bool, not list</li>
+   * <li>not bool, not list</li>
    * </ul>
    * </li>
    * <li>only one row -- oracle/mysql scalar operand
    * <ul>
-   *   <li>limit 1(mysql); </li>
-   *   <li>aggregate function</li>
+   * <li>limit 1(mysql); </li>
+   * <li>aggregate function</li>
    * </ul>
    * </li>
    *
@@ -161,7 +168,17 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
       return false;
     }
     final TypedExprConfig typedExprConfig = operands.get(0);
-//    typedExprConfig.
-    return true;
+    return typedExprConfig.aggregateOp();
+  }
+
+  public GenerationDataType getResType(int i) {
+    if (size() == SelectNumAdapter.SELECT_ALL || i >= size()) {
+      return DataTypeGroup.ALL_GROUP;
+    }
+    // fake order: operands, queries
+    if (i < operands.size()) {
+      return operands.get(i).getType();
+    }
+    return queries.get(i - operands.size()).getResType(i);
   }
 }

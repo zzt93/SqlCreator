@@ -6,8 +6,8 @@ img
 ##### xsd
 ##### Generation Check
 
-- ListDataType#listOrQuery: SubQuery in where statement has more than one column
-- TableUtil#getTableByName: 
+- ExprConfig#getSubQuery: SubQuery in where statement has more than one column
+- TableUtil#getTableByName: Invalid table name
 
 ### Generation Module
 #### DataType

@@ -164,11 +164,15 @@ public class QueryConfig extends StmtConfig {
     return where != null;
   }
 
-  public boolean whereQuery() {
+  public boolean singleColumn() {
     return select.size() == 1;
   }
 
   public boolean selectQuery() {
     return select.selectQuery();
+  }
+
+  public GenerationDataType getResType(int i) {
+    return select.getResType(i);
   }
 }

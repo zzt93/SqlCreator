@@ -3,6 +3,9 @@ package io.transwarp.generate.config.expr;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.adapter.SelectExprAdapter;
+import io.transwarp.generate.stmt.expression.AggregateOp;
+import io.transwarp.generate.stmt.expression.Function;
+import io.transwarp.generate.stmt.expression.FunctionMap;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -62,5 +65,16 @@ public class TypedExprConfig extends ExprConfig {
   @Override
   public boolean lackChildConfig() {
     return finalType == null;
+  }
+
+  public boolean aggregateOp() {
+    final UdfFilter udfFilter = getUdfFilter();
+    for (int i = 0; i < udfFilter.size(); i++) {
+      final Function f = FunctionMap.random(finalType, udfFilter);
+      if (!(f instanceof AggregateOp)) {
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -10,7 +10,20 @@ import io.transwarp.generate.type.GenerationDataType;
  * <h3></h3>
  */
 public enum AggregateOp implements Function {
-  COUNT, SUM, AVG, MIN, MAX;
+  COUNT,
+  SUM {
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[]{DataTypeGroup.numRandDownCast(resultType)};
+    }
+  },
+  AVG {
+    @Override
+    public GenerationDataType[] inputTypes(GenerationDataType resultType) {
+      return new GenerationDataType[]{DataTypeGroup.numRandDownCast(resultType)};
+    }
+  },
+  MIN, MAX;
 
   @Override
   public void register() {

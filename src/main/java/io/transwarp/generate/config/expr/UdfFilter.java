@@ -70,4 +70,8 @@ public class UdfFilter {
     }
     return fs.get(random.nextInt(fs.size()));
   }
+
+  public int size() {
+    return preference.size();
+  }
 }

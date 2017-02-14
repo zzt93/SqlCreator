@@ -30,7 +30,7 @@ public class SelectListStmt implements SqlGeneration {
       cols = TableUtil.columns(from);
       // use star or list all columns
       useStar = config.useStar().chooseFirstOrRandom(true, false);
-    } else if (config.setSelectNum()) {
+    } else if (config.setPositiveSelectNum()) {
       final int colLimit = config.getSelectNum();
       cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {
@@ -50,10 +50,10 @@ public class SelectListStmt implements SqlGeneration {
       }
       for (QueryConfig queryConfig : config.getQueries()) {
         if (!queryConfig.selectQuery()) {
-          throw new IllegalArgumentException("SubQuery in select statement has more than one column and one row");
+          throw new IllegalArgumentException("SubQuery in select statement can only be scalar operand (one column, one row)");
         }
         final SelectResult result = SelectResult.generateQuery(queryConfig);
-//        cols.add()
+        cols.add(Column.fromQuery(result));
       }
     }
   }

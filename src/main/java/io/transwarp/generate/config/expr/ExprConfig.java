@@ -148,6 +148,12 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     assert candidates != null;
     if (candidateQuery == null) {
       candidateQuery = QueryConfig.defaultWhereExpr(candidates, dataType);
+      return candidateQuery;
+    }
+    if (!candidateQuery.singleColumn()) {
+      throw new IllegalArgumentException("SubQuery in where statement has more than one column: " + candidateQuery.getId());
+    } else if (candidateQuery.getResType(0) != dataType) {
+      return QueryConfig.defaultWhereExpr(candidates, dataType);
     }
     return candidateQuery;
   }

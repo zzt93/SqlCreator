@@ -4,38 +4,34 @@
        xsi:noNamespaceSchemaLocation="../../main/resources/define.xsd">
 
     <test>
-        <query id="testJoinInvalidTable">
-            <select/>
-            <from>
-                <join>
-                    <operand>
-                        <tableName>test</tableName>
-                    </operand>
-                </join>
-            </from>
-        </query>
         <query id="testInvalidWhereQuery">
             <select/>
             <from/>
             <where>
-                <operand candidateQuery="simpleQuery"/>
-            </where>
-        </query>
-        <query id="testInvalidSelectQuery">
-            <select>
-                <query>simpleQuery</query>
-            </select>
-            <from/>
-            <where>
-                <operand candidateQuery="simpleQuery"/>
+                <operand candidateQuery="testInvalidSelectQuery">
+                    <udfConfig>
+                        <udfList possibility="1">IN_QUERY</udfList>
+                    </udfConfig>
+                </operand>
             </where>
         </query>
 
-        <query id="simpleQuery" queryDepth="2" num="0">
-            <select/>
+        <query id="testInvalidSelectQuery">
+            <select>
+                <query>testInvalidWhereQuery</query>
+                <operand/>
+            </select>
             <from/>
-            <where/>
+            <where>
+            </where>
         </query>
+
+        <!-- recursive dependent problem? -->
+        <!--<query id="simpleQuery" queryDepth="2" num="0">-->
+            <!--<select/>-->
+            <!--<from/>-->
+            <!--<where/>-->
+        <!--</query>-->
 
     </test>
 

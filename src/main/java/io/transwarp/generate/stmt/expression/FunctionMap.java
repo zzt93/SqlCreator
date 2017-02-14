@@ -60,7 +60,7 @@ public class FunctionMap {
    * @see DataType
    * @see CompoundDataType
    */
-  static Function random(GenerationDataType resultType, UdfFilter udfFilter) {
+  public static Function random(GenerationDataType resultType, UdfFilter udfFilter) {
     checkArgument(DataType.innerVisible(resultType));
     Function function = getFilteredFunction(udfFilter, resultType);
     while (function == null) {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="../../main/resources/define.xsd">
+
+    <test>
+
+        <query id="testJoin1">
+            <select/>
+            <from>
+                <join>
+                    <operand/>
+                </join>
+            </from>
+        </query>
+        <query id="testJoin2">
+            <select/>
+            <from>
+                <join>
+                    <operand/>
+                    <operand/>
+                </join>
+            </from>
+        </query>
+        <query id="testJoin3">
+            <select/>
+            <from>
+                <join>
+                    <operand/>
+                    <operand/>
+                    <condition/>
+                </join>
+            </from>
+        </query>
+
+    </test>
+
+</tests>

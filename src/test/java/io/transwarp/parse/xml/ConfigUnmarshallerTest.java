@@ -39,36 +39,48 @@ public class ConfigUnmarshallerTest {
   }
 
   public static GlobalConfig getGlobalConfig() throws IOException, ValidationException {
-    return configUnmarshaller.parse(new XMLParserSource("src/main/resources/test.xml"));
+    return configUnmarshaller.parse(new XMLParserSource("src/test/resources/test.xml"));
   }
 
   @Test
   public void generationError() throws Exception {
-    boolean rightError = false;
     GlobalConfig parse = getGlobalConfig("src/test/resources/generationError.xml");
     for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
       for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
+        boolean rightError = false;
         try {
           stmtConfig.generate(GlobalConfig.getCmpBase());
         } catch (IllegalArgumentException e) {
           final String msg = e.getMessage();
-          rightError = msg.contains("Illegal table name:")
-              || msg.contains("SubQuery in where statement has more than one column");
-          Assert.assertTrue(rightError);
+          rightError = msg.contains("SubQuery in where statement has more than one column")
+              || msg.contains("SubQuery in select statement ")
+          ;
         }
+        Assert.assertTrue(rightError);
       }
     }
   }
 
   @Test
+  public void validationError() throws Exception {
+//          ("The content of element 'operand' is not complete. One of '{subQuery, tableName}' is expected.");
+    errorTest("src/test/resources/xsdValidationError.xml", ValidationException.class);
+  }
+
+  @Test
   public void parseError() throws Exception {
+    errorTest("src/test/resources/parseError.xml", IllegalArgumentException.class);
+  }
+
+  private void errorTest(String file, Class<? extends Exception> exceptionClass) throws IOException {
     boolean rightError = false;
     try {
-      getGlobalConfig("src/test/resources/parseError.xml");
-    } catch (ValidationException e) {
-//          ("The content of element 'operand' is not complete. One of '{subQuery, tableName}' is expected.");
+      getGlobalConfig(file);
+    } catch (Exception e) {
       e.printStackTrace();
-      rightError = true;
+      if (exceptionClass.isInstance(e)) {
+        rightError = true;
+      }
     }
     Assert.assertTrue(rightError);
   }

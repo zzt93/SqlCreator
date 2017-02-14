@@ -1,9 +1,13 @@
 package io.transwarp.generate.common;
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
+import io.transwarp.generate.stmt.select.SelectResult;
 import io.transwarp.generate.type.GenerationDataType;
+
+import java.util.ArrayList;
 
 /**
  * Created by zzt on 12/2/16.
@@ -56,6 +60,15 @@ public class Column {
       res[i] = new Column(operands[i], TableUtil.nextColAlias());
     }
     return res;
+  }
+
+  public static Column fromQuery(SelectResult selectResult) {
+    final ArrayList<Column> columns = selectResult.columns();
+    assert columns.size() == 1;
+    final GenerationDataType type = columns.get(0).getType();
+    return new Column(
+        new Operand(type, selectResult.subQueries(GlobalConfig.getCmpBase())),
+        TableUtil.nextColAlias());
   }
 
   public StringBuilder getNameWithAlias(Dialect dialect) {
