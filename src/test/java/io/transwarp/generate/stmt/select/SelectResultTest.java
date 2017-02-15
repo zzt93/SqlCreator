@@ -3,9 +3,7 @@ package io.transwarp.generate.stmt.select;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.PerTestConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
-import io.transwarp.generate.config.stmt.StmtConfig;
 import io.transwarp.parse.xml.ConfigUnmarshallerTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +12,6 @@ import org.junit.runners.Parameterized;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,14 +44,7 @@ public class SelectResultTest {
   @Parameterized.Parameters
   public static QueryConfig[] data() throws Exception {
     final GlobalConfig parse = ConfigUnmarshallerTest.getGlobalConfig();
-    List<QueryConfig> list = new ArrayList<>();
-    for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
-      for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
-        if (stmtConfig instanceof QueryConfig) {
-          list.add((QueryConfig) stmtConfig);
-        }
-      }
-    }
+    List<QueryConfig> list = parse.getQueries();
     return list.toArray(new QueryConfig[0]);
   }
 

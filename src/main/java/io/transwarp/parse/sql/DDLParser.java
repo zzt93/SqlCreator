@@ -84,9 +84,11 @@ public class DDLParser {
 
   private Column extractCol(String col, Table table) {
     final Matcher m = colDetail.matcher(col);
-    assert m.find();
+    boolean found = m.find();
+    assert found;
     String cname = m.group();
-    assert m.find();
+    found = m.find();
+    assert found;
     String ctype = m.group();
     final String type = ctype.toUpperCase();
     final GenerationDataType mapping = dialect.getType(type).mapToGeneration(extractLen(type));

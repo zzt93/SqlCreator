@@ -2,9 +2,19 @@ package io.transwarp.generate.config;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.stmt.QueryConfig;
+import io.transwarp.generate.config.stmt.StmtConfig;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -93,4 +103,31 @@ public class GlobalConfig {
     return new Dialect[]{getCmp(), getBase()};
   }
 
+  public List<QueryConfig> getQueries() {
+    List<QueryConfig> list = new ArrayList<>();
+    for (PerTestConfig perTestConfig : getPerTestConfigs()) {
+      for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
+        if (stmtConfig instanceof QueryConfig) {
+          list.add((QueryConfig) stmtConfig);
+        }
+      }
+    }
+    return list;
+  }
+
+  public void generate(EnumMap<Dialect, Path> dirs) throws FileNotFoundException {
+    // now, only with queries
+    for (QueryConfig queryConfig : getQueries()) {
+      final String[] generate = queryConfig.generate(getCmpBase());
+      for (Dialect dialect : getCmpBase()) {
+        PrintWriter oracle = getPrintWriter(dirs.get(dialect), queryConfig.getId());
+        oracle.println(generate[dialect.ordinal()]);
+      }
+    }
+  }
+
+  private PrintWriter getPrintWriter(Path dir, String prefix) throws FileNotFoundException {
+    final Path path = Paths.get(dir.toString(), prefix + ".sql");
+    return new PrintWriter(new OutputStreamWriter(new FileOutputStream(path.toString(), false)));
+  }
 }
