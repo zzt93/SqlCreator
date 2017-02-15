@@ -50,9 +50,10 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
 
     if (operand == null) {
       operand = new ExprConfig(candidates, from);
-    } else {
+    } else if (operand.lackChildConfig()) {
       operand.addDefaultConfig(candidates, from);
     }
+
     return this;
   }
 }

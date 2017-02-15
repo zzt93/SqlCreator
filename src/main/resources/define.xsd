@@ -79,7 +79,14 @@
                     </xs:element>
                     <xs:element name="where" type="filterOperatorConfig" minOccurs="0"/>
                     <xs:element name="groupBy" type="filterOperatorConfig" minOccurs="0"/>
-                    <xs:element name="having" type="filterOperatorConfig" minOccurs="0"/>
+                    <xs:element name="having" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="operand" type="useAggregateExprConfig" maxOccurs="1"
+                                            minOccurs="0"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
                 </xs:sequence>
                 <xs:attribute name="queryDepth" default="1">
                     <xs:simpleType>
@@ -158,20 +165,56 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
+        <xs:attribute name="useAggregateOp" type="xs:boolean" default="false"/>
     </xs:complexType>
 
     <xs:complexType name="typedExprConfig">
         <xs:complexContent>
-            <xs:extension base="exprConfig">
+            <xs:extension base="useAggregateExprConfig">
                 <xs:attribute name="type" type="stringList"/>
             </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="useAggregateExprConfig">
+        <xs:complexContent>
+            <xs:restriction base="exprConfig">
+                <xs:choice minOccurs="0">
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <!-- use noAggregateExprConfig to avoid nested aggregate operator in some sense -->
+                        <xs:element name="expr" type="noAggregateExprConfig"/>
+                        <xs:element name="constExpr" type="const"/>
+                        <xs:element name="columnExpr" type="column"/>
+                        <xs:element name="udfConfig" maxOccurs="1" minOccurs="0" type="udfConfig"/>
+                    </xs:choice>
+                    <xs:element name="udfDepth" type="depthInt"/>
+                </xs:choice>
+                <xs:attribute name="useAggregateOp" type="xs:boolean" fixed="true"/>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="noAggregateExprConfig">
+        <xs:complexContent>
+            <xs:restriction base="exprConfig">
+                <xs:choice minOccurs="0">
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="expr" type="noAggregateExprConfig"/>
+                        <xs:element name="constExpr" type="const"/>
+                        <xs:element name="columnExpr" type="column"/>
+                        <xs:element name="udfConfig" maxOccurs="1" minOccurs="0" type="udfConfig"/>
+                    </xs:choice>
+                    <xs:element name="udfDepth" type="depthInt"/>
+                </xs:choice>
+                <xs:attribute name="useAggregateOp" type="xs:boolean" fixed="false"/>
+            </xs:restriction>
         </xs:complexContent>
     </xs:complexType>
 
 
     <xs:complexType name="const">
         <xs:complexContent>
-            <xs:restriction base="exprConfig">
+            <!-- use noAggregateExprConfig to avoid nested aggregate operator in some sense -->
+            <xs:restriction base="noAggregateExprConfig">
                 <xs:choice>
                     <xs:choice maxOccurs="unbounded">
                         <xs:element name="constExpr" type="const"/>
@@ -185,7 +228,8 @@
     </xs:complexType>
     <xs:complexType name="column">
         <xs:complexContent>
-            <xs:restriction base="exprConfig">
+            <!-- use noAggregateExprConfig to avoid nested aggregate operator in some sense -->
+            <xs:restriction base="noAggregateExprConfig">
                 <xs:choice>
                     <xs:choice maxOccurs="unbounded">
                         <xs:element name="columnExpr" type="column"/>
@@ -201,7 +245,7 @@
 
     <xs:complexType name="filterOperatorConfig">
         <xs:sequence>
-            <xs:element name="operand" type="exprConfig" maxOccurs="1" minOccurs="0"/>
+            <xs:element name="operand" type="noAggregateExprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -241,7 +285,7 @@
     <xs:complexType name="joinConfig">
         <xs:sequence>
             <xs:element name="operand" type="relation" maxOccurs="2" minOccurs="0"/>
-            <xs:element name="condition" type="exprConfig" maxOccurs="1" minOccurs="0"/>
+            <xs:element name="condition" type="noAggregateExprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

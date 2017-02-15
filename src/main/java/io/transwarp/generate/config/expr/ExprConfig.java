@@ -6,6 +6,7 @@ import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.adapter.PossibilityAdapter;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
+import io.transwarp.generate.stmt.expression.AggregateOp;
 import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.*;
@@ -28,6 +29,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   private static final int INVALID = -1;
 
   private List<ExprConfig> operands = new ArrayList<>();
+  private boolean useAggregateOp;
 
   private UdfFilter udfFilter = new UdfFilter();
 
@@ -125,6 +127,15 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     this.inputRelation = inputRelation;
   }
 
+  @XmlAttribute(name = "useAggregateOp")
+  public boolean isUseAggregateOp() {
+    return useAggregateOp;
+  }
+
+  public void setUseAggregateOp(boolean useAggregateOp) {
+    this.useAggregateOp = useAggregateOp;
+  }
+
   public boolean hasNestedConfig() {
     return !operands.isEmpty();
   }
@@ -155,9 +166,10 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return candidateQuery;
   }
 
+  private boolean prohibitAggregateOp = false;
   @Override
   public boolean lackChildConfig() {
-    return candidates == null || src == null || udfDepth == INVALID
+    return candidates == null || src == null || udfDepth == INVALID || (!useAggregateOp && !prohibitAggregateOp)
         || recursiveConfig();
   }
 
@@ -177,6 +189,10 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     }
     if (candidateQuery != null) {
       candidateQuery.addDefaultConfig(candidates, from);
+    }
+    if (!useAggregateOp) {
+      prohibitAggregateOp = true;
+      noAggregateOp();
     }
     return this;
   }
@@ -200,5 +216,9 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     final ExprConfig exprConfig = new ExprConfig(config.candidates, config.getFrom());
     exprConfig.setUdfDepth(NESTED_EXPR_UDF_DEPTH);
     return exprConfig;
+  }
+
+  private void noAggregateOp() {
+    udfFilter.addPreference(AggregateOp.values(), Possibility.IMPOSSIBLE);
   }
 }

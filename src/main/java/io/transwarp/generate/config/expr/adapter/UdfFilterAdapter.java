@@ -42,8 +42,7 @@ public class UdfFilterAdapter extends XmlAdapter<UdfFilterAdapter.AdaptedMap, Ud
         if (udfByName == null) {
           throw new IllegalArgumentException("Invalid udf name: " + s);
         }
-        map.put(udfByName,
-            possibility);
+        map.put(udfByName, possibility);
       }
     }
     return new UdfFilter(map);

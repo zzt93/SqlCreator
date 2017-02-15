@@ -52,6 +52,7 @@ public class ConfigUnmarshallerTest {
           stmtConfig.generate(GlobalConfig.getCmpBase());
         } catch (IllegalArgumentException e) {
           final String msg = e.getMessage();
+          System.out.println(msg);
           rightError = msg.contains("SubQuery in where statement has more than one column")
               || msg.contains("SubQuery in select statement ")
           ;

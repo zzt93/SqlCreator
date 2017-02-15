@@ -50,7 +50,8 @@ public class SelectListStmt implements SqlGeneration {
       }
       for (QueryConfig queryConfig : config.getQueries()) {
         if (!queryConfig.selectQuery()) {
-          throw new IllegalArgumentException("SubQuery in select statement can only be scalar operand (one column, one row)");
+          throw new IllegalArgumentException(
+              "SubQuery in select statement can only be scalar operand (one column, one row): " + queryConfig.getId());
         }
         final SelectResult result = SelectResult.generateQuery(queryConfig);
         cols.add(Column.fromQuery(result));

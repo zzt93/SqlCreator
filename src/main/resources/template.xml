@@ -24,6 +24,7 @@
                 </operand>
             </where>
         </query>
+
         <query id="testOperandGeneration1">
             <select/>
             <from/>
@@ -35,6 +36,7 @@
                 </operand>
             </where>
         </query>
+
         <query id="testOperandGeneration">
             <select/>
             <from/>
@@ -60,6 +62,7 @@
                 </operand>
             </where>
         </query>
+
     </test>
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
@@ -94,6 +97,7 @@
                 <join/>
             </from>
         </query>
+
         <query id="testJoin1">
             <select/>
             <from>
@@ -104,6 +108,7 @@
                 </join>
             </from>
         </query>
+
         <query id="testJoin2">
             <select/>
             <from>
@@ -117,6 +122,7 @@
                 </join>
             </from>
         </query>
+
         <query id="testJoin3">
             <select/>
             <from>
@@ -131,6 +137,7 @@
                 </join>
             </from>
         </query>
+
         <query id="testJoin4">
             <select/>
             <from>
@@ -145,6 +152,7 @@
                 </join>
             </from>
         </query>
+
         <query id="testJoin5">
             <select/>
             <from>
@@ -159,6 +167,7 @@
                 </join>
             </from>
         </query>
+
     </test>
 
     <test>
@@ -175,13 +184,19 @@
             <from/>
             <where/>
         </query>
+
         <query id="testWhereQuery">
             <select/>
             <from/>
             <where>
-                <operand candidateQuery="whereSimpleQuery"/>
+                <operand candidateQuery="whereSimpleQuery">
+                    <udfConfig>
+                        <udfList possibility="1">IN_QUERY</udfList>
+                    </udfConfig>
+                </operand>
             </where>
         </query>
+
         <query id="testWhereDepth">
             <select/>
             <from/>
@@ -191,6 +206,7 @@
                 </operand>
             </where>
         </query>
+
         <query id="testWhere">
             <select/>
             <from/>
@@ -207,6 +223,7 @@
                 </operand>
             </where>
         </query>
+
     </test>
 
     <test>
@@ -220,6 +237,7 @@
             </select>
             <from/>
         </query>
+
         <query num="100" id="testSelect0">
             <select>
                 <operand type="int">
@@ -239,6 +257,7 @@
             <groupBy/>
             <having/>
         </query>
+
         <query num="100" id="testSelect">
             <select>
                 <operand type="int">
@@ -255,6 +274,7 @@
             <groupBy/>
             <having/>
         </query>
+
     </test>
 
     <test>
@@ -282,11 +302,13 @@
                 </join>
             </from>
         </query>
+
         <query id="simpleQuery" queryDepth="2" num="0">
             <select/>
             <from/>
             <where/>
         </query>
+
     </test>
 
 </tests>
