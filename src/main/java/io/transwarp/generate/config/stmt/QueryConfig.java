@@ -1,6 +1,7 @@
 package io.transwarp.generate.config.stmt;
 
 
+import com.sun.istack.internal.Nullable;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
@@ -31,7 +32,7 @@ public class QueryConfig extends StmtConfig {
 
   private QueryConfig(List<Table> candidates) {
     from = new FromConfig(candidates);
-    select = new SelectConfig(candidates, (List<Table>) null);
+    select = new SelectConfig(candidates, getFrom().getFromObj());
     addDefaultConfig(candidates, null);
   }
 
@@ -93,12 +94,16 @@ public class QueryConfig extends StmtConfig {
   }
 
   @Override
-  public QueryConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+  public QueryConfig addDefaultConfig(List<Table> candidates, @Nullable List<Table> from) {
     assert candidates != null;
     setCandidates(candidates);
 
-    this.from.addDefaultConfig(candidates, null);
-    select.addDefaultConfig(candidates, getFrom().getFromObj());
+    if (this.from.lackChildConfig()) {
+      this.from.addDefaultConfig(candidates, null);
+    }
+    if (select.lackChildConfig()) {
+      select.addDefaultConfig(candidates, getFrom().getFromObj());
+    }
     return this;
   }
 
@@ -132,7 +137,7 @@ public class QueryConfig extends StmtConfig {
    */
   public static QueryConfig defaultWhereExpr(List<Table> candidates, GenerationDataType dataType) {
     QueryConfig res = new QueryConfig(candidates);
-    res.setSelect(new SelectConfig(res.getFrom().getFromObj(), dataType));
+    res.setSelect(new SelectConfig(candidates, res.getFrom().getFromObj(), dataType));
     return res;
   }
 

@@ -43,9 +43,9 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     addDefaultConfig(candidates, from);
   }
 
-  public SelectConfig(List<Table> fromObj, GenerationDataType dataType) {
-    setFrom(fromObj);
+  public SelectConfig(List<Table> candidates, List<Table> fromObj, GenerationDataType dataType) {
     setOperands(Lists.newArrayList(new TypedExprConfig(fromObj, fromObj, dataType)));
+    addDefaultConfig(candidates, fromObj);
   }
 
   @XmlElement(name = "operand")
@@ -55,7 +55,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setOperands(List<TypedExprConfig> operands) {
     this.operands = operands;
-    size += operands.size();
   }
 
   @XmlIDREF
@@ -66,7 +65,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
 
   public void setQueries(List<QueryConfig> queries) {
     this.queries = queries;
-    size += queries.size();
   }
 
   @XmlElement
@@ -88,20 +86,32 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return selectNum > 0;
   }
 
-  private boolean setSelectNum() {
-    return selectNum > 0 || selectAll();
+  private boolean setSize() {
+    return size != 0;
   }
 
+  /**
+   * no need to check operands and quires, for if size is not set
+   * we have to update size in {@link #addDefaultConfig(List, List)}
+   */
   public boolean lackChildConfig() {
     return candidates == null || src == null
-        || (!setSelectNum() &&
-        (operands.isEmpty() && queries.isEmpty()));
+        || !setSize();
+  }
+
+  private boolean listNotSet(List<?> list) {
+    return list.isEmpty();
   }
 
   @Override
   public SelectConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     setCandidates(candidates);
     setFrom(from);
+
+    if (!setSize()) {
+      size += operands.size();
+      size += queries.size();
+    }
 
     for (TypedExprConfig operand : operands) {
       operand.addDefaultConfig(candidates, from);
@@ -110,10 +120,11 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
       query.addDefaultConfig(candidates, from);
     }
 
-    // default setting when on setting
-    if (!setSelectNum() && operands.isEmpty() && queries.isEmpty()) {
+    // default setting when no setting
+    if (!setSize() && listNotSet(operands) && listNotSet(queries)) {
       setSelectNum(SelectNumAdapter.SELECT_ALL);
     }
+    assert !lackChildConfig();
     return this;
   }
 

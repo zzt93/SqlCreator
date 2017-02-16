@@ -257,6 +257,14 @@
             <groupBy/>
             <having/>
         </query>
+        <query num="100" id="testSelect1">
+            <select>
+                <selectNum>3</selectNum>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
 
         <query num="100" id="testSelect">
             <select>
