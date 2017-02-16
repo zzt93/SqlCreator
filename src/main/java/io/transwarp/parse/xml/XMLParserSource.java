@@ -2,6 +2,8 @@ package io.transwarp.parse.xml;
 
 import io.transwarp.parse.ParserSource;
 
+import java.io.InputStream;
+
 /**
  * Created by zzt on 12/12/16.
  * <p>
@@ -10,14 +12,14 @@ import io.transwarp.parse.ParserSource;
 public class XMLParserSource implements ParserSource{
 
 
-  private final String xmlFile;
+  private final InputStream xmlFile;
 
-  public XMLParserSource(String xmlFile) {
+  public XMLParserSource(InputStream xmlFile) {
     this.xmlFile = xmlFile;
   }
 
   @Override
-  public String getSource() {
+  public InputStream getSource() {
     return xmlFile;
   }
 }

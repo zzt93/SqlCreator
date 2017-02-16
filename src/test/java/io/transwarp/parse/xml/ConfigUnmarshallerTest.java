@@ -14,6 +14,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by zzt on 1/16/17.
@@ -35,7 +36,7 @@ public class ConfigUnmarshallerTest {
   }
 
   private static GlobalConfig getGlobalConfig(String file) throws IOException, ValidationException {
-    String inputPath = ClassLoader.getSystemResource(file).getFile();
+    InputStream inputPath = ClassLoader.getSystemResourceAsStream(file);
     return configUnmarshaller.parse(new XMLParserSource(inputPath));
   }
 

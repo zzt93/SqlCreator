@@ -9,11 +9,9 @@ import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.type.GenerationDataType;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +36,8 @@ public class DDLParser {
   private final Dialect dialect;
   private final Scanner scanner;
 
-  public DDLParser(String path, Dialect dialect) throws IOException {
-    Path sqlFile = Paths.get(path);
-    if (!Files.exists(sqlFile)) {
-      throw new IllegalArgumentException("File " + path + " not exists");
-    }
-    scanner = new Scanner(sqlFile);
+  DDLParser(InputStream path, Dialect dialect) throws IOException {
+    scanner = new Scanner(path);
     scanner.useDelimiter(";");
     this.dialect = dialect;
   }
@@ -121,9 +115,12 @@ public class DDLParser {
     TableLoader(String fileName, Dialect dialect) {
       DDLParser ddlParser = null;
       try {
-        URL url = ClassLoader.getSystemResource(fileName);
+        InputStream url = ClassLoader.getSystemResourceAsStream(fileName);
+        if (url == null) {
+          url = new FileInputStream(fileName);
+        }
         // guess this ddl file is either in resources or in cwd
-        ddlParser = new DDLParser(url == null ? fileName : url.getFile(), dialect);
+        ddlParser = new DDLParser(url, dialect);
       } catch (IOException e) {
         e.printStackTrace();
       }

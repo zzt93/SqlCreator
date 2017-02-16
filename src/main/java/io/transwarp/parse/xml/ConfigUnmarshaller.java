@@ -14,11 +14,11 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by zzt on 1/16/17.
@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 public class ConfigUnmarshaller implements ConfigParser {
 
-  private static String schemaFile = ConfigUnmarshaller.class.getResource("/define.xsd").getFile();
+  private static InputStream schemaFile = ClassLoader.getSystemResourceAsStream("define.xsd");
 
   public GlobalConfig parse(ParserSource parserSource) throws IOException, ValidationException {
     SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -35,13 +35,13 @@ public class ConfigUnmarshaller implements ConfigParser {
 
     SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     try {
-      Schema schema = sf.newSchema(new File(schemaFile));
+      Schema schema = sf.newSchema(new StreamSource(schemaFile));
       spf.setSchema(schema);
       JAXBContext jc = JAXBContext.newInstance(GlobalConfig.class);
       Unmarshaller unmarshaller = jc.createUnmarshaller();
 
       XMLReader xmlReader = spf.newSAXParser().getXMLReader();
-      SAXSource source = new SAXSource(xmlReader, new InputSource(new FileInputStream(parserSource.getSource())));
+      SAXSource source = new SAXSource(xmlReader, new InputSource(parserSource.getSource()));
       unmarshaller.setEventHandler(new PrintInfoHandler());
       return (GlobalConfig) unmarshaller.unmarshal(source);
 

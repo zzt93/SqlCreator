@@ -19,6 +19,24 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
     <dependencies>
@@ -28,38 +46,6 @@
             <version>19.0</version>
         </dependency>
 
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-core</artifactId>-->
-            <!--<version>4.3.4.RELEASE</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-context</artifactId>-->
-            <!--<version>4.3.4.RELEASE</version>-->
-        <!--</dependency>-->
-
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.springframework/spring-aop &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-aop</artifactId>-->
-            <!--<version>4.3.4.RELEASE</version>-->
-        <!--</dependency>-->
-
-
-        <!--<dependency>-->
-            <!--<groupId>org.aspectj</groupId>-->
-            <!--<artifactId>aspectjrt</artifactId>-->
-            <!--<version>1.6.11</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.aspectj</groupId>-->
-            <!--<artifactId>aspectjweaver</artifactId>-->
-            <!--<version>1.6.11</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

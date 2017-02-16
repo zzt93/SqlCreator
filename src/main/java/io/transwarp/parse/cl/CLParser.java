@@ -3,7 +3,10 @@ package io.transwarp.parse.cl;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,15 +21,18 @@ import java.util.EnumMap;
 public class CLParser {
 
   private String[] paths = new String[]{"oracle=oracle", "inceptor=inceptor"};
-  private String xmlFile = ClassLoader.getSystemResource("template.xml").getFile();
+  private InputStream xmlFile = ClassLoader.getSystemResourceAsStream("template.xml");
 
   public CLParser(String[] args) {
     if (args.length >= 1) {
-      xmlFile = args[0];
+      if (!Files.exists(Paths.get(args[0]))) {
+        throw new IllegalArgumentException("No such xml config file: " + xmlFile);
+      }
+      try {
+        xmlFile = new FileInputStream(args[0]);
+      } catch (FileNotFoundException impossible) {}
+
       if (args.length > 1) {
-        if (!Files.exists(Paths.get(xmlFile))) {
-          throw new IllegalArgumentException("No such xml config file: " + xmlFile);
-        }
         paths = Arrays.copyOfRange(args, 1, args.length);
       }
     }
@@ -36,7 +42,7 @@ public class CLParser {
     }
   }
 
-  public String getInputPath() {
+  public InputStream getInputPath() {
     return xmlFile;
   }
 

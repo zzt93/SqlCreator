@@ -1,5 +1,7 @@
 package io.transwarp.parse;
 
+import java.io.InputStream;
+
 /**
  * Created by zzt on 12/12/16.
  * <p>
@@ -7,5 +9,5 @@ package io.transwarp.parse;
  */
 public interface ParserSource {
 
-  String getSource();
+  InputStream getSource();
 }

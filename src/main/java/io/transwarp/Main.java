@@ -8,6 +8,7 @@ import io.transwarp.parse.xml.ValidationException;
 import io.transwarp.parse.xml.XMLParserSource;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.EnumMap;
 
@@ -20,7 +21,7 @@ public class Main {
 
   public static void main(String[] args) throws IOException, ValidationException {
     final CLParser clParser = new CLParser(args);
-    String xmlFile = clParser.getInputPath();
+    InputStream xmlFile = clParser.getInputPath();
     final GlobalConfig parse = new ConfigUnmarshaller().parse(new XMLParserSource(xmlFile));
     EnumMap<Dialect, Path> map = clParser.getOutputDir();
     parse.generate(map);
