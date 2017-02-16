@@ -27,7 +27,7 @@ import java.io.InputStream;
  */
 public class ConfigUnmarshaller implements ConfigParser {
 
-  private static InputStream schemaFile = ClassLoader.getSystemResourceAsStream("define.xsd");
+  private InputStream schemaFile = ClassLoader.getSystemResourceAsStream("define.xsd");
 
   public GlobalConfig parse(ParserSource parserSource) throws IOException, ValidationException {
     SAXParserFactory spf = SAXParserFactory.newInstance();

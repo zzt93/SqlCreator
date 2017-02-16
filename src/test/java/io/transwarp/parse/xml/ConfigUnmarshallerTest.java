@@ -23,7 +23,7 @@ import java.io.InputStream;
  */
 public class ConfigUnmarshallerTest {
 
-  private static ConfigUnmarshaller configUnmarshaller = new ConfigUnmarshaller();
+  private ConfigUnmarshaller configUnmarshaller = new ConfigUnmarshaller();
 
   @Before
   public void setUp() throws Exception {
@@ -35,7 +35,7 @@ public class ConfigUnmarshallerTest {
     System.out.println();
   }
 
-  private static GlobalConfig getGlobalConfig(String file) throws IOException, ValidationException {
+  private GlobalConfig getGlobalConfig(String file) throws IOException, ValidationException {
     InputStream inputPath = ClassLoader.getSystemResourceAsStream(file);
     return configUnmarshaller.parse(new XMLParserSource(inputPath));
   }

@@ -58,6 +58,7 @@ public class DDLParser {
       final String stmt = it.next();
       final Optional<String> name = extractTableName(stmt);
       if (!name.isPresent()) {
+        System.out.println("Couldn't find table/view name: " + stmt);
         continue;
       }
       final Matcher matcher = columns.matcher(stmt);
@@ -91,15 +92,25 @@ public class DDLParser {
   }
 
   private Optional<String> extractTableName(String stmt) {
-    int table = stmt.indexOf(TABLE);
-    if (table == -1) {
-      table = stmt.indexOf(TABLE.toLowerCase());
+    int beginIndex = findStartOfKeyword(stmt, TABLE);
+    if (beginIndex == -1) {
+      beginIndex = findStartOfKeyword(stmt, "view");
+      if (beginIndex == -1) {
+        return Optional.absent();
+      }
     }
-    if (table == -1) {
-      return Optional.absent();
-    }
-    final int beginIndex = table + TABLE.length();
     return Optional.of(stmt.substring(beginIndex, stmt.indexOf('(', beginIndex)).trim());
+  }
+
+  private int findStartOfKeyword(String stmt, String keyword) {
+    int table = stmt.indexOf(keyword);
+    if (table == -1) {
+      table = stmt.indexOf(keyword.toLowerCase());
+    }
+    if (table == -1) {
+      return table;
+    }
+    return table + keyword.length();
   }
 
   private int extractLen(String type) {
