@@ -1,7 +1,6 @@
 package io.transwarp.generate.config.stmt;
 
 
-import com.sun.istack.internal.Nullable;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.GlobalConfig;
@@ -95,7 +94,7 @@ public class QueryConfig extends StmtConfig {
   }
 
   @Override
-  public QueryConfig addDefaultConfig(List<Table> candidates, @Nullable List<Table> from) {
+  public QueryConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     assert candidates != null;
     setCandidates(candidates);
 

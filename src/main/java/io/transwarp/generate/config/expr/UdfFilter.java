@@ -56,6 +56,7 @@ public class UdfFilter {
 
 
   public Function getMostPossible(ArrayList<Function> functions) {
+    // TODO 2/16/17 fix nested aggregate op
     List<Function> fs = new ArrayList<>(functions.size());
     Possibility max = Possibility.IMPOSSIBLE;
     for (Function function : functions) {
