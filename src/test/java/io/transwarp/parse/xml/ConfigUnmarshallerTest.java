@@ -30,21 +30,18 @@ public class ConfigUnmarshallerTest {
 
   @Test
   public void parse() throws Exception {
-    final GlobalConfig parse = getGlobalConfig("src/main/resources/template.xml");
+    final GlobalConfig parse = getGlobalConfig("template.xml");
     System.out.println();
   }
 
   private static GlobalConfig getGlobalConfig(String file) throws IOException, ValidationException {
-    return configUnmarshaller.parse(new XMLParserSource(file));
-  }
-
-  public static GlobalConfig getGlobalConfig() throws IOException, ValidationException {
-    return configUnmarshaller.parse(new XMLParserSource("src/test/resources/test.xml"));
+    String inputPath = ClassLoader.getSystemResource(file).getFile();
+    return configUnmarshaller.parse(new XMLParserSource(inputPath));
   }
 
   @Test
   public void generationError() throws Exception {
-    GlobalConfig parse = getGlobalConfig("src/test/resources/generationError.xml");
+    GlobalConfig parse = getGlobalConfig("generationError.xml");
     for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
       for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
         boolean rightError = false;
@@ -65,12 +62,12 @@ public class ConfigUnmarshallerTest {
   @Test
   public void validationError() throws Exception {
 //          ("The content of element 'operand' is not complete. One of '{subQuery, tableName}' is expected.");
-    errorTest("src/test/resources/xsdValidationError.xml", ValidationException.class);
+    errorTest("xsdValidationError.xml", ValidationException.class);
   }
 
   @Test
   public void parseError() throws Exception {
-    errorTest("src/test/resources/parseError.xml", IllegalArgumentException.class);
+    errorTest("parseError.xml", IllegalArgumentException.class);
   }
 
   private void errorTest(String file, Class<? extends Exception> exceptionClass) throws IOException {

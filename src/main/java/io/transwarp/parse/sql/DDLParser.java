@@ -10,6 +10,7 @@ import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.type.GenerationDataType;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -120,7 +121,9 @@ public class DDLParser {
     TableLoader(String fileName, Dialect dialect) {
       DDLParser ddlParser = null;
       try {
-        ddlParser = new DDLParser("src/main/resources/" + fileName, dialect);
+        URL url = ClassLoader.getSystemResource(fileName);
+        // guess this ddl file is either in resources or in cwd
+        ddlParser = new DDLParser(url == null ? fileName : url.getFile(), dialect);
       } catch (IOException e) {
         e.printStackTrace();
       }

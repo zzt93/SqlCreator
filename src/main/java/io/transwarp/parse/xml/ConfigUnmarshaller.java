@@ -27,13 +27,15 @@ import java.io.IOException;
  */
 public class ConfigUnmarshaller implements ConfigParser {
 
+  private static String schemaFile = ConfigUnmarshaller.class.getResource("/define.xsd").getFile();
+
   public GlobalConfig parse(ParserSource parserSource) throws IOException, ValidationException {
     SAXParserFactory spf = SAXParserFactory.newInstance();
     spf.setNamespaceAware(true);
 
     SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     try {
-      Schema schema = sf.newSchema(new File("src/main/resources/define.xsd"));
+      Schema schema = sf.newSchema(new File(schemaFile));
       spf.setSchema(schema);
       JAXBContext jc = JAXBContext.newInstance(GlobalConfig.class);
       Unmarshaller unmarshaller = jc.createUnmarshaller();

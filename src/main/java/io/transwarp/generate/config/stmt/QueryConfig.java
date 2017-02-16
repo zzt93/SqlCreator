@@ -13,6 +13,7 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -108,13 +109,13 @@ public class QueryConfig extends StmtConfig {
   }
 
   @Override
-  public String[] generate(Dialect[] dialects) {
+  public EnumMap<Dialect, String> generate(Dialect[] dialects) {
     final SelectResult result = SelectResult.generateQuery(this);
-    String[] res = new String[dialects.length];
-    for (int i = 0; i < res.length; i++) {
-      res[i] = result.sql(dialects[i]).toString();
+    EnumMap<Dialect, String> map = new EnumMap<>(Dialect.class);
+    for (Dialect dialect : dialects) {
+      map.put(dialect, result.sql(dialect).toString());
     }
-    return res;
+    return map;
   }
 
   /**

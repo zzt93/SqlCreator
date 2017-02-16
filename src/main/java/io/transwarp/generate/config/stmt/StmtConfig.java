@@ -10,6 +10,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -95,5 +96,5 @@ public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
     return this;
   }
 
-  public abstract String[] generate(Dialect[] dialects);
+  public abstract EnumMap<Dialect, String> generate(Dialect[] dialects);
 }

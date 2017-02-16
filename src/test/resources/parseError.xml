@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="../../main/resources/define.xsd">
+       xsi:noNamespaceSchemaLocation="define.xsd">
 
     <test>
         <query id="testJoinInvalidTable">

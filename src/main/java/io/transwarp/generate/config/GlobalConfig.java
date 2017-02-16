@@ -118,16 +118,31 @@ public class GlobalConfig {
   public void generate(EnumMap<Dialect, Path> dirs) throws FileNotFoundException {
     // now, only with queries
     for (QueryConfig queryConfig : getQueries()) {
-      final String[] generate = queryConfig.generate(getCmpBase());
-      for (Dialect dialect : getCmpBase()) {
-        PrintWriter oracle = getPrintWriter(dirs.get(dialect), queryConfig.getId());
-        oracle.println(generate[dialect.ordinal()]);
+      if (queryConfig.getNum() == 0) {
+        continue;
+      }
+      EnumMap<Dialect, PrintWriter> writers = getPrintWriter(dirs, queryConfig.getId());
+      for (int i = 0; i < queryConfig.getNum(); i++) {
+        final EnumMap<Dialect, String> generate = queryConfig.generate(getCmpBase());
+        for (Dialect dialect : getCmpBase()) {
+          writers.get(dialect).println(generate.get(dialect));
+        }
+      }
+      for (PrintWriter printWriter : writers.values()) {
+        printWriter.flush();
+        printWriter.close();
       }
     }
   }
 
-  private PrintWriter getPrintWriter(Path dir, String prefix) throws FileNotFoundException {
-    final Path path = Paths.get(dir.toString(), prefix + ".sql");
-    return new PrintWriter(new OutputStreamWriter(new FileOutputStream(path.toString(), false)));
+  private EnumMap<Dialect, PrintWriter> getPrintWriter(EnumMap<Dialect, Path> dirs, String prefix) throws FileNotFoundException {
+    final Dialect[] dialects = getCmpBase();
+    EnumMap<Dialect, PrintWriter> res = new EnumMap<>(Dialect.class);
+    for (Dialect dialect : dialects) {
+      final Path dir = dirs.get(dialect);
+      final Path path = Paths.get(dir.toString(), prefix + ".sql");
+      res.put(dialect, new PrintWriter(new OutputStreamWriter(new FileOutputStream(path.toString(), false))));
+    }
+    return res;
   }
 }

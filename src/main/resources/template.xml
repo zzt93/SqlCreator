@@ -66,14 +66,14 @@
     </test>
     <!--transaction default value is false-->
     <test transaction="true" threads="3">
-        <query id="intQuery" queryDepth="1" num="0">
+        <query id="intQuery" queryDepth="1" num="10">
             <select>
                 <operand type="int"/>
             </select>
             <from/>
         </query>
 
-        <query id="longQuery" queryDepth="1" num="0">
+        <query id="longQuery" queryDepth="1" num="10">
             <select>
                 <operand type="long"/>
             </select>
@@ -171,7 +171,7 @@
     </test>
 
     <test>
-        <query id="whereSimpleQuery" queryDepth="2" num="0">
+        <query id="whereSimpleQuery" queryDepth="2" num="10">
             <select>
                 <selectNum>1</selectNum>
             </select>
@@ -311,7 +311,7 @@
             </from>
         </query>
 
-        <query id="simpleQuery" queryDepth="2" num="0">
+        <query id="simpleQuery" queryDepth="2" num="10">
             <select/>
             <from/>
             <where/>

@@ -18,7 +18,7 @@ import java.util.EnumMap;
 public class CLParser {
 
   private String[] paths = new String[]{"oracle=oracle", "inceptor=inceptor"};
-  private String xmlFile = "src/main/resources/template.xml";
+  private String xmlFile = ClassLoader.getSystemResource("template.xml").getFile();
 
   public CLParser(String[] args) {
     if (args.length >= 1) {

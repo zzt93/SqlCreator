@@ -52,7 +52,7 @@
     <xs:element name="deleteStmt" type="deleteStmtConfig" substitutionGroup="stmtConfig"/>
     <xs:complexType name="stmtConfig" abstract="true">
         <xs:attribute name="id" type="xs:ID" use="required"/>
-        <xs:attribute name="num" type="xs:unsignedInt" default="100"/>
+        <xs:attribute name="num" type="xs:unsignedInt" default="10"/>
         <xs:attribute name="table" type="xs:string" default="default_oracle.sql"/>
         <xs:attribute name="dialect" type="dialects" default="ORACLE"/>
     </xs:complexType>

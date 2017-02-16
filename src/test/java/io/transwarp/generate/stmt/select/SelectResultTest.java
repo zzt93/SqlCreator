@@ -1,17 +1,25 @@
 package io.transwarp.generate.stmt.select;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
-import io.transwarp.parse.xml.ConfigUnmarshallerTest;
+import io.transwarp.generate.util.Strs;
+import io.transwarp.parse.cl.CLParser;
+import io.transwarp.parse.xml.ConfigUnmarshaller;
+import io.transwarp.parse.xml.XMLParserSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -29,6 +37,7 @@ public class SelectResultTest {
   private PrintWriter oracle;
   private PrintWriter inceptor;
   private List<Table> fromObj;
+  private static CLParser clParser;
 
   public SelectResultTest(QueryConfig config) throws Exception {
     this.queryConfig = config;
@@ -43,7 +52,9 @@ public class SelectResultTest {
 
   @Parameterized.Parameters
   public static QueryConfig[] data() throws Exception {
-    final GlobalConfig parse = ConfigUnmarshallerTest.getGlobalConfig();
+    ConfigUnmarshaller configUnmarshaller = new ConfigUnmarshaller();
+    clParser = new CLParser(Strs.of(ClassLoader.getSystemResource("test.xml").getFile(), "oracle=oracle", "inceptor=inceptor"));
+    final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource(clParser.getInputPath()));
     List<QueryConfig> list = parse.getQueries();
     return list.toArray(new QueryConfig[0]);
   }
@@ -55,10 +66,16 @@ public class SelectResultTest {
     for (int i = 0; i < count; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);
     }
-    oracle = new PrintWriter(new OutputStreamWriter(new FileOutputStream("oracle/" + queryConfig.getId() + ".sql", false)));
-    inceptor = new PrintWriter(new OutputStreamWriter(new FileOutputStream("inceptor/" + queryConfig.getId() + ".sql", false)));
+    final EnumMap<Dialect, Path> outputDir = clParser.getOutputDir();
+    oracle = getWriter(outputDir.get(Dialect.ORACLE), queryConfig.getId());
+    inceptor = getWriter(outputDir.get(Dialect.INCEPTOR), queryConfig.getId());
   }
 
+  private PrintWriter getWriter(Path dir, String prefix) throws FileNotFoundException {
+    final Path path = Paths.get(dir.toString(), prefix + ".sql");
+    return new PrintWriter(new OutputStreamWriter(
+        new FileOutputStream(path.toString(), false)));
+  }
 
   public void name() throws Exception {
     for (SelectResult selectResult : selectResults) {
@@ -84,7 +101,9 @@ public class SelectResultTest {
   }
 
   public void close() {
+    oracle.flush();
     oracle.close();
+    inceptor.flush();
     inceptor.close();
   }
 }
