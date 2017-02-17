@@ -89,6 +89,12 @@ public enum InceptorType implements DBType {
       return DataType.TIMESTAMP;
     }
   },
+  BINARY {
+    @Override
+    public GenerationDataType mapToGeneration(int len) {
+      return DataType.BINARY;
+    }
+  }
   ;
 
   String addLen(int len) {

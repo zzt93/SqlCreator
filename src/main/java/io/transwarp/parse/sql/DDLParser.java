@@ -26,7 +26,8 @@ import java.util.regex.Pattern;
  */
 public class DDLParser {
 
-  private static final String TABLE = "TABLE";
+  private static final String TABLE = " TABLE ";
+  public static final String VIEW = " VIEW ";
   /**
    * Pattern.DOTALL or (?s) tells Java to allow the dot to match newline characters
    */
@@ -94,7 +95,7 @@ public class DDLParser {
   private Optional<String> extractTableName(String stmt) {
     int beginIndex = findStartOfKeyword(stmt, TABLE);
     if (beginIndex == -1) {
-      beginIndex = findStartOfKeyword(stmt, "view");
+      beginIndex = findStartOfKeyword(stmt, VIEW);
       if (beginIndex == -1) {
         return Optional.absent();
       }
