@@ -42,10 +42,14 @@ public class FromObj implements Table {
   }
 
 
+  private boolean setAlias = false;
   @Override
   public Table join(Table table, Condition condition) {
-    final Table table1 = TableUtil.deepCopy(this).setAlias(TableUtil.nextAlias());
-    return join(table1, table, condition);
+    Table tmp = this;
+    if (!setAlias) {
+      tmp = setAlias(TableUtil.nextAlias());
+    }
+    return join(tmp, table, condition);
   }
 
   public static Table join(Table t1, Table t2, Condition condition) {
@@ -78,8 +82,10 @@ public class FromObj implements Table {
   @Override
   public Table setAlias(String alias) {
     this.name = alias;
+    assert !setAlias;
+    setAlias = true;
     for (StringBuilder builder : sqls.values()) {
-      builder.append(alias);
+      builder.append(" ").append(alias);
     }
     return this;
   }

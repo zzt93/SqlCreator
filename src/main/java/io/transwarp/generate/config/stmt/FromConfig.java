@@ -1,9 +1,9 @@
 package io.transwarp.generate.config.stmt;
 
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.DefaultConfig;
-import io.transwarp.generate.config.op.JoinConfig;
+import io.transwarp.generate.config.op.ExplicitJoinConfig;
+import io.transwarp.generate.config.op.ImplicitJoinConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -17,7 +17,8 @@ import java.util.List;
  */
 public class FromConfig implements DefaultConfig<FromConfig> {
 
-  private JoinConfig join;
+  private ExplicitJoinConfig explicitJoin;
+  private ImplicitJoinConfig implicitJoin;
   private int joinTimes;
 
   private List<Table> fromObj = new ArrayList<>();
@@ -31,12 +32,12 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   @XmlElement
-  public JoinConfig getJoin() {
-    return join;
+  public ExplicitJoinConfig getExplicitJoin() {
+    return explicitJoin;
   }
 
-  public void setJoin(JoinConfig join) {
-    this.join = join;
+  public void setExplicitJoin(ExplicitJoinConfig explicitJoin) {
+    this.explicitJoin = explicitJoin;
   }
 
   @XmlElement
@@ -46,6 +47,15 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   public void setJoinTimes(int joinTimes) {
     this.joinTimes = joinTimes;
+  }
+
+  @XmlElement
+  public ImplicitJoinConfig getImplicitJoin() {
+    return implicitJoin;
+  }
+
+  public void setImplicitJoin(ImplicitJoinConfig implicitJoin) {
+    this.implicitJoin = implicitJoin;
   }
 
   public FromConfig setFrom(List<Table> from) {
@@ -60,26 +70,17 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   private void initFromObj(List<Table> candidates) {
-    if (implicitJoin()) {
-      List<Table> tmp = implicitJoin(candidates);
-      fromObj.addAll(tmp);
+    if (joinTimesSet()) {
+      assert implicitJoin == null;
+      implicitJoin = new ImplicitJoinConfig(joinTimes).addDefaultConfig(candidates, null);
+      fromObj.addAll(implicitJoin.implicitJoin());
+    } else if (implicitJoin != null) {
+      fromObj.addAll(implicitJoin.implicitJoin());
     } else {
-      final JoinConfig join = getJoin();
+      final ExplicitJoinConfig join = getExplicitJoin();
       Table table = join.explicitJoin();
       fromObj.add(table);
     }
-  }
-
-  private List<Table> implicitJoin(List<Table> candidates) {
-    // TODO generate and add subQuery
-//      QueryConfig config = QueryConfig.simpleQuery(candidates);
-
-    final int tableSize = getJoinTimes() + 1;
-    List<Table> tmp = new ArrayList<>(tableSize);
-    for (int i = 0; i < tableSize; i++) {
-      tmp.add(TableUtil.deepCopy(TableUtil.randomTable(candidates)).setAlias(TableUtil.nextAlias()));
-    }
-    return tmp;
   }
 
   public List<Table> getFromObj() {
@@ -88,7 +89,11 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return (join == null || join.lackChildConfig()) && (joinTimes == 0);
+    return lackJoin(implicitJoin) && lackJoin(explicitJoin) && (joinTimes == 0);
+  }
+
+  private boolean lackJoin(DefaultConfig config) {
+    return config == null || config.lackChildConfig();
   }
 
   @Override
@@ -96,8 +101,10 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     setCandidates(candidates);
 
     // check children first
-    if (join != null) {
-      join.addDefaultConfig(candidates, null);
+    if (explicitJoin != null) {
+      explicitJoin.addDefaultConfig(candidates, null);
+    } else if (implicitJoin != null) {
+      implicitJoin.addDefaultConfig(candidates, null);
     } else {
       joinTimes = 1;
     }
@@ -109,7 +116,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     return this;
   }
 
-  private boolean implicitJoin() {
-    return join == null;
+  private boolean joinTimesSet() {
+    return joinTimes != 0;
   }
 }

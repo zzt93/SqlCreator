@@ -6,6 +6,7 @@ import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.List;
@@ -17,10 +18,15 @@ import java.util.List;
  */
 @XmlType(name = "relation")
 public class RelationConfig extends SetConfig {
-  private static final String EMPTY = "";
-  private String tableName = EMPTY;
-  private JoinConfig joinedTable;
+  private static final double JOIN_OP_QUERY_POSS = 0.125;
+  private static final double JOIN_OP_JOIN_POSS = 0.125;
+  private String alias = TableUtil.INVALID_ALIAS;
+  private String tableName = TableUtil.INVALID_ALIAS;
+  private ExplicitJoinConfig joinedTable;
 
+  /*
+  ------------- generated field --------------
+   */
   /**
    * the mapped table of tableName
    *
@@ -45,12 +51,21 @@ public class RelationConfig extends SetConfig {
   }
 
   @XmlElement
-  public JoinConfig getJoinedTable() {
+  public ExplicitJoinConfig getJoinedTable() {
     return joinedTable;
   }
 
-  public void setJoinedTable(JoinConfig joinedTable) {
+  public void setJoinedTable(ExplicitJoinConfig joinedTable) {
     this.joinedTable = joinedTable;
+  }
+
+  @XmlAttribute
+  public String getAlias() {
+    return alias;
+  }
+
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
   @Override
@@ -79,22 +94,21 @@ public class RelationConfig extends SetConfig {
       return this;
     }
 
-    final Class<?> random = Possibility.possibility(0.25, 0.125)
-        .random(QueryConfig.class, JoinConfig.class, tableName.getClass());
-    // also set candidates here
+    final Class<?> random = Possibility.possibility(JOIN_OP_QUERY_POSS, JOIN_OP_JOIN_POSS)
+        .random(QueryConfig.class, ExplicitJoinConfig.class, tableName.getClass());
     if (random == String.class) {
       operand = TableUtil.randomTable(getCandidatesTables());
       tableName = operand.name().get();
     } else if (random == QueryConfig.class) {
       setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
     } else {
-      joinedTable = new JoinConfig(getCandidatesTables());
+      joinedTable = new ExplicitJoinConfig(getCandidatesTables());
     }
     return this;
   }
 
   private boolean invalidTableName() {
-    return tableName.equals(EMPTY);
+    return tableName.equals(TableUtil.INVALID_ALIAS);
   }
 
 
@@ -103,12 +117,13 @@ public class RelationConfig extends SetConfig {
       if (operand != null) {
         return operand;
       }
-      return TableUtil.getTableByName(getCandidatesTables(), tableName);
+      final Table tableByName = TableUtil.getTableByName(getCandidatesTables(), tableName);
+      return TableUtil.deepCopy(tableByName).setAlias(alias);
     }
     if (joinedTable != null) {
       return joinedTable.explicitJoin();
     }
     assert getSubQuery() != null;
-    return SelectResult.generateQuery(getSubQuery());
+    return SelectResult.generateQuery(getSubQuery()).setAlias(alias);
   }
 }

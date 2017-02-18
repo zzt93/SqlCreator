@@ -3,7 +3,7 @@ package io.transwarp.generate.type;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.FixedParams;
 import io.transwarp.generate.util.Strs;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -20,9 +20,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class SequenceDataType extends CompoundDataType {
 
-  public static final SequenceDataType BITS = sequence(DataType.Meta.BIT, GlobalConfig.getRandomBitsMaxLen());
-  public static final SequenceDataType CHARS = sequence(DataType.Meta.CHAR, GlobalConfig.getRandomStrMaxLen());
-  static final SequenceDataType UNICODE_STRING = sequence(DataType.Meta.UNICODE, GlobalConfig.getRandomStrMaxLen());
+  public static final SequenceDataType BITS = sequence(DataType.Meta.BIT, FixedParams.getRandomBitsMaxLen());
+  public static final SequenceDataType CHARS = sequence(DataType.Meta.CHAR, FixedParams.getRandomStrMaxLen());
+  static final SequenceDataType UNICODE_STRING = sequence(DataType.Meta.UNICODE, FixedParams.getRandomStrMaxLen());
   private static final GenerationDataType[] COMPOUNDS = {BITS, CHARS, UNICODE_STRING};
 
   private final GenerationDataType type;

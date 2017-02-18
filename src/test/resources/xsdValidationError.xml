@@ -33,6 +33,27 @@
             </from>
         </query>
 
+        <query id="testJoin10">
+            <select/>
+            <from>
+                <implicitJoin/>
+            </from>
+        </query>
+
+        <query id="testJoin15">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <condition/>
+                </implicitJoin>
+            </from>
+        </query>
     </test>
 
 </tests>

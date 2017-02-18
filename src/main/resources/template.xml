@@ -91,42 +91,42 @@
     </test>
 
     <test>
-        <query id="testJoin">
+        <query id="testJoin0">
             <select/>
             <from>
-                <join/>
+                <explicitJoin/>
             </from>
         </query>
 
         <query id="testJoin1">
             <select/>
             <from>
-                <join>
+                <explicitJoin>
                     <operand>
                         <tableName>test_udf</tableName>
                     </operand>
-                </join>
+                </explicitJoin>
             </from>
         </query>
 
         <query id="testJoin2">
             <select/>
             <from>
-                <join>
+                <explicitJoin>
                     <operand>
                         <tableName>test_udf</tableName>
                     </operand>
                     <operand>
                         <tableName>test_udf</tableName>
                     </operand>
-                </join>
+                </explicitJoin>
             </from>
         </query>
 
         <query id="testJoin3">
             <select/>
             <from>
-                <join>
+                <explicitJoin>
                     <operand>
                         <tableName>test_udf</tableName>
                     </operand>
@@ -134,14 +134,14 @@
                         <subQuery>simpleQuery</subQuery>
                     </operand>
                     <condition/>
-                </join>
+                </explicitJoin>
             </from>
         </query>
 
         <query id="testJoin4">
             <select/>
             <from>
-                <join>
+                <explicitJoin>
                     <operand>
                         <tableName>test_udf</tableName>
                     </operand>
@@ -149,14 +149,14 @@
                         <joinedTable/>
                     </operand>
                     <condition/>
-                </join>
+                </explicitJoin>
             </from>
         </query>
 
         <query id="testJoin5">
             <select/>
             <from>
-                <join>
+                <explicitJoin>
                     <operand>
                         <tableName>test_udf_2</tableName>
                     </operand>
@@ -164,7 +164,155 @@
                         <tableName>test_udf</tableName>
                     </operand>
                     <condition/>
-                </join>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin">
+            <select/>
+            <from>
+                <joinTimes>3</joinTimes>
+            </from>
+        </query>
+
+        <query id="testJoin11">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin12">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin13">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <subQuery>simpleQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin14">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <joinedTable/>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin15">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias2">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand alias="t2">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias3">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand alias="t2">
+                        <subQuery>simpleQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias4">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <!-- this alias should be ignored -->
+                    <operand alias="t2">
+                        <joinedTable/>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias5">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t23">
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                    <operand alias="t21">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand alias="t22">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
             </from>
         </query>
 
@@ -289,7 +437,7 @@
         <query id="nonEqualJoin">
             <select/>
             <from>
-                <join>
+                <explicitJoin>
                     <operand desc="default: table or query">
                         <tableName>test_udf</tableName>
                     </operand>
@@ -307,7 +455,7 @@
                         </constExpr>
                         <expr desc="default: const/column/expr"/>
                     </condition>
-                </join>
+                </explicitJoin>
             </from>
         </query>
 
@@ -319,4 +467,11 @@
 
     </test>
 
+    <test>
+        <query id="simpleAlias">
+            <select/>
+            <from>
+            </from>
+        </query>
+    </test>
 </tests>

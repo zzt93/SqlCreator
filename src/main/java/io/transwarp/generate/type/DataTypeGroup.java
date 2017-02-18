@@ -2,7 +2,7 @@ package io.transwarp.generate.type;
 
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.FixedParams;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
@@ -32,7 +32,7 @@ public enum DataTypeGroup implements GenerationDataType {
   LIST_GROUP() {
     @Override
     public GenerationDataType randomType() {
-      return new ListDataType(ALL_GROUP.randomType(), random.nextInt(GlobalConfig.getRandomListMaxLen()) + 1);
+      return new ListDataType(ALL_GROUP.randomType(), random.nextInt(FixedParams.getRandomListMaxLen()) + 1);
     }
 
     @Override

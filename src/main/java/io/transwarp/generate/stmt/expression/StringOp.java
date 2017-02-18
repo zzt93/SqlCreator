@@ -2,7 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.FixedParams;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -133,7 +133,7 @@ public enum StringOp implements Function {
       final int len = base.length;
       assert len >= 1;
       final GenerationDataType varType = base[0];
-      final GenerationDataType[] res = new GenerationDataType[random.nextInt(GlobalConfig.VAR_ARGS_MAX_LEN) + len];
+      final GenerationDataType[] res = new GenerationDataType[random.nextInt(FixedParams.VAR_ARGS_MAX_LEN) + len];
       Arrays.fill(res, varType);
       System.arraycopy(base, 0, res, 0, len);
       return res;

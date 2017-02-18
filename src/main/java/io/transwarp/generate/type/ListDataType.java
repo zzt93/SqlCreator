@@ -2,7 +2,7 @@ package io.transwarp.generate.type;
 
 import com.google.common.base.Joiner;
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.FixedParams;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
@@ -16,10 +16,10 @@ import java.util.List;
  * <h3></h3>
  */
 public class ListDataType extends SequenceDataType {
-  public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, GlobalConfig.getRandomListMaxLen(), Possibility.CERTAIN);
+  public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, FixedParams.getRandomListMaxLen(), Possibility.CERTAIN);
   public static final GenerationDataType ALL_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_GROUP, 1, Possibility.IMPOSSIBLE);
 
-  public static final GenerationDataType ALL_BUT_LIST = new ListDataType(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, GlobalConfig.getRandomListMaxLen(), Possibility.CERTAIN);
+  public static final GenerationDataType ALL_BUT_LIST = new ListDataType(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, FixedParams.getRandomListMaxLen(), Possibility.CERTAIN);
   public static final GenerationDataType ALL_BUT_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, 1, Possibility.IMPOSSIBLE);
 
   private final Possibility listPossibility;

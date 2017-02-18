@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class TableUtil {
 
+  public static final String INVALID_ALIAS = "";
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   public static Column randomCol(Table table) {
@@ -98,5 +99,9 @@ public class TableUtil {
 
   public static Table deepCopy(Table table) {
     return new FromObj(table);
+  }
+
+  public static boolean invalidAlias(String name) {
+    return name == null || name.equals(INVALID_ALIAS);
   }
 }

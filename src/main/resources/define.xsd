@@ -65,7 +65,8 @@
                     <xs:element name="from" minOccurs="1">
                         <xs:complexType>
                             <xs:choice>
-                                <xs:element name="join" type="joinConfig" minOccurs="0"/>
+                                <xs:element name="implicitJoin" type="implicitJoinConfig" minOccurs="0"/>
+                                <xs:element name="explicitJoin" type="explicitJoinConfig" minOccurs="0"/>
                                 <xs:element name="joinTimes" minOccurs="0">
                                     <xs:simpleType>
                                         <xs:restriction base="xs:unsignedByte">
@@ -282,7 +283,12 @@
         <xs:attribute name="type" type="tableOp" use="required"/>
         <xs:attribute name="num" type="xs:unsignedInt"/>
     </xs:complexType>
-    <xs:complexType name="joinConfig">
+    <xs:complexType name="implicitJoinConfig">
+        <xs:sequence>
+            <xs:element name="operand" type="relation" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="explicitJoinConfig">
         <xs:sequence>
             <xs:element name="operand" type="relation" maxOccurs="2" minOccurs="0"/>
             <xs:element name="condition" type="noAggregateExprConfig" maxOccurs="1" minOccurs="0"/>
@@ -299,9 +305,10 @@
         <xs:choice>
             <xs:element name="subQuery" type="xs:IDREF" minOccurs="1"/>
             <xs:element name="tableName" type="xs:string" minOccurs="1"/>
-            <xs:element name="joinedTable" type="joinConfig" minOccurs="1"/>
+            <xs:element name="joinedTable" type="explicitJoinConfig" minOccurs="1"/>
         </xs:choice>
         <xs:attribute name="desc" type="xs:string"/>
+        <xs:attribute name="alias" type="xs:token"/>
     </xs:complexType>
 
     <xs:simpleType name="dialects" final="restriction">

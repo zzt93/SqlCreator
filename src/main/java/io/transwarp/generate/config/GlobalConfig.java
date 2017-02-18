@@ -25,12 +25,6 @@ import java.util.List;
 @XmlRootElement(name = "tests")
 public class GlobalConfig {
 
-  public static final int VAR_ARGS_MAX_LEN = 5;
-
-  private static int randomBitsMaxLen = 64;
-  private static int randomListMaxLen = 10;
-  private static int randomStrMaxLen = 100;
-
   private static Dialect cmp = Dialect.INCEPTOR;
   private static Dialect base = Dialect.ORACLE;
 
@@ -44,39 +38,12 @@ public class GlobalConfig {
     return base;
   }
 
-  public static int getRandomListMaxLen() {
-    return randomListMaxLen;
-  }
-
-  public static int getRandomBitsMaxLen() {
-    return randomBitsMaxLen;
-  }
-
-  public static int getRandomStrMaxLen() {
-    return randomStrMaxLen;
-  }
-
   public static <T extends DefaultConfig<T>> void checkConfig(DefaultConfig<T> defaultConfig, List<Table> candidates, List<Table> from) {
     if (defaultConfig != null) {
       if (defaultConfig.lackChildConfig()) {
         defaultConfig.addDefaultConfig(candidates, from);
       }
     }
-  }
-
-  public GlobalConfig setRandomBitsMaxLen(int randomBitsMaxLen) {
-    GlobalConfig.randomBitsMaxLen = randomBitsMaxLen;
-    return this;
-  }
-
-  public GlobalConfig setRandomListMaxLen(int randomListMaxLen) {
-    GlobalConfig.randomListMaxLen = randomListMaxLen;
-    return this;
-  }
-
-  public GlobalConfig setRandomStrMaxLen(int randomStrMaxLen) {
-    GlobalConfig.randomStrMaxLen = randomStrMaxLen;
-    return this;
   }
 
   public GlobalConfig setCmp(Dialect cmp) {

@@ -16,17 +16,18 @@ import java.util.List;
  * <p>
  * <h3></h3>
  */
-public class JoinConfig implements DefaultConfig<JoinConfig> {
+public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
 
   private static final int JOIN_OP_NUM = 2;
   private ExprConfig condition;
   private List<RelationConfig> operands = new ArrayList<>(JOIN_OP_NUM);
+
   private List<Table> from = new ArrayList<>(JOIN_OP_NUM), candidates;
 
-  public JoinConfig() {
+  public ExplicitJoinConfig() {
   }
 
-  public JoinConfig(List<Table> candidates) {
+  public ExplicitJoinConfig(List<Table> candidates) {
     this.candidates = candidates;
     addDefaultConfig(candidates, from);
   }
@@ -36,7 +37,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
     return condition;
   }
 
-  public JoinConfig setCondition(ExprConfig condition) {
+  public ExplicitJoinConfig setCondition(ExprConfig condition) {
     this.condition = condition;
     return this;
   }
@@ -50,13 +51,13 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
     this.operands = operands;
   }
 
-  public JoinConfig setFrom(List<Table> from) {
+  public ExplicitJoinConfig setFrom(List<Table> from) {
     // only need candidates, from is generated
     throw new NotImplementedException();
   }
 
   @Override
-  public JoinConfig setCandidates(List<Table> candidates) {
+  public ExplicitJoinConfig setCandidates(List<Table> candidates) {
     this.candidates = candidates;
     return this;
   }
@@ -94,7 +95,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
   }
 
   @Override
-  public JoinConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+  public ExplicitJoinConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     setCandidates(candidates);
 
     if (!lackChildConfig()) {
@@ -124,6 +125,7 @@ public class JoinConfig implements DefaultConfig<JoinConfig> {
 
   private void initFrom() {
     assert from.isEmpty();
+    // TODO 2/17/17 keep it?
     from.addAll(Arrays.asList(toTables()));
   }
 }

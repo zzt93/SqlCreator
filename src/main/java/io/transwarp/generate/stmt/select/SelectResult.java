@@ -84,9 +84,10 @@ public class SelectResult implements Table {
   }
 
   public StringBuilder toTable(Dialect dialect) {
-    if (!name.isPresent()) {
+    if (!name.isPresent() || TableUtil.invalidAlias(name().get())) {
       setAlias(TableUtil.nextAlias());
     }
+    assert name.isPresent();
     return subQuery(dialect).insert(0, '(').append(')').append(name.get());
   }
 

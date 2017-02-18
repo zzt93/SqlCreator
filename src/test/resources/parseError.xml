@@ -7,11 +7,11 @@
         <query id="testJoinInvalidTable">
             <select/>
             <from>
-                <join>
+                <explicitJoin>
                     <operand>
                         <tableName>test</tableName>
                     </operand>
-                </join>
+                </explicitJoin>
             </from>
         </query>
     </test>
