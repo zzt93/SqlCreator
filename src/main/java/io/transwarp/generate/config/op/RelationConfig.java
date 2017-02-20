@@ -114,11 +114,10 @@ public class RelationConfig extends SetConfig {
 
   Table toTable() {
     if (!invalidTableName()) {
-      if (operand != null) {
-        return operand;
+      if (operand == null) {
+        operand = TableUtil.getTableByName(getCandidatesTables(), tableName);
       }
-      final Table tableByName = TableUtil.getTableByName(getCandidatesTables(), tableName);
-      return TableUtil.deepCopy(tableByName).setAlias(alias);
+      return TableUtil.deepCopy(operand).setAlias(alias);
     }
     if (joinedTable != null) {
       return joinedTable.explicitJoin();

@@ -4,16 +4,7 @@
        xsi:noNamespaceSchemaLocation="define.xsd">
 
     <test>
-        <query id="testJoinInvalidTable">
-            <select/>
-            <from>
-                <explicitJoin>
-                    <operand>
-                        <tableName>test</tableName>
-                    </operand>
-                </explicitJoin>
-            </from>
-        </query>
+
     </test>
 
 </tests>
