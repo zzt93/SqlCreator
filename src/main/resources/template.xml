@@ -480,4 +480,44 @@
             </from>
         </query>
     </test>
+
+    <test>
+        <query id="testNestedAggregateOp">
+            <select>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">MAX</udfList>
+                    </udfConfig>
+                </operand>
+            </select>
+            <from/>
+        </query>
+
+        <query id="testSelfJoin">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <operand type="long">
+                    <columnExpr/>
+                    <columnExpr/>
+                </operand>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+    </test>
 </tests>

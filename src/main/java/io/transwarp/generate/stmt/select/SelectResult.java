@@ -62,6 +62,9 @@ public class SelectResult implements Table {
 
   @Override
   public Table setAlias(String alias) {
+    if (TableUtil.invalidAlias(alias)) {
+      alias = TableUtil.nextAlias();
+    }
     this.name = Optional.of(alias);
     return this;
   }

@@ -27,7 +27,6 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   public FromConfig() {
   }
 
-
   @XmlElement
   public ExplicitJoinConfig getExplicitJoin() {
     return explicitJoin;

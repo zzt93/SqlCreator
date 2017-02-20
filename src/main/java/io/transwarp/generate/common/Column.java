@@ -45,9 +45,26 @@ public class Column {
 
   public String[] getNameOrConst(Dialect[] dialects, Possibility poss) {
     if (poss.chooseFirstOrRandom(true, false)) {
-      return operand.sqls(dialects);
+      String[] res = new String[dialects.length];
+      for (int i = 0; i < dialects.length; i++) {
+        res[i] = getNameWithTable(dialects[i]).toString();
+      }
+      return res;
     }
     return operand.getType().randomData(dialects);
+  }
+
+  private StringBuilder getNameWithTable(Dialect dialect) {
+    StringBuilder sb = new StringBuilder();
+    if (table != null) {
+      assert table.name().isPresent();
+      sb = new StringBuilder(table.name().get()).append('.');
+    }
+    return sb.append(operand.sql(dialect));
+  }
+
+  public StringBuilder getNameWithAlias(Dialect dialect) {
+    return getNameWithTable(dialect).append(alias);
   }
 
   public GenerationDataType getType() {
@@ -71,12 +88,4 @@ public class Column {
         TableUtil.nextColAlias());
   }
 
-  public StringBuilder getNameWithAlias(Dialect dialect) {
-    StringBuilder sb = new StringBuilder();
-    if (table != null) {
-      assert table.name().isPresent();
-      sb = new StringBuilder(table.name().get()).append('.');
-    }
-    return sb.append(operand.sql(dialect)).append(alias);
-  }
 }

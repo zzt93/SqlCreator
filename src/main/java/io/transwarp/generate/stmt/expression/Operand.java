@@ -111,15 +111,6 @@ public class Operand {
     return versions.get(dialect);
   }
 
-  public String[] sqls(Dialect[] dialects) {
-    assert dialects.length == versions.size();
-    String[] res = new String[versions.size()];
-    int i = 0;
-    for (Dialect dialect : versions.keySet()) {
-      res[i++] = sql(dialect).toString();
-    }
-    return res;
-  }
 
   public GenerationDataType getType() {
     return type;

@@ -166,10 +166,10 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return candidateQuery;
   }
 
-  private boolean prohibitAggregateOp = false;
+  private boolean aggregateOpFilter = false;
   @Override
   public boolean lackChildConfig() {
-    return candidates == null || src == null || udfDepth == INVALID || (!useAggregateOp && !prohibitAggregateOp)
+    return candidates == null || src == null || udfDepth == INVALID || (!useAggregateOp && !aggregateOpFilter)
         || recursiveConfig();
   }
 
@@ -191,7 +191,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
       candidateQuery.addDefaultConfig(candidates, from);
     }
     if (!useAggregateOp) {
-      prohibitAggregateOp = true;
+      aggregateOpFilter = true;
       noAggregateOp();
     }
     return this;
