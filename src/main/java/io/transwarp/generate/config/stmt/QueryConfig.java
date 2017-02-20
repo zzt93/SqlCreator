@@ -31,8 +31,8 @@ public class QueryConfig extends StmtConfig {
   }
 
   private QueryConfig(List<Table> candidates) {
-    from = new FromConfig(candidates);
-    select = new SelectConfig(candidates, getFrom().getFromObj());
+    from = new FromConfig();
+    select = new SelectConfig();
     addDefaultConfig(candidates, null);
   }
 
@@ -52,7 +52,7 @@ public class QueryConfig extends StmtConfig {
   }
 
   public void setSelect(SelectConfig selectConfig) {
-    select = selectConfig.setCandidates(getCandidates());
+    select = selectConfig;
   }
 
   @XmlElement
@@ -62,7 +62,7 @@ public class QueryConfig extends StmtConfig {
   }
 
   public void setWhere(FilterOperatorConfig where) {
-    this.where = where.setCandidates(getCandidates());
+    this.where = where;
   }
 
   @XmlElement
@@ -85,12 +85,13 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
+    GlobalConfig.checkConfig(from, getCandidates(), null);
     return from;
   }
 
 
   public void setFrom(FromConfig from) {
-    this.from = from.addDefaultConfig(getCandidates(), null);
+    this.from = from;
   }
 
   @Override

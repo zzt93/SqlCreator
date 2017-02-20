@@ -6,6 +6,16 @@
 
     <test>
 
+        <query id="simpleQuery" queryDepth="2" num="10">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
 
         <query id="testJoinAlias3">
             <select/>
@@ -21,11 +31,6 @@
             </from>
         </query>
 
-        <query id="simpleQuery" queryDepth="2" num="10">
-            <select/>
-            <from/>
-            <where/>
-        </query>
 
     </test>
 

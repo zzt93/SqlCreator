@@ -39,9 +39,6 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   public SelectConfig() {
   }
 
-  public SelectConfig(List<Table> candidates, List<Table> from) {
-    addDefaultConfig(candidates, from);
-  }
 
   public SelectConfig(List<Table> candidates, List<Table> fromObj, GenerationDataType dataType) {
     setOperands(Lists.newArrayList(new TypedExprConfig(fromObj, fromObj, dataType)));

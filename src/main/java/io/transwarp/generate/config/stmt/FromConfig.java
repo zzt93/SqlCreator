@@ -27,9 +27,6 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   public FromConfig() {
   }
 
-  FromConfig(List<Table> candidates) {
-    addDefaultConfig(candidates, null);
-  }
 
   @XmlElement
   public ExplicitJoinConfig getExplicitJoin() {

@@ -25,7 +25,7 @@ public class FromStmt implements SqlGeneration {
   public StringBuilder sql(Dialect dialect) {
     final StringBuilder res = new StringBuilder(FROM);
     for (Table table : fromObj) {
-      res.append(table.sql(dialect)).append(", ");
+      res.append(table.toTable(dialect)).append(", ");
     }
     res.setLength(res.length() - 2);
     return res;
