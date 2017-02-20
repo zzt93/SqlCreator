@@ -45,11 +45,10 @@ public class FromObj implements Table {
   private boolean setAlias = false;
   @Override
   public Table join(Table table, Condition condition) {
-    Table tmp = this;
     if (!setAlias) {
-      tmp = setAlias(TableUtil.nextAlias());
+      setAlias(TableUtil.nextAlias());
     }
-    return join(tmp, table, condition);
+    return join(this, table, condition);
   }
 
   public static Table join(Table t1, Table t2, Condition condition) {

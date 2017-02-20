@@ -113,7 +113,7 @@ public enum DataTypeGroup implements GenerationDataType {
   }
 
   public static GenerationDataType numRandDownCast(GenerationDataType type) {
-    // TODO 1/11/17 depend on the order of type init, may change
+    // TODO 1/11/17 depend on the order of type init of NUM_GROUP, may change
     if (NUM_GROUP.contains(type)) {
       final int i = NUM_GROUP.types.indexOf(type);
       if (i == 0) {

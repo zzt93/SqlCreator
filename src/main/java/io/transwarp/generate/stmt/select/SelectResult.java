@@ -99,7 +99,4 @@ public class SelectResult implements Table {
     return res;
   }
 
-
-  // TODO 12/12/16 conversion to operand when only one row one column and requested
-
 }

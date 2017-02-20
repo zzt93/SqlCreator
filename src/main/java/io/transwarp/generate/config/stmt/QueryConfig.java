@@ -160,7 +160,6 @@ public class QueryConfig extends StmtConfig {
    * from `query` can't use `select *`, must using column name
    */
   public static QueryConfig fromQuery(List<Table> candidates) {
-    // TODO 2/8/17 impl
     final QueryConfig config = new QueryConfig(candidates);
     config.getSelect().setUseStar(Possibility.IMPOSSIBLE);
     return config;

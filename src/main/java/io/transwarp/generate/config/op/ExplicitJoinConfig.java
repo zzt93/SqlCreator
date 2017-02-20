@@ -8,7 +8,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -64,20 +63,18 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
 
   public Table explicitJoin() {
     assert !lackChildConfig();
-    final Table[] tables = toTables();
-    Table first = tables[0];
+    final List<Table> tables = getOps();
+    Table first = tables.get(0);
     final Condition condition = new Condition(getCondition());
-    first = first.join(tables[1], condition);
+    first = first.join(tables.get(1), condition);
     return first;
   }
 
-  private Table[] toTables() {
-    final Table[] res = new Table[JOIN_OP_NUM];
-    assert operands.size() == JOIN_OP_NUM;
-    for (int i = 0; i < operands.size(); i++) {
-      res[i] = operands.get(i).toTable();
+  private List<Table> getOps() {
+    if (from.isEmpty()) {
+      initFrom();
     }
-    return res;
+    return from;
   }
 
   @Override
@@ -125,7 +122,9 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
 
   private void initFrom() {
     assert from.isEmpty();
-    // TODO 2/17/17 keep it?
-    from.addAll(Arrays.asList(toTables()));
+    assert operands.size() == JOIN_OP_NUM;
+    for (RelationConfig operand : operands) {
+      from.add(operand.toTable());
+    }
   }
 }

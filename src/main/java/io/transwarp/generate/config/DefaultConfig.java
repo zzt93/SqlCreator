@@ -29,8 +29,6 @@ public interface DefaultConfig<T> {
    * <li>{@link #setCandidates(List)}</li>
    * <li>to check children's {@link #lackChildConfig()}</li>
    * <li>to invoke {@link #setFrom(List)} on child element</li>
-   * @param candidates
-   * @param from
    */
   T addDefaultConfig(List<Table> candidates, List<Table> from);
 

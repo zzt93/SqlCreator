@@ -131,7 +131,7 @@
                         <tableName>test_udf</tableName>
                     </operand>
                     <operand>
-                        <subQuery>simpleQuery</subQuery>
+                        <subQuery>randomQuery</subQuery>
                     </operand>
                     <condition/>
                 </explicitJoin>
@@ -208,7 +208,7 @@
                         <tableName>test_udf</tableName>
                     </operand>
                     <operand>
-                        <subQuery>simpleQuery</subQuery>
+                        <subQuery>randomQuery</subQuery>
                     </operand>
                 </implicitJoin>
             </from>
@@ -278,7 +278,7 @@
                         <tableName>test_udf</tableName>
                     </operand>
                     <operand alias="t2">
-                        <subQuery>simpleQuery</subQuery>
+                        <subQuery>randomQuery</subQuery>
                     </operand>
                 </implicitJoin>
             </from>
@@ -442,7 +442,7 @@
                         <tableName>test_udf</tableName>
                     </operand>
                     <operand>
-                        <subQuery>simpleQuery</subQuery>
+                        <subQuery>randomQuery</subQuery>
                     </operand>
                     <condition>
                         <udfConfig>
@@ -459,7 +459,7 @@
             </from>
         </query>
 
-        <query id="simpleQuery" queryDepth="2" num="10">
+        <query id="randomQuery" queryDepth="2" num="10">
             <select/>
             <from/>
             <where/>
@@ -468,9 +468,15 @@
     </test>
 
     <test>
+
         <query id="simpleAlias">
             <select/>
             <from>
+                <implicitJoin>
+                    <operand alias="simpleAlias">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
             </from>
         </query>
     </test>
