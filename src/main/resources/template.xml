@@ -551,4 +551,24 @@
             </from>
         </query>
     </test>
+
+    <test>
+        <!--COMPILE FAILED: Semantic error: [Error 10025] Line 1:9 Expression not in GROUP BY key 'cid'-->
+        <query id="testInvalidAggregate">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">MAX</udfList>
+                    </udfConfig>
+                </operand>
+                <operand>
+                    <columnExpr>
+                        <udfDepth>0</udfDepth>
+                    </columnExpr>
+                </operand>
+            </select>
+            <from/>
+        </query>
+    </test>
+
 </tests>

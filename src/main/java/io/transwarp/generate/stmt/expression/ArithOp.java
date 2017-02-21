@@ -1,6 +1,7 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -13,7 +14,12 @@ public enum ArithOp implements Function {
   PLUS(" + "),
   MINUS(" - "),
   MUL(" * "),
-  DIV(" / "),;
+  DIV(" / ") {
+    @Override
+    public void register() {
+      FunctionMap.register(new ParenWrapper(this), DataType.DOUBLE);
+    }
+  },;
 
 
   final String op;

@@ -119,7 +119,7 @@ public enum StringOp implements Function {
     public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... inputs) {
       for (Dialect dialect : dialects) {
         final StringBuilder builder = inputs[0].sql(dialect).insert(0, ops[dialect.ordinal()]);
-        for (int i = 1; i < inputs.length - 1; i++) {
+        for (int i = 1; i < inputs.length; i++) {
           builder.append(delims[dialect.ordinal()]).append(inputs[i].sql(dialect));
         }
         builder.append(Function.CLOSE_PAREN);
@@ -132,7 +132,8 @@ public enum StringOp implements Function {
       final GenerationDataType[] base = base();
       final int len = base.length;
       assert len >= 1;
-      final GenerationDataType varType = base[0];
+      // the last argument type is variable len type: printf(string, obj...), base=[string, obj]
+      final GenerationDataType varType = base[len - 1];
       final GenerationDataType[] res = new GenerationDataType[random.nextInt(FixedParams.VAR_ARGS_MAX_LEN) + len];
       Arrays.fill(res, varType);
       System.arraycopy(base, 0, res, 0, len);
