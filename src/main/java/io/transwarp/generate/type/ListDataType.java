@@ -2,8 +2,8 @@ package io.transwarp.generate.type;
 
 import com.google.common.base.Joiner;
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.FixedParams;
-import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
@@ -16,25 +16,25 @@ import java.util.List;
  * <h3></h3>
  */
 public class ListDataType extends SequenceDataType {
-  public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, FixedParams.getRandomListMaxLen(), Possibility.CERTAIN);
-  public static final GenerationDataType ALL_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_GROUP, 1, Possibility.IMPOSSIBLE);
+  public static final GenerationDataType ALL_LIST = new ListDataType(DataTypeGroup.ALL_GROUP, FixedParams.getRandomListMaxLen(), BiChoicePossibility.CERTAIN);
+  public static final GenerationDataType ALL_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_GROUP, 1, BiChoicePossibility.IMPOSSIBLE);
 
-  public static final GenerationDataType ALL_BUT_LIST = new ListDataType(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, FixedParams.getRandomListMaxLen(), Possibility.CERTAIN);
-  public static final GenerationDataType ALL_BUT_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, 1, Possibility.IMPOSSIBLE);
+  public static final GenerationDataType ALL_BUT_LIST = new ListDataType(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, FixedParams.getRandomListMaxLen(), BiChoicePossibility.CERTAIN);
+  public static final GenerationDataType ALL_BUT_ONE_COL_QUERY = new ListDataType(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST, 1, BiChoicePossibility.IMPOSSIBLE);
 
-  private final Possibility listPossibility;
+  private final BiChoicePossibility listPossibility;
 
   ListDataType(GenerationDataType type, int len) {
-    this(type, len, Possibility.LIST_OR_QUERY);
+    this(type, len, BiChoicePossibility.LIST_OR_QUERY);
   }
 
-  private ListDataType(GenerationDataType type, int len, Possibility possibility) {
+  private ListDataType(GenerationDataType type, int len, BiChoicePossibility biChoicePossibility) {
     super(type, len);
-    this.listPossibility = possibility;
+    this.listPossibility = biChoicePossibility;
   }
 
   public String[] listOrQuery(ExprConfig config, Dialect[] dialects) {
-    if (listPossibility.chooseFirstOrRandom(true, false)) {
+    if (listPossibility.random(true, false)) {
       final Joiner on = Joiner.on(", ");
       String[] res = new String[dialects.length];
       final List<String>[] parts = DataTypeUtil.randomSize(getType(), getLen(), dialects);

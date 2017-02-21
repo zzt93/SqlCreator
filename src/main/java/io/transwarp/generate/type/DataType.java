@@ -1,7 +1,7 @@
 package io.transwarp.generate.type;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.stmt.expression.Function;
 import io.transwarp.generate.util.Strs;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -148,7 +148,7 @@ public enum DataType implements GenerationDataType {
      * @see #DEFAULT : yyyy-MM-dd
      */
     public String[] randomData(Dialect[] dialects) {
-      if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+      if (BiChoicePossibility.HALF.random(true, false)) {
         final String dateConst = "DATE" + DataType.dateString(DEFAULT);
         return Strs.repeat(dateConst, dialects.length);
       }
@@ -157,7 +157,7 @@ public enum DataType implements GenerationDataType {
   },
   TIMESTAMP {
     public String[] randomData(Dialect[] dialects) {
-      if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+      if (BiChoicePossibility.HALF.random(true, false)) {
         return Strs.repeat(name() + DataType.dateString(YYYY_MM_DD_HH_MM_SS), dialects.length);
       }
       return Strs.of("sysdate", "current_timestamp");

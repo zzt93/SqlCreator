@@ -3,8 +3,8 @@ package io.transwarp.generate.config.stmt;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
@@ -161,7 +161,7 @@ public class QueryConfig extends StmtConfig {
    */
   public static QueryConfig fromQuery(List<Table> candidates) {
     final QueryConfig config = new QueryConfig(candidates);
-    config.getSelect().setUseStar(Possibility.IMPOSSIBLE);
+    config.getSelect().setUseStar(BiChoicePossibility.IMPOSSIBLE);
     return config;
   }
 

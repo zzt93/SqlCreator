@@ -32,7 +32,6 @@ import java.util.List;
 public class SelectResultTest {
 
   private final QueryConfig queryConfig;
-  private int count = 10;
   private SelectResult[] selectResults;
   private PrintWriter oracle;
   private PrintWriter inceptor;
@@ -62,6 +61,7 @@ public class SelectResultTest {
   public void setUp() throws Exception {
     System.err.println(queryConfig.getId());
     fromObj = queryConfig.getFrom().getFromObj();
+    int count = queryConfig.getNum();
     selectResults = new SelectResult[count];
     for (int i = 0; i < count; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);

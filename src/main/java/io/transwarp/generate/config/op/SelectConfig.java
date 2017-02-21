@@ -2,8 +2,8 @@ package io.transwarp.generate.config.op;
 
 import com.google.common.collect.Lists;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
-import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.type.DataTypeGroup;
@@ -33,7 +33,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   ------------ generation field ------------
    */
   private List<Table> src, candidates;
-  private Possibility useStar = Possibility.HALF;
+  private BiChoicePossibility useStar = BiChoicePossibility.HALF;
   private int size;
 
   public SelectConfig() {
@@ -144,11 +144,11 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return src;
   }
 
-  public Possibility useStar() {
+  public BiChoicePossibility useStar() {
     return useStar;
   }
 
-  public void setUseStar(Possibility useStar) {
+  public void setUseStar(BiChoicePossibility useStar) {
     this.useStar = useStar;
   }
 

@@ -1,6 +1,6 @@
 package io.transwarp.generate.config.expr.adapter;
 
-import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.expr.UdfFilter;
 import io.transwarp.generate.stmt.expression.Function;
 import io.transwarp.generate.stmt.expression.FunctionMap;
@@ -33,16 +33,16 @@ public class UdfFilterAdapter extends XmlAdapter<UdfFilterAdapter.AdaptedMap, Ud
 
   @Override
   public UdfFilter unmarshal(AdaptedMap adaptedMap) throws Exception {
-    HashMap<Function, Possibility> map = new HashMap<>();
+    HashMap<Function, BiChoicePossibility> map = new HashMap<>();
     for (Element element : adaptedMap.elements) {
-      final Possibility possibility = Possibility.possibility(
+      final BiChoicePossibility biChoicePossibility = BiChoicePossibility.possibility(
           Double.parseDouble(element.getAttribute("possibility")));
       for (String s : element.getTextContent().split("\\s")) {
         final Function udfByName = FunctionMap.getUdfByName(s);
         if (udfByName == null) {
           throw new IllegalArgumentException("Invalid udf name: " + s);
         }
-        map.put(udfByName, possibility);
+        map.put(udfByName, biChoicePossibility);
       }
     }
     return new UdfFilter(map);

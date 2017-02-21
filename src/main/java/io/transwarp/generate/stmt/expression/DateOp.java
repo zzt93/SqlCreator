@@ -2,7 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -114,7 +114,7 @@ public enum DateOp implements Function {
 
       @Override
       public GenerationDataType[] inputTypes(GenerationDataType resultType) {
-        if (Possibility.HALF.chooseFirstOrRandom(true, false)) {
+        if (BiChoicePossibility.HALF.random(true, false)) {
           return new GenerationDataType[]{DataType.INTERVAL, resultType};
         }
         return new GenerationDataType[]{resultType, DataType.INTERVAL};

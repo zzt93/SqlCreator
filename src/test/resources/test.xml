@@ -3,36 +3,14 @@
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="define.xsd">
 
-
-
     <test>
-
-
-        <query id="testSelfJoin">
+        <query id="intQuery" queryDepth="1" num="1000">
             <select>
                 <operand type="int">
-                    <columnExpr/>
-                    <constExpr>
-                        <udfConfig>
-                            <udfList possibility="1">PLUS</udfList>
-                        </udfConfig>
-                    </constExpr>
-                </operand>
-                <operand type="long">
-                    <columnExpr/>
-                    <columnExpr/>
+                    <udfDepth>5</udfDepth>
                 </operand>
             </select>
-            <from>
-                <implicitJoin>
-                    <operand>
-                        <tableName>test_udf</tableName>
-                    </operand>
-                    <operand>
-                        <tableName>test_udf</tableName>
-                    </operand>
-                </implicitJoin>
-            </from>
+            <from/>
         </query>
     </test>
 

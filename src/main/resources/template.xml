@@ -482,7 +482,7 @@
     </test>
 
     <test>
-        <query id="testNestedAggregateOp">
+        <query id="testNestedAggregateOp0">
             <select>
                 <operand>
                     <udfConfig>
@@ -492,6 +492,37 @@
             </select>
             <from/>
         </query>
+
+        <query id="testNestedAggregateOp1">
+            <select>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">MAX</udfList>
+                    </udfConfig>
+                    <constExpr>
+                        <udfDepth>3</udfDepth>
+                    </constExpr>
+                </operand>
+            </select>
+            <from/>
+        </query>
+
+        <query id="testNestedAggregateOp2">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">MIN</udfList>
+                    </udfConfig>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">MIN</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+            </select>
+            <from/>
+        </query>
+
 
         <query id="testSelfJoin">
             <select>

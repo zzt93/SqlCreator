@@ -5,7 +5,7 @@ import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
@@ -29,10 +29,10 @@ public class SelectListStmt implements SqlGeneration {
     if (config.selectAll()) {
       cols = TableUtil.columns(from);
       // use star or list all columns
-      useStar = config.useStar().chooseFirstOrRandom(true, false);
+      useStar = config.useStar().random(true, false);
     } else if (config.setPositiveSelectNum()) {
       final int colLimit = config.getSelectNum();
-      cols = TableUtil.randomSubCols(from, Possibility.SELECT_COL_POSSIBILITY, colLimit);
+      cols = TableUtil.randomSubCols(from, BiChoicePossibility.SELECT_COL_POSSIBILITY, colLimit);
       if (cols.size() < colLimit) {
         final int num = colLimit - cols.size();
         for (int i = 0; i < num; i++) {

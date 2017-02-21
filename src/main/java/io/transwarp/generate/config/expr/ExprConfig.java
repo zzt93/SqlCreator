@@ -1,8 +1,8 @@
 package io.transwarp.generate.config.expr;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
-import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.expr.adapter.PossibilityAdapter;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
@@ -35,7 +35,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private int udfDepth = INVALID;
   private String desc;
-  private Possibility constOrColumnPossibility = Possibility.HALF;
+  private BiChoicePossibility constOrColumnPossibility = BiChoicePossibility.HALF;
   private InputRelation inputRelation = InputRelation.SAME;
 
   private QueryConfig candidateQuery;
@@ -110,11 +110,11 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @XmlAttribute
   @XmlJavaTypeAdapter(PossibilityAdapter.class)
-  public Possibility getConstOrColumnPossibility() {
+  public BiChoicePossibility getConstOrColumnPossibility() {
     return constOrColumnPossibility;
   }
 
-  public void setConstOrColumnPossibility(Possibility constOrColumnPossibility) {
+  public void setConstOrColumnPossibility(BiChoicePossibility constOrColumnPossibility) {
     this.constOrColumnPossibility = constOrColumnPossibility;
   }
 
@@ -166,10 +166,12 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return candidateQuery;
   }
 
-  private boolean aggregateOpFilter = false;
+  private boolean aggregateOpHandled = false;
+
   @Override
   public boolean lackChildConfig() {
-    return candidates == null || src == null || udfDepth == INVALID || (!useAggregateOp && !aggregateOpFilter)
+    return candidates == null || src == null
+        || udfDepth == INVALID || !aggregateOpHandled
         || recursiveConfig();
   }
 
@@ -180,23 +182,43 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
     assert src != null;
     if (hasNestedConfig()) {
+      assert udfDepth == INVALID;
       udfDepth = HAS_NESTED_UDF_DEPTH;
       for (ExprConfig operand : operands) {
         operand.addDefaultConfig(candidates, from);
       }
-    } else {
+    } else if (udfDepth == INVALID) {
       udfDepth = NO_NESTED_UDF_DEPTH;
     }
     if (candidateQuery != null) {
       candidateQuery.addDefaultConfig(candidates, from);
     }
+    aggregateOpHandled = true;
     if (!useAggregateOp) {
-      aggregateOpFilter = true;
       noAggregateOp();
+    } else {
+      if (preferAggregate()) {
+        replaceDepthWithNestedExpr();
+      }
     }
     return this;
   }
 
+  private boolean preferAggregate() {
+    return udfFilter.prefer(BiChoicePossibility.NORMAL, AggregateOp.values());
+  }
+
+  private void replaceDepthWithNestedExpr() {
+    if (udfDepth >= 1) {
+      // add nested config
+      if (operands.isEmpty()) {
+        operands.add(defaultNestedExpr(this));
+      }
+      udfDepth = HAS_NESTED_UDF_DEPTH;
+    }
+  }
+
+  @Override
   public ExprConfig setFrom(List<Table> tables) {
     src = tables;
     return this;
@@ -219,6 +241,6 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   private void noAggregateOp() {
-    udfFilter.addPreference(AggregateOp.values(), Possibility.IMPOSSIBLE);
+    udfFilter.addPreference(AggregateOp.values(), BiChoicePossibility.IMPOSSIBLE);
   }
 }

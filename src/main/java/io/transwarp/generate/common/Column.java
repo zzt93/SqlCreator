@@ -1,8 +1,8 @@
 package io.transwarp.generate.common;
 
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.GlobalConfig;
-import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.stmt.select.SelectResult;
 import io.transwarp.generate.type.GenerationDataType;
@@ -43,8 +43,8 @@ public class Column {
     this.table = table;
   }
 
-  public String[] getNameOrConst(Dialect[] dialects, Possibility poss) {
-    if (poss.chooseFirstOrRandom(true, false)) {
+  public String[] getNameOrConst(Dialect[] dialects, BiChoicePossibility poss) {
+    if (poss.random(true, false)) {
       String[] res = new String[dialects.length];
       for (int i = 0; i < dialects.length; i++) {
         res[i] = getNameWithTable(dialects[i]).toString();

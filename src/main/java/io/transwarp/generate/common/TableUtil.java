@@ -1,7 +1,7 @@
 package io.transwarp.generate.common;
 
 import com.google.common.base.Optional;
-import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.type.GenerationDataType;
 
@@ -58,10 +58,10 @@ public class TableUtil {
     return " col_alias" + colCounter.getAndAdd(1);
   }
 
-  public static ArrayList<Column> randomSubCols(List<Table> from, Possibility possibility, int colLimit) {
+  public static ArrayList<Column> randomSubCols(List<Table> from, BiChoicePossibility biChoicePossibility, int colLimit) {
     final ArrayList<Column> res = new ArrayList<>();
     for (Column column : columns(from)) {
-      if (possibility.chooseFirstOrRandom(true, false)) {
+      if (biChoicePossibility.random(true, false)) {
         res.add(column);
       }
       if (res.size() >= colLimit) {

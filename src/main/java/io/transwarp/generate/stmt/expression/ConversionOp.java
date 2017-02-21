@@ -1,7 +1,7 @@
 package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -60,7 +60,7 @@ public enum ConversionOp implements Function {
           input = DataTypeGroup.DECIMAL_GROUP;
           break;
         case STRING_GROUP:
-          input = Possibility.HALF.chooseFirstOrRandom(DataTypeGroup.NUM_GROUP, DataTypeGroup.DATE_GROUP);
+          input = BiChoicePossibility.HALF.random(DataTypeGroup.NUM_GROUP, DataTypeGroup.DATE_GROUP);
           break;
         case DATE_GROUP:
           input = (resultType == DataType.UNIX_DATE ? DataType.TIMESTAMP : DataType.UNIX_DATE);

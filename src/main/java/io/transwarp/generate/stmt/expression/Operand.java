@@ -3,11 +3,11 @@ package io.transwarp.generate.stmt.expression;
 import com.google.common.base.Optional;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
-import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.config.expr.FunctionDepth;
+import io.transwarp.generate.config.expr.UdfFilter;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -44,7 +44,7 @@ public class Operand {
     }
   }
 
-  private static Operand makeOperand(GenerationDataType resultType, ExprConfig config, int depth) {
+  private static Operand makeOperand(GenerationDataType resultType, ExprConfig config, int depth, UdfFilter udfFilter) {
     List<ExprConfig> nextConfig = null;
     if (depth == FunctionDepth.SINGLE) {
       if (config.hasNestedConfig()) {
@@ -64,7 +64,7 @@ public class Operand {
         }
       }
     }
-    final Function function = FunctionMap.random(resultType, config.getUdfFilter());
+    final Function function = FunctionMap.random(resultType, udfFilter);
     final GenerationDataType[] inputs = function.inputTypes(resultType);
     Operand[] ops = new Operand[inputs.length];
     final GenerationDataType[] nextResultType = config.getInputRelation().refine(inputs);
@@ -76,11 +76,11 @@ public class Operand {
         } else {
           nextC = ExprConfig.defaultNestedExpr(config);
         }
-        ops[i] = makeOperand(nextResultType[i], nextC, nextC.getUdfDepth());
+        ops[i] = makeOperand(nextResultType[i], nextC, nextC.getUdfDepth(), udfFilter);
       }
     } else {
       for (int i = 0; i < nextResultType.length; i++) {
-        ops[i] = makeOperand(nextResultType[i], config, depth - 1);
+        ops[i] = makeOperand(nextResultType[i], config, depth - 1, udfFilter);
       }
     }
     return function.apply(GlobalConfig.getCmpBase(), resultType, ops)
@@ -92,17 +92,7 @@ public class Operand {
 
     final Operand[] res = new Operand[num];
     for (int i = 0; i < num; i++) {
-      res[i] = makeOperand(resultType, config, config.getUdfDepth());
-    }
-    return res;
-  }
-
-  public static Operand[] randomOperand(Table[] src, int num, ExprConfig config) {
-    final Operand[] res = new Operand[num];
-    for (int i = 0; i < num; i++) {
-      GenerationDataType type = DataTypeGroup.ALL_GROUP.randomType();
-      res[i] = makeOperand(type, config, config.getUdfDepth());
-      assert type == res[i].type;
+      res[i] = makeOperand(resultType, config, config.getUdfDepth(), new UdfFilter(config.getUdfFilter()));
     }
     return res;
   }
@@ -110,7 +100,6 @@ public class Operand {
   public StringBuilder sql(Dialect dialect) {
     return versions.get(dialect);
   }
-
 
   public GenerationDataType getType() {
     return type;

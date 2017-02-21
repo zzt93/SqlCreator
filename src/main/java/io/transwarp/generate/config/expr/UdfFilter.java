@@ -1,6 +1,7 @@
 package io.transwarp.generate.config.expr;
 
-import io.transwarp.generate.config.Possibility;
+import io.transwarp.generate.config.BiChoicePossibility;
+import io.transwarp.generate.stmt.expression.AggregateOp;
 import io.transwarp.generate.stmt.expression.Function;
 
 import java.util.ArrayList;
@@ -21,44 +22,44 @@ public class UdfFilter {
    * <li>differences between select list generation and where condition generation: aggregate function</li>
    * <li>specific function requirement: non-equal join; no sub-query</li>
    */
-  private final Map<Function, Possibility> preference = new HashMap<>();
+  private final Map<Function, BiChoicePossibility> preference = new HashMap<>();
   private static ThreadLocalRandom random = ThreadLocalRandom.current();
 
   public UdfFilter(UdfFilter udfFilter) {
     preference.putAll(udfFilter.preference);
   }
 
-  public UdfFilter(Map<Function, Possibility> preference) {
+  public UdfFilter(Map<Function, BiChoicePossibility> preference) {
     this.preference.putAll(preference);
   }
 
-  public UdfFilter() {}
+  UdfFilter() {
+  }
 
-  public UdfFilter addPreference(Function f, Possibility p) {
+  private UdfFilter addPreference(Function f, BiChoicePossibility p) {
     preference.put(f, p);
     return this;
   }
 
-  public UdfFilter addPreference(Function[] f, Possibility p) {
+  UdfFilter addPreference(Function[] f, BiChoicePossibility p) {
     for (Function function : f) {
       addPreference(function, p);
     }
     return this;
   }
 
-  private Possibility possibility(Function function) {
-    Possibility possibility = preference.get(function);
-    if (possibility == null) {
-      possibility = Possibility.NORMAL;
+  private BiChoicePossibility possibility(Function function) {
+    BiChoicePossibility biChoicePossibility = preference.get(function);
+    if (biChoicePossibility == null) {
+      biChoicePossibility = BiChoicePossibility.NORMAL;
     }
-    return possibility;
+    return biChoicePossibility;
   }
 
 
   public Function getMostPossible(ArrayList<Function> functions) {
-    // TODO 2/16/17 fix nested aggregate op
     List<Function> fs = new ArrayList<>(functions.size());
-    Possibility max = Possibility.IMPOSSIBLE;
+    BiChoicePossibility max = BiChoicePossibility.IMPOSSIBLE;
     for (Function function : functions) {
       final int res = possibility(function).compareTo(max);
       if (res > 0) {
@@ -69,10 +70,37 @@ public class UdfFilter {
         fs.add(function);
       }
     }
-    return fs.get(random.nextInt(fs.size()));
+    final Function function = fs.get(random.nextInt(fs.size()));
+    decreasePossibility(function);
+    return function;
+  }
+
+  private void decreasePossibility(Function function) {
+    BiChoicePossibility biChoicePossibility = preference.get(function);
+    if (biChoicePossibility == null) {
+      biChoicePossibility = BiChoicePossibility.NORMAL;
+    }
+
+    if (function instanceof AggregateOp) {
+      // make all other aggregate op impossible
+      for (AggregateOp op : AggregateOp.values()) {
+        preference.put(op, BiChoicePossibility.IMPOSSIBLE);
+      }
+    } else {
+      preference.put(function, biChoicePossibility.decrease(0.05));
+    }
   }
 
   public int size() {
     return preference.size();
+  }
+
+  boolean prefer(BiChoicePossibility biChoicePossibility, Function... values) {
+    for (Function value : values) {
+      if (possibility(value).compareTo(biChoicePossibility) > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }

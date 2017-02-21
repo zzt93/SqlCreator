@@ -45,7 +45,7 @@ public class TypedExprConfig extends ExprConfig {
     this.types = types;
     if (types.length > 1) {
       final Possibility possibility = Possibility.evenPossibility(types.length);
-      finalType = possibility.chooseFirstOrRandom(types);
+      finalType = possibility.random(types);
     } else {
       finalType = types[0];
     }
@@ -61,6 +61,7 @@ public class TypedExprConfig extends ExprConfig {
     if (noTypeSetting()) {
       setTypes(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST.types().toArray(new GenerationDataType[0]));
     }
+    assert !lackChildConfig();
     return this;
   }
 
@@ -75,7 +76,7 @@ public class TypedExprConfig extends ExprConfig {
 
   public boolean aggregateOp() {
     final UdfFilter udfFilter = getUdfFilter();
-    for (int i = 0; i < udfFilter.size(); i++) {
+    for (int i = 0; i < udfFilter.size() * 2; i++) {
       final Function f = FunctionMap.random(finalType, udfFilter);
       if (!(f instanceof AggregateOp)) {
         return false;
