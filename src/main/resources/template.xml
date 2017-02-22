@@ -4,6 +4,11 @@
        xsi:noNamespaceSchemaLocation="define.xsd">
     <test>
         <updateStmt id="update"/>
+        <query id="randomQuery" queryDepth="2" num="10">
+            <select/>
+            <from/>
+            <where/>
+        </query>
     </test>
 
     <test>
@@ -459,11 +464,6 @@
             </from>
         </query>
 
-        <query id="randomQuery" queryDepth="2" num="10">
-            <select/>
-            <from/>
-            <where/>
-        </query>
 
     </test>
 

@@ -75,8 +75,9 @@ public class TypedExprConfig extends ExprConfig {
   }
 
   public boolean aggregateOp() {
-    final UdfFilter udfFilter = getUdfFilter();
-    for (int i = 0; i < udfFilter.size() * 2; i++) {
+    final UdfFilter original = getUdfFilter();
+    for (int i = 0; i < original.size() * 2; i++) {
+      final UdfFilter udfFilter = new UdfFilter(original);
       final Function f = FunctionMap.random(finalType, udfFilter);
       if (!(f instanceof AggregateOp)) {
         return false;
