@@ -27,7 +27,7 @@ public enum CmpOp implements Function {
     @Override
     public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
       for (Dialect dialect : dialects) {
-        input[0].sql(dialect).append(this);
+        input[0].sql(dialect).append(super.operator);
       }
       return input[0];
     }
@@ -50,7 +50,7 @@ public enum CmpOp implements Function {
     public Operand apply(Dialect[] dialects, GenerationDataType resultType, Operand... input) {
       for (Dialect dialect : dialects) {
         input[0].sql(dialect)
-            .append(this)
+            .append(super.operator)
             .append(input[1].sql(dialect))
             .append(and)
             .append(input[2].sql(dialect));

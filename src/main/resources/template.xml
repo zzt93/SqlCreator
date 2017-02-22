@@ -571,4 +571,26 @@
         </query>
     </test>
 
+    <test>
+        <query id="testAliasInWhere">
+            <select></select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+            <where>
+                <operand>
+                    <columnExpr>
+                        <udfDepth>1</udfDepth>
+                    </columnExpr>
+                </operand>
+            </where>
+        </query>
+    </test>
 </tests>

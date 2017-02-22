@@ -1,18 +1,29 @@
 
 ## Architecture
 img
+### Design
+#### How It Works
+ - Generate two versions of sql (in oracle and inceptor), run it separately, compare the results
+ - Due to this, implement only the intersect syntax of Oracle and Inceptor:
+   - Inceptor doesn't allow `IN_QUERY` in join condition, whereas Oracle can;
+   - Oracle only allow SubQuery in select statement can only be scalar operand, whereas  
 ### Input Module
-#### Validation
-##### xsd
+#### Config Method
+##### XSD & XML
+
+#### Config Validation
+##### JAXB
 ##### Generation Check
 
 - ExprConfig#getSubQuery: SubQuery in where statement has more than one column
 - TableUtil#getTableByName: Invalid table name
+- SelectListStmt#SelectListStmt: SubQuery in select statement can only be scalar operand (one column, one row)
 
 ### Generation Module
 #### DataType
 #### Operand
 #### Stmt
+
 
 #### Problem
 ##### Nested Aggregate Op
