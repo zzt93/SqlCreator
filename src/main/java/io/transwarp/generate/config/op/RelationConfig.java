@@ -2,6 +2,7 @@ package io.transwarp.generate.config.op;
 
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.Possibility;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
@@ -117,12 +118,14 @@ public class RelationConfig extends SetConfig {
       if (operand == null) {
         operand = TableUtil.getTableByName(getCandidatesTables(), tableName);
       }
-      return TableUtil.deepCopy(operand).setAlias(alias);
+      return operand.toTable(alias);
     }
     if (joinedTable != null) {
       return joinedTable.explicitJoin();
     }
-    assert getSubQuery() != null;
-    return SelectResult.generateQuery(getSubQuery()).setAlias(alias);
+    final QueryConfig subQuery = getSubQuery();
+    assert subQuery != null;
+    subQuery.getSelect().setUseStar(BiChoicePossibility.IMPOSSIBLE);
+    return SelectResult.generateQuery(subQuery).toTable(alias);
   }
 }

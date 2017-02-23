@@ -1,5 +1,6 @@
 package io.transwarp.generate.type;
 
+import io.transwarp.db_specific.base.DBType;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.stmt.expression.Function;
@@ -218,8 +219,20 @@ public enum DataType implements GenerationDataType {
     return outerVisible(type) || Internal.DATE_STRING_WITH_PATTERN == type;
   }
 
-  public static boolean notInSelectList(DataType dataType) {
+  public static boolean notInSelectList(GenerationDataType dataType) {
     return dataType == BOOL;
+  }
+
+  public static GenerationDataType getTypeByName(String name) {
+    GenerationDataType key;
+    for (Dialect dialect : Dialect.values()) {
+      try {
+        key = dialect.getType(name.toUpperCase()).mapToGeneration(DBType.LEN);
+        return key;
+      } catch (IllegalArgumentException ignored) {
+      }
+    }
+    throw new IllegalArgumentException("Unknown data type name: " + name);
   }
 
   public enum Meta implements GenerationDataType {

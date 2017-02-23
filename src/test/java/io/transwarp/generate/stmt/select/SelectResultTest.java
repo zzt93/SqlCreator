@@ -60,12 +60,12 @@ public class SelectResultTest {
 
   public void setUp() throws Exception {
     System.err.println(queryConfig.getId());
-    fromObj = queryConfig.getFrom().getFromObj();
     int count = queryConfig.getNum();
     selectResults = new SelectResult[count];
     for (int i = 0; i < count; i++) {
       selectResults[i] = SelectResult.generateQuery(queryConfig);
     }
+    fromObj = queryConfig.getFrom().getFromObj();
     final EnumMap<Dialect, Path> outputDir = clParser.getOutputDir();
     oracle = getWriter(outputDir.get(Dialect.ORACLE), queryConfig.getId());
     inceptor = getWriter(outputDir.get(Dialect.INCEPTOR), queryConfig.getId());

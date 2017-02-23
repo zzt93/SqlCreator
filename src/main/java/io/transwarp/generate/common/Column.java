@@ -21,7 +21,7 @@ public class Column {
   private static final String EMPTY = "";
 
   private final Operand operand;
-  private final String alias;
+  private String alias;
   private Table table;
 
   private Column(String name, GenerationDataType type) {
@@ -64,7 +64,7 @@ public class Column {
   }
 
   public StringBuilder getNameWithAlias(Dialect dialect) {
-    return getNameWithTable(dialect).append(alias);
+    return getNameWithTable(dialect).append(' ').append(alias);
   }
 
   public GenerationDataType getType() {
@@ -88,4 +88,11 @@ public class Column {
         TableUtil.nextColAlias());
   }
 
+  public void setAlias(String alias) {
+    this.alias = alias;
+  }
+
+  public void changeOwner(SelectResult selectResult) {
+    this.table = selectResult;
+  }
 }

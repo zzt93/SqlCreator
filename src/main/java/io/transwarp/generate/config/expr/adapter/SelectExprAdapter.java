@@ -18,7 +18,7 @@ public class SelectExprAdapter extends XmlAdapter<String, GenerationDataType[]> 
     GenerationDataType[] types = new GenerationDataType[split.length];
     for (int i = 0; i < split.length; i++) {
       String s = split[i];
-      final DataType key = DataType.valueOf(s.toUpperCase());
+      final GenerationDataType key = DataType.getTypeByName(s);
       if (DataType.notInSelectList(key)) {
         throw new IllegalArgumentException("Invalid data type in select list: " + s);
       }

@@ -2,7 +2,6 @@
 
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="define.xsd">
-
     <test>
         <updateStmt id="update"/>
         <query id="randomQuery" queryDepth="2" num="10">
@@ -595,8 +594,67 @@
         </query>
     </test>
 
+    <test>
 
-
+        <query id="aliasCrossLevel0">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleAlias</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="simpleIntQuery">
+            <select>
+                <operand type="int">
+                    <udfDepth>2</udfDepth>
+                </operand>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel2">
+            <select>
+                <operand type="int"/>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel3">
+            <select>
+                <operand type="varchar"/>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+    </test>
 
 
 </tests>

@@ -56,9 +56,9 @@ public class FromObj implements Table {
     t1.columns().addAll(t2.columns());
     // update sql
     for (Dialect dialect : GlobalConfig.getCmpBase()) {
-      t1.toTable(dialect)
+      t1.toTableSql(dialect)
           .append(" join ")
-          .append(t2.toTable(dialect))
+          .append(t2.toTableSql(dialect))
           .append(" on ")
           .append(condition.sql(dialect));
     }
@@ -66,7 +66,7 @@ public class FromObj implements Table {
   }
 
   @Override
-  public StringBuilder toTable(Dialect dialect) {
+  public StringBuilder toTableSql(Dialect dialect) {
     return sql(dialect);
   }
 
@@ -90,6 +90,11 @@ public class FromObj implements Table {
       builder.append(" ").append(alias);
     }
     return this;
+  }
+
+  @Override
+  public Table toTable(String alias) {
+    return TableUtil.deepCopy(this).setAlias(alias);
   }
 
   public StringBuilder sql(Dialect dialect) {

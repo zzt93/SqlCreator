@@ -22,6 +22,11 @@ public class SelectResult implements Table {
 
   private static final String EMPTY = "";
   private Optional<String> name = Optional.absent();
+  private ArrayList<Column> columns;
+
+  /*
+  --------- generation info ------------
+   */
   private final SelectListStmt selectListStmt;
   private final FromStmt fromStmt;
   private WhereStmt whereStmt;
@@ -36,16 +41,13 @@ public class SelectResult implements Table {
       whereStmt = new WhereStmt(config.getWhere());
     }
 
-    addSetOp();
+    columns = new ArrayList<>(selectListStmt.getCols());
   }
 
   public static SelectResult generateQuery(QueryConfig config) {
     return new SelectResult(config);
   }
 
-  private void addSetOp() {
-    // TODO 1/10/17 add set op
-  }
 
   @Override
   public Table join(Table table, Condition condition) {
@@ -57,7 +59,7 @@ public class SelectResult implements Table {
   }
 
   public ArrayList<Column> columns() {
-    return selectListStmt.getCols();
+    return columns;
   }
 
   @Override
@@ -66,6 +68,24 @@ public class SelectResult implements Table {
       alias = TableUtil.nextAlias();
     }
     this.name = Optional.of(alias);
+    return this;
+  }
+
+  @Override
+  public Table toTable(String alias) {
+    // set up new name
+    setAlias(alias);
+    assert name.isPresent();
+    // set up new column:
+    // (1) alias
+    // (2) change column owner
+    ArrayList<Column> list = new ArrayList<>(columns().size());
+    for (Column column : columns()) {
+      final String colAlias = TableUtil.nextColAlias();
+      column.setAlias(colAlias);
+      list.add(new Column(colAlias, column.getType(), this));
+    }
+    columns = list;
     return this;
   }
 
@@ -86,12 +106,12 @@ public class SelectResult implements Table {
         ;
   }
 
-  public StringBuilder toTable(Dialect dialect) {
+  public StringBuilder toTableSql(Dialect dialect) {
     if (!name.isPresent() || TableUtil.invalidAlias(name().get())) {
       setAlias(TableUtil.nextAlias());
     }
     assert name.isPresent();
-    return subQuery(dialect).insert(0, '(').append(')').append(name.get());
+    return subQuery(dialect).insert(0, '(').append(") ").append(name.get());
   }
 
   public String[] subQueries(Dialect[] dialects) {

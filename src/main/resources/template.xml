@@ -593,4 +593,66 @@
             </where>
         </query>
     </test>
+
+    <test>
+
+        <query id="aliasCrossLevel0">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleAlias</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="simpleIntQuery">
+            <select>
+                <operand type="int">
+                    <udfDepth>2</udfDepth>
+                </operand>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel2">
+            <select>
+                <operand type="int"/>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel3">
+            <select>
+                <operand type="varchar"/>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+    </test>
 </tests>

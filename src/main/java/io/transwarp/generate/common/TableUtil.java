@@ -51,11 +51,11 @@ public class TableUtil {
   private static AtomicLong colCounter = new AtomicLong(0);
 
   public static String nextAlias() {
-    return " alias" + tableCounter.getAndAdd(1);
+    return "alias" + tableCounter.getAndAdd(1);
   }
 
-  static String nextColAlias() {
-    return " col_alias" + colCounter.getAndAdd(1);
+  public static String nextColAlias() {
+    return "col_alias" + colCounter.getAndAdd(1);
   }
 
   public static ArrayList<Column> randomSubCols(List<Table> from, BiChoicePossibility biChoicePossibility, int colLimit) {

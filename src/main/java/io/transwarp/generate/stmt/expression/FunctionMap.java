@@ -77,7 +77,7 @@ public class FunctionMap {
   }
 
   public static Function getUdfByName(String name) {
-    return nameToFunction.get(name);
+    return nameToFunction.get(name.toUpperCase());
   }
 
   static {
