@@ -33,6 +33,22 @@
             </from>
         </query>
 
+        <query id="testJoin4">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test_udf</tableName>
+                    </left>
+                    <right>
+                        <joinedTable/>
+                    </right>
+                    <condition/>
+                </explicitJoin>
+            </from>
+        </query>
+
+
         <query id="testJoin10">
             <select/>
             <from>
@@ -54,6 +70,7 @@
                 </implicitJoin>
             </from>
         </query>
+
     </test>
 
 </tests>

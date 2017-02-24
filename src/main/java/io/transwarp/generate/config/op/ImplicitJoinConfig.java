@@ -13,37 +13,37 @@ import java.util.List;
  * <h3></h3>
  */
 public class ImplicitJoinConfig implements DefaultConfig<ImplicitJoinConfig> {
-  private List<RelationConfig> operands = new ArrayList<>();
+  private List<CompoundRelationConfig> operands = new ArrayList<>();
 
   public ImplicitJoinConfig() {
   }
 
   public ImplicitJoinConfig(int joinTimes) {
     for (int i = 0; i < joinTimes; i++) {
-      operands.add(new RelationConfig());
+      operands.add(new CompoundRelationConfig());
     }
   }
 
   @XmlElement(name = "operand")
-  public List<RelationConfig> getOperands() {
+  public List<CompoundRelationConfig> getOperands() {
     return operands;
   }
 
-  public void setOperands(List<RelationConfig> operands) {
+  public void setOperands(List<CompoundRelationConfig> operands) {
     this.operands = operands;
   }
 
   public List<Table> implicitJoin() {
     List<Table> res = new ArrayList<>(operands.size());
-    for (RelationConfig relationConfig : getOperands()) {
-      res.add(relationConfig.toTable());
+    for (CompoundRelationConfig compoundRelationConfig : getOperands()) {
+      res.add(compoundRelationConfig.toTable());
     }
     return res;
   }
 
   @Override
   public boolean lackChildConfig() {
-    for (RelationConfig operand : operands) {
+    for (CompoundRelationConfig operand : operands) {
       if (operand.lackChildConfig()) {
         return true;
       }
@@ -53,7 +53,7 @@ public class ImplicitJoinConfig implements DefaultConfig<ImplicitJoinConfig> {
 
   @Override
   public ImplicitJoinConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    for (RelationConfig operand : operands) {
+    for (CompoundRelationConfig operand : operands) {
       operand.addDefaultConfig(candidates, null);
     }
     return this;

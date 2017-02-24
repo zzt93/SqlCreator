@@ -107,9 +107,9 @@
             <select/>
             <from>
                 <explicitJoin>
-                    <operand>
+                    <left>
                         <tableName>test_udf</tableName>
-                    </operand>
+                    </left>
                 </explicitJoin>
             </from>
         </query>
@@ -118,12 +118,12 @@
             <select/>
             <from>
                 <explicitJoin>
-                    <operand>
+                    <left>
                         <tableName>test_udf</tableName>
-                    </operand>
-                    <operand>
+                    </left>
+                    <right>
                         <tableName>test_udf</tableName>
-                    </operand>
+                    </right>
                 </explicitJoin>
             </from>
         </query>
@@ -132,12 +132,12 @@
             <select/>
             <from>
                 <explicitJoin>
-                    <operand>
+                    <left>
                         <tableName>test_udf</tableName>
-                    </operand>
-                    <operand>
+                    </left>
+                    <right>
                         <subQuery>randomQuery</subQuery>
-                    </operand>
+                    </right>
                     <condition/>
                 </explicitJoin>
             </from>
@@ -147,12 +147,12 @@
             <select/>
             <from>
                 <explicitJoin>
-                    <operand>
-                        <tableName>test_udf</tableName>
-                    </operand>
-                    <operand>
+                    <left>
                         <joinedTable/>
-                    </operand>
+                    </left>
+                    <right>
+                        <tableName>test_udf</tableName>
+                    </right>
                     <condition/>
                 </explicitJoin>
             </from>
@@ -162,13 +162,37 @@
             <select/>
             <from>
                 <explicitJoin>
-                    <operand>
+                    <left>
                         <tableName>test_udf_2</tableName>
-                    </operand>
-                    <operand>
+                    </left>
+                    <right>
                         <tableName>test_udf</tableName>
-                    </operand>
+                    </right>
                     <condition/>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin6">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <condition>
+                        <udfDepth>1</udfDepth>
+                    </condition>
+                </explicitJoin>
+            </from>
+        </query>
+        <query id="testJoin7">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <joinedTable/>
+                    </left>
+                    <condition>
+                        <udfDepth>1</udfDepth>
+                    </condition>
                 </explicitJoin>
             </from>
         </query>
@@ -443,12 +467,12 @@
             <select/>
             <from>
                 <explicitJoin>
-                    <operand desc="default: table or query">
+                    <left desc="default: table or query">
                         <tableName>test_udf</tableName>
-                    </operand>
-                    <operand>
+                    </left>
+                    <right>
                         <subQuery>randomQuery</subQuery>
-                    </operand>
+                    </right>
                     <condition>
                         <udfConfig>
                             <udfList possibility="1">AND</udfList>
@@ -573,7 +597,7 @@
 
     <test>
         <query id="testAliasInWhere">
-            <select></select>
+            <select/>
             <from>
                 <implicitJoin>
                     <operand>

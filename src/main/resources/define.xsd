@@ -285,12 +285,13 @@
     </xs:complexType>
     <xs:complexType name="implicitJoinConfig">
         <xs:sequence>
-            <xs:element name="operand" type="relation" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="operand" type="compoundRelation" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="explicitJoinConfig">
         <xs:sequence>
-            <xs:element name="operand" type="relation" maxOccurs="2" minOccurs="0"/>
+            <xs:element name="left" type="compoundRelation" maxOccurs="1" minOccurs="0"/>
+            <xs:element name="right" type="simpleRelation" maxOccurs="1" minOccurs="0"/>
             <xs:element name="condition" type="noAggregateExprConfig" maxOccurs="1" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -301,7 +302,15 @@
         </xs:choice>
         <xs:attribute name="desc" type="xs:string"/>
     </xs:complexType>
-    <xs:complexType name="relation">
+    <xs:complexType name="simpleRelation">
+        <xs:choice>
+            <xs:element name="subQuery" type="xs:IDREF" minOccurs="1"/>
+            <xs:element name="tableName" type="xs:string" minOccurs="1"/>
+        </xs:choice>
+        <xs:attribute name="desc" type="xs:string"/>
+        <xs:attribute name="alias" type="xs:token"/>
+    </xs:complexType>
+    <xs:complexType name="compoundRelation">
         <xs:choice>
             <xs:element name="subQuery" type="xs:IDREF" minOccurs="1"/>
             <xs:element name="tableName" type="xs:string" minOccurs="1"/>
@@ -310,6 +319,7 @@
         <xs:attribute name="desc" type="xs:string"/>
         <xs:attribute name="alias" type="xs:token"/>
     </xs:complexType>
+
 
     <xs:simpleType name="dialects" final="restriction">
         <xs:restriction base="xs:string">

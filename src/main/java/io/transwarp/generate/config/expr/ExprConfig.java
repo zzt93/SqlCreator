@@ -1,5 +1,6 @@
 package io.transwarp.generate.config.expr;
 
+import io.transwarp.db_specific.DialectSpecific;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
@@ -7,6 +8,7 @@ import io.transwarp.generate.config.expr.adapter.PossibilityAdapter;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.expression.AggregateOp;
+import io.transwarp.generate.stmt.expression.Function;
 import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.*;
@@ -208,6 +210,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return udfFilter.prefer(BiChoicePossibility.NORMAL, AggregateOp.values());
   }
 
+  @DialectSpecific
   private void replaceDepthWithNestedExpr() {
     if (udfDepth >= 1) {
       // add nested config
@@ -242,5 +245,9 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private void noAggregateOp() {
     udfFilter.addPreference(AggregateOp.values(), BiChoicePossibility.IMPOSSIBLE);
+  }
+
+  public UdfFilter addPreference(Function[] f, BiChoicePossibility p) {
+    return udfFilter.addPreference(f, p);
   }
 }

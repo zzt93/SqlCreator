@@ -1,6 +1,8 @@
 package io.transwarp.generate.config.op;
 
 import com.google.common.collect.Lists;
+import io.transwarp.db_specific.DialectSpecific;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
@@ -171,6 +173,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
    *
    * @return whether this is a valid selectList of a subQuery in selectList
    */
+  @DialectSpecific(Dialect.ORACLE)
   public boolean selectQuery() {
     if (operands.size() != 1 || size() != 1) {
       return false;

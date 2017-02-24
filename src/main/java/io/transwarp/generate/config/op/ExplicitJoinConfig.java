@@ -1,8 +1,12 @@
 package io.transwarp.generate.config.op;
 
+import io.transwarp.db_specific.DialectSpecific;
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
+import io.transwarp.generate.stmt.expression.CmpOp;
+import io.transwarp.generate.stmt.expression.Function;
 import io.transwarp.generate.stmt.share.Condition;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -19,14 +23,15 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
 
   private static final int JOIN_OP_NUM = 2;
   private ExprConfig condition;
-  private List<RelationConfig> operands = new ArrayList<>(JOIN_OP_NUM);
+  private CompoundRelationConfig left = new CompoundRelationConfig();
+  private SimpleRelationConfig right = new SimpleRelationConfig();
 
   private List<Table> from = new ArrayList<>(JOIN_OP_NUM), candidates;
 
   public ExplicitJoinConfig() {
   }
 
-  public ExplicitJoinConfig(List<Table> candidates) {
+  ExplicitJoinConfig(List<Table> candidates) {
     this.candidates = candidates;
     addDefaultConfig(candidates, from);
   }
@@ -41,14 +46,24 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
     return this;
   }
 
-  @XmlElement(name = "operand")
-  public List<RelationConfig> getOperands() {
-    return operands;
+  @XmlElement
+  public CompoundRelationConfig getLeft() {
+    return left;
   }
 
-  public void setOperands(List<RelationConfig> operands) {
-    this.operands = operands;
+  public void setLeft(CompoundRelationConfig left) {
+    this.left = left;
   }
+
+  @XmlElement
+  public SimpleRelationConfig getRight() {
+    return right;
+  }
+
+  public void setRight(SimpleRelationConfig right) {
+    this.right = right;
+  }
+
 
   public ExplicitJoinConfig setFrom(List<Table> from) {
     // only need candidates, from is generated
@@ -64,10 +79,10 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
   public Table explicitJoin() {
     assert !lackChildConfig();
     final List<Table> tables = getOps();
-    Table first = tables.get(0);
+    Table left = tables.get(0);
     final Condition condition = new Condition(getCondition());
-    first = first.join(tables.get(1), condition);
-    return first;
+    left = left.join(tables.get(1), condition);
+    return left;
   }
 
   private List<Table> getOps() {
@@ -79,52 +94,55 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
 
   @Override
   public boolean lackChildConfig() {
-    return condition == null || condition.lackChildConfig() || operands.size() != JOIN_OP_NUM || lackConfig(operands);
+    return condition == null || condition.lackChildConfig() || lackConfig();
   }
 
-  private boolean lackConfig(List<RelationConfig> operands) {
-    for (RelationConfig operand : operands) {
-      if (operand.lackChildConfig()) {
-        return true;
-      }
-    }
-    return false;
+  private boolean lackConfig() {
+    return left.lackChildConfig() || right.lackChildConfig();
   }
 
   @Override
-  public ExplicitJoinConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+  public ExplicitJoinConfig addDefaultConfig(List<Table> candidates, List<Table> notUsed) {
     setCandidates(candidates);
 
     if (!lackChildConfig()) {
       return this;
     }
     assert this.candidates != null;
-    for (int i = 0; i < JOIN_OP_NUM; i++) {
-      if (i < operands.size()) {
-        final RelationConfig config = operands.get(i);
-        if (config.lackChildConfig()) {
-          config.addDefaultConfig(candidates, null);
-        }
-      } else {
-        operands.add(new RelationConfig(this.candidates));
-      }
-    }
+    checkOp(candidates, left);
+    checkOp(candidates, right);
 
-    initFrom();
+    final List<Table> from = initFrom();
 
     if (condition == null) {
-      condition = new ExprConfig(this.candidates, this.from);
+      condition = new ExprConfig(candidates, from);
     } else {
-      condition.addDefaultConfig(candidates, this.from);
+      condition.addDefaultConfig(candidates, from);
     }
+    addConditionLimit(condition);
     return this;
   }
 
-  private void initFrom() {
-    assert from.isEmpty();
-    assert operands.size() == JOIN_OP_NUM;
-    for (RelationConfig operand : operands) {
-      from.add(operand.toTable());
+  @DialectSpecific
+  private void addConditionLimit(ExprConfig condition) {
+    condition.addPreference(
+        new Function[]{CmpOp.EXISTS, CmpOp.IN_QUERY, CmpOp.NOT_IN_QUERY}, BiChoicePossibility.IMPOSSIBLE);
+    // TODO 2/24/17 check whether user defined condition meet requirement: 1=1 and ...
+//    condition.setOperands();
+//    condition.addDefaultConfig(candidates, from);
+  }
+
+  private void checkOp(List<Table> candidates, SimpleRelationConfig op) {
+    if (op.lackChildConfig()) {
+      op.addDefaultConfig(candidates, null);
     }
+  }
+
+  private List<Table> initFrom() {
+    assert from.isEmpty();
+    assert !left.lackChildConfig() && !right.lackChildConfig();
+    from.add(getLeft().toTable());
+    from.add(getRight().toTable());
+    return from;
   }
 }

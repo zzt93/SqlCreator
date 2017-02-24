@@ -1,8 +1,11 @@
 package io.transwarp.generate.config.op;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.common.TableUtil;
+import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
+import io.transwarp.generate.stmt.select.SelectResult;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,6 +25,7 @@ public class SetConfig implements DefaultConfig<SetConfig> {
   private String desc;
 
   private List<Table> candidates;
+  private String alias = TableUtil.INVALID_ALIAS;
 
   @XmlIDREF
   @XmlElement
@@ -43,19 +47,31 @@ public class SetConfig implements DefaultConfig<SetConfig> {
   }
 
 
+  @XmlAttribute
+  public String getAlias() {
+    return alias;
+  }
+
+  public void setAlias(String alias) {
+    this.alias = alias;
+  }
+
   @Override
   public boolean lackChildConfig() {
-    return candidates == null;
+    return candidates == null
+        || (getSubQuery() == null || getSubQuery().lackChildConfig());
   }
 
   @Override
   public SetConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     setCandidates(candidates);
 
-    if (subQuery != null) {
-      subQuery.addDefaultConfig(candidates, from);
+    if (getSubQuery() != null) {
+      getSubQuery().addDefaultConfig(candidates, from);
+      return this;
     }
 
+    defaultChoice();
     return this;
   }
 
@@ -72,5 +88,16 @@ public class SetConfig implements DefaultConfig<SetConfig> {
 
   List<Table> getCandidatesTables() {
     return candidates;
+  }
+
+  Table toTable() {
+    final QueryConfig subQuery = getSubQuery();
+    assert subQuery != null;
+    subQuery.getSelect().setUseStar(BiChoicePossibility.IMPOSSIBLE);
+    return SelectResult.generateQuery(subQuery).toTable(getAlias());
+  }
+
+  void defaultChoice() {
+    setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
   }
 }
