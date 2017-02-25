@@ -127,9 +127,6 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
   private void addConditionLimit(ExprConfig condition) {
     condition.addPreference(
         new Function[]{CmpOp.EXISTS, CmpOp.IN_QUERY, CmpOp.NOT_IN_QUERY}, BiChoicePossibility.IMPOSSIBLE);
-    // TODO 2/24/17 check whether user defined condition meet requirement: 1=1 and ...
-//    condition.setOperands();
-//    condition.addDefaultConfig(candidates, from);
   }
 
   private void checkOp(List<Table> candidates, SimpleRelationConfig op) {

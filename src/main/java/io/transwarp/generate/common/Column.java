@@ -43,15 +43,15 @@ public class Column {
     this.table = table;
   }
 
-  public String[] getNameOrConst(Dialect[] dialects, BiChoicePossibility poss) {
-    if (poss.random(true, false)) {
-      String[] res = new String[dialects.length];
-      for (int i = 0; i < dialects.length; i++) {
-        res[i] = getNameWithTable(dialects[i]).toString();
-      }
-      return res;
+  public String[] getNameOrConst(Dialect[] dialects, BiChoicePossibility chooseConst) {
+    if (chooseConst.random(true, false)) {
+      return operand.getType().randomData(dialects);
     }
-    return operand.getType().randomData(dialects);
+    String[] res = new String[dialects.length];
+    for (int i = 0; i < dialects.length; i++) {
+      res[i] = getNameWithTable(dialects[i]).toString();
+    }
+    return res;
   }
 
   private StringBuilder getNameWithTable(Dialect dialect) {

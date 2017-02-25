@@ -76,7 +76,7 @@ public class Operand {
         } else {
           nextC = ExprConfig.defaultNestedExpr(config);
         }
-        ops[i] = makeOperand(nextResultType[i], nextC, nextC.getUdfDepth(), udfFilter);
+        ops[i] = makeOperand(nextResultType[i], nextC, nextC.getUdfDepth(), new UdfFilter(nextC.getUdfFilter()));
       }
     } else {
       for (int i = 0; i < nextResultType.length; i++) {
