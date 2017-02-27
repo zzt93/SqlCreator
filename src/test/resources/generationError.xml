@@ -36,9 +36,9 @@
             <select/>
             <from>
                 <explicitJoin>
-                    <operand>
+                    <left>
                         <tableName>test</tableName>
-                    </operand>
+                    </left>
                 </explicitJoin>
             </from>
         </query>
