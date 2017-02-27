@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="define.xsd">
+
+    <test>
+        <query id="testInvalidWhereQuery">
+            <select/>
+            <from/>
+            <where>
+                <operand candidateQuery="testInvalidSelectQuery">
+                    <udfConfig>
+                        <udfList possibility="1">IN_QUERY</udfList>
+                    </udfConfig>
+                </operand>
+            </where>
+        </query>
+
+        <query id="testInvalidSelectQuery">
+            <select>
+                <query>testInvalidWhereQuery</query>
+                <operand/>
+            </select>
+            <from/>
+            <where>
+            </where>
+        </query>
+
+        <!-- recursive dependent problem? -->
+        <!--<query id="simpleQuery" queryDepth="2" num="0">-->
+            <!--<select/>-->
+            <!--<from/>-->
+            <!--<where/>-->
+        <!--</query>-->
+        <query id="testJoinInvalidTable">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test</tableName>
+                    </left>
+                </explicitJoin>
+            </from>
+        </query>
+    </test>
+
+</tests>

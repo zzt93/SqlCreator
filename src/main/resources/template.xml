@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="define.xsd">
+    <test>
+        <updateStmt id="update"/>
+        <query id="randomQuery" queryDepth="2" num="10">
+            <select/>
+            <from/>
+            <where/>
+        </query>
+    </test>
+
+    <test>
+        <query id="testOperandGeneration0">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">EQ</udfList>
+                    </udfConfig>
+                    <columnExpr>
+                        <udfDepth>0</udfDepth>
+                    </columnExpr>
+                    <constExpr>
+                        <udfDepth>0</udfDepth>
+                    </constExpr>
+                </operand>
+            </where>
+        </query>
+
+        <query id="testOperandGeneration1">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">EQ</udfList>
+                    </udfConfig>
+                </operand>
+            </where>
+        </query>
+
+        <query id="testOperandGeneration">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">AND</udfList>
+                    </udfConfig>
+                    <expr>
+                        <udfDepth>3</udfDepth>
+                    </expr>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">EQ</udfList>
+                        </udfConfig>
+                        <constExpr>
+                            <udfDepth>0</udfDepth>
+                        </constExpr>
+                        <constExpr>
+                            <udfDepth>0</udfDepth>
+                        </constExpr>
+                    </constExpr>
+                </operand>
+            </where>
+        </query>
+
+    </test>
+    <!--transaction default value is false-->
+    <test transaction="true" threads="3">
+        <query id="intQuery" queryDepth="1" num="10">
+            <select>
+                <operand type="int"/>
+            </select>
+            <from/>
+        </query>
+
+        <query id="longQuery" queryDepth="1" num="10">
+            <select>
+                <operand type="long"/>
+            </select>
+            <from/>
+        </query>
+
+        <setOperator type="UNION">
+            <operand>
+                <subQuery>intQuery</subQuery>
+            </operand>
+            <operand>
+                <subQuery>longQuery</subQuery>
+            </operand>
+        </setOperator>
+    </test>
+
+    <test>
+        <query id="testJoin0">
+            <select/>
+            <from>
+                <explicitJoin/>
+            </from>
+        </query>
+
+        <query id="testJoin1">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test_udf</tableName>
+                    </left>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin2">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test_udf</tableName>
+                    </left>
+                    <right>
+                        <tableName>test_udf</tableName>
+                    </right>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin3">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test_udf</tableName>
+                    </left>
+                    <right>
+                        <subQuery>randomQuery</subQuery>
+                    </right>
+                    <condition/>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin4">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <joinedTable/>
+                    </left>
+                    <right>
+                        <tableName>test_udf</tableName>
+                    </right>
+                    <condition/>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin5">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test_udf_2</tableName>
+                    </left>
+                    <right>
+                        <tableName>test_udf</tableName>
+                    </right>
+                    <condition/>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin6">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <condition>
+                        <udfDepth>1</udfDepth>
+                    </condition>
+                </explicitJoin>
+            </from>
+        </query>
+        <query id="testJoin7">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <joinedTable/>
+                    </left>
+                    <condition>
+                        <udfDepth>1</udfDepth>
+                    </condition>
+                </explicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin">
+            <select/>
+            <from>
+                <joinTimes>3</joinTimes>
+            </from>
+        </query>
+
+        <query id="testJoin11">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin12">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin13">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <subQuery>randomQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin14">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <joinedTable/>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoin15">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias2">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand alias="t2">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias3">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand alias="t2">
+                        <subQuery>randomQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias4">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t1">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <!-- this alias should be ignored -->
+                    <operand alias="t2">
+                        <joinedTable/>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testJoinAlias5">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="t23">
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                    <operand alias="t21">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand alias="t22">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+    </test>
+
+    <test>
+        <query id="whereSimpleQuery" queryDepth="2" num="10">
+            <select>
+                <selectNum>1</selectNum>
+            </select>
+            <from/>
+            <where/>
+        </query>
+
+        <query id="testDefaultWhere">
+            <select/>
+            <from/>
+            <where/>
+        </query>
+
+        <query id="testWhereQuery">
+            <select/>
+            <from/>
+            <where>
+                <operand candidateQuery="whereSimpleQuery">
+                    <udfConfig>
+                        <udfList possibility="1">IN_QUERY</udfList>
+                    </udfConfig>
+                </operand>
+            </where>
+        </query>
+
+        <query id="testWhereDepth">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfDepth>5</udfDepth>
+                </operand>
+            </where>
+        </query>
+
+        <query id="testWhere">
+            <select/>
+            <from/>
+            <where>
+                <operand candidateQuery="whereSimpleQuery">
+                    <columnExpr>
+                        <udfDepth>3</udfDepth>
+                    </columnExpr>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+            </where>
+        </query>
+
+    </test>
+
+    <test>
+        <query id="selectQuery">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">COUNT</udfList>
+                    </udfConfig>
+                </operand>
+            </select>
+            <from/>
+        </query>
+
+        <query num="100" id="testSelect0">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <operand type="long">
+                    <columnExpr/>
+                    <columnExpr/>
+                </operand>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
+        <query num="100" id="testSelect1">
+            <select>
+                <selectNum>3</selectNum>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
+
+        <query num="100" id="testSelect">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <query>selectQuery</query>
+            </select>
+            <from/>
+            <groupBy/>
+            <having/>
+        </query>
+
+    </test>
+
+    <test>
+        <query id="nonEqualJoin">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left desc="default: table or query">
+                        <tableName>test_udf</tableName>
+                    </left>
+                    <right>
+                        <subQuery>randomQuery</subQuery>
+                    </right>
+                    <condition>
+                        <udfConfig>
+                            <udfList possibility="1">AND</udfList>
+                        </udfConfig>
+                        <constExpr>
+                            <udfConfig>
+                                <udfList possibility="1">EQ</udfList>
+                            </udfConfig>
+                        </constExpr>
+                        <expr desc="default: const/column/expr"/>
+                    </condition>
+                </explicitJoin>
+            </from>
+        </query>
+
+
+    </test>
+
+    <test>
+
+        <query id="simpleAlias">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand alias="simpleAlias">
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+    </test>
+
+    <test>
+        <query id="testNestedAggregateOp0">
+            <select>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">MAX</udfList>
+                    </udfConfig>
+                </operand>
+            </select>
+            <from/>
+        </query>
+
+        <query id="testNestedAggregateOp1">
+            <select>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">MAX</udfList>
+                    </udfConfig>
+                    <constExpr>
+                        <udfDepth>3</udfDepth>
+                    </constExpr>
+                </operand>
+            </select>
+            <from/>
+        </query>
+
+        <query id="testNestedAggregateOp2">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">MIN</udfList>
+                    </udfConfig>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">MIN</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+            </select>
+            <from/>
+        </query>
+
+
+        <query id="testSelfJoin">
+            <select>
+                <operand type="int">
+                    <columnExpr/>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">PLUS</udfList>
+                        </udfConfig>
+                    </constExpr>
+                </operand>
+                <operand type="long">
+                    <columnExpr/>
+                    <columnExpr/>
+                </operand>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+    </test>
+
+    <test>
+        <!--COMPILE FAILED: Semantic error: [Error 10025] Line 1:9 Expression not in GROUP BY key 'cid'-->
+        <query id="testInvalidAggregate">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">MAX</udfList>
+                    </udfConfig>
+                </operand>
+                <operand>
+                    <columnExpr>
+                        <udfDepth>0</udfDepth>
+                    </columnExpr>
+                </operand>
+            </select>
+            <from/>
+        </query>
+    </test>
+
+    <test>
+        <query id="testAliasInWhere">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+            <where>
+                <operand>
+                    <columnExpr>
+                        <udfDepth>1</udfDepth>
+                    </columnExpr>
+                </operand>
+            </where>
+        </query>
+    </test>
+
+    <test>
+
+        <query id="aliasCrossLevel0">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleAlias</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="simpleIntQuery">
+            <select>
+                <operand type="int">
+                    <udfDepth>2</udfDepth>
+                </operand>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel2">
+            <select>
+                <operand type="int"/>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="aliasCrossLevel3">
+            <select>
+                <operand type="varchar"/>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <subQuery>simpleIntQuery</subQuery>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+    </test>
+</tests>

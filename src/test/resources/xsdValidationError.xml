@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="define.xsd">
+
+    <test>
+
+        <query id="testJoin1">
+            <select/>
+            <from>
+                <join>
+                    <operand/>
+                </join>
+            </from>
+        </query>
+        <query id="testJoin2">
+            <select/>
+            <from>
+                <join>
+                    <operand/>
+                    <operand/>
+                </join>
+            </from>
+        </query>
+        <query id="testJoin3">
+            <select/>
+            <from>
+                <join>
+                    <operand/>
+                    <operand/>
+                    <condition/>
+                </join>
+            </from>
+        </query>
+
+        <query id="testJoin4">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test_udf</tableName>
+                    </left>
+                    <right>
+                        <joinedTable/>
+                    </right>
+                    <condition/>
+                </explicitJoin>
+            </from>
+        </query>
+
+
+        <query id="testJoin10">
+            <select/>
+            <from>
+                <implicitJoin/>
+            </from>
+        </query>
+
+        <query id="testJoin15">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                    <condition/>
+                </implicitJoin>
+            </from>
+        </query>
+
+    </test>
+
+</tests>

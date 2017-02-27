@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="define.xsd">
+
+
+
+    <test>
+
+        <query id="testOperandGeneration">
+            <select/>
+            <from/>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">AND</udfList>
+                    </udfConfig>
+                    <constExpr>
+                        <udfConfig>
+                            <udfList possibility="1">EQ</udfList>
+                        </udfConfig>
+                        <constExpr>
+                            <udfDepth>0</udfDepth>
+                        </constExpr>
+                        <constExpr>
+                            <udfDepth>0</udfDepth>
+                        </constExpr>
+                    </constExpr>
+                    <expr>
+                        <udfDepth>4</udfDepth>
+                    </expr>
+                </operand>
+            </where>
+        </query>
+
+    </test>
+
+
+</tests>
