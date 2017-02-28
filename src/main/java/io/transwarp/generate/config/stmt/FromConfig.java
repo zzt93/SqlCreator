@@ -8,6 +8,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,7 +81,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   public List<Table> getFromObj() {
-    return fromObj;
+    return Collections.unmodifiableList(fromObj);
   }
 
   @Override

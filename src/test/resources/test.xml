@@ -5,34 +5,79 @@
 
 
 
-    <test>
 
-        <query id="testOperandGeneration">
-            <select/>
-            <from/>
+    <test>
+        <query id="correlatedQuery0">
+            <select>
+                <operand type="int">
+                    <udfConfig>
+                        <udfList possibility="1">max</udfList>
+                    </udfConfig>
+                </operand>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
             <where>
                 <operand>
                     <udfConfig>
-                        <udfList possibility="1">AND</udfList>
+                        <udfList possibility="1">EQ</udfList>
                     </udfConfig>
-                    <constExpr>
-                        <udfConfig>
-                            <udfList possibility="1">EQ</udfList>
-                        </udfConfig>
-                        <constExpr>
-                            <udfDepth>0</udfDepth>
-                        </constExpr>
-                        <constExpr>
-                            <udfDepth>0</udfDepth>
-                        </constExpr>
-                    </constExpr>
-                    <expr>
-                        <udfDepth>4</udfDepth>
-                    </expr>
+                    <columnExpr/>
+                    <columnExpr/>
                 </operand>
             </where>
         </query>
 
+        <!-- not supported -->
+        <!--<query id="testCorrelatedFrom">-->
+        <!--<select></select>-->
+        <!--<from>-->
+        <!--<implicitJoin>-->
+        <!--<operand>-->
+        <!--<tableName>test_udf</tableName>-->
+        <!--</operand>-->
+        <!--<operand>-->
+        <!--<subQuery>correlatedQuery0</subQuery>-->
+        <!--</operand>-->
+        <!--</implicitJoin>-->
+        <!--</from>-->
+        <!--</query>    -->
+
+        <query id="testCorrelatedSelect">
+            <select>
+                <query>correlatedQuery0</query>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+        <query id="testCorrelatedWhere">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+            <where>
+                <operand candidateQuery="correlatedQuery0">
+                    <udfConfig>
+                        <udfList possibility="1">in_query exists</udfList>
+                    </udfConfig>
+                </operand>
+            </where>
+        </query>
     </test>
 
 

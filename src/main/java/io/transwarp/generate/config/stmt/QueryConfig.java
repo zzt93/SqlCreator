@@ -95,16 +95,15 @@ public class QueryConfig extends StmtConfig {
   }
 
   @Override
-  public QueryConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+  public QueryConfig addDefaultConfig(List<Table> candidates, List<Table> ignored) {
     assert candidates != null;
     setCandidates(candidates);
 
-    if (this.from.lackChildConfig()) {
-      this.from.addDefaultConfig(candidates, null);
-    }
-    if (select.lackChildConfig()) {
-      select.addDefaultConfig(candidates, getFrom().getFromObj());
-    }
+    GlobalConfig.checkConfig(from, candidates, null);
+    final List<Table> fromObj = getFrom().getFromObj();
+    GlobalConfig.checkConfig(where, candidates, fromObj);
+    GlobalConfig.checkConfig(select, candidates, fromObj);
+
     return this;
   }
 

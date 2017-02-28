@@ -151,7 +151,15 @@
             <xs:annotation xml:lang="en">
                 <xs:appinfo>Sql Generator Note</xs:appinfo>
                 <xs:documentation xml:lang="en">
-                    If user provided subQuery is invalid for this location, program will ignore this setting
+                    If user provided subQuery is invalid for this location, program will complain this setting
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="candidateCorrelatedQuery" type="xs:IDREF">
+            <xs:annotation xml:lang="en">
+                <xs:appinfo>Sql Generator Note</xs:appinfo>
+                <xs:documentation xml:lang="en">
+                    If user provided subQuery is invalid for this location, program will complain this setting
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -272,6 +280,7 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element name="operand" type="typedExprConfig"/>
                 <xs:element name="query" type="xs:IDREF"/>
+                <xs:element name="correlatedQuery" type="xs:IDREF"/>
             </xs:choice>
         </xs:choice>
     </xs:complexType>

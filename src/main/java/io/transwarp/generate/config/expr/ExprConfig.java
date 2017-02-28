@@ -41,6 +41,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   private InputRelation inputRelation = InputRelation.SAME;
 
   private QueryConfig candidateQuery;
+  private QueryConfig candidateCorrelatedQuery;
 
   /*
   ---------------------- generate field -----------------
@@ -181,8 +182,8 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   public ExprConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
     setCandidates(candidates);
     setFrom(from);
-
     assert src != null;
+
     if (hasNestedConfig()) {
       assert udfDepth == INVALID;
       udfDepth = HAS_NESTED_UDF_DEPTH;

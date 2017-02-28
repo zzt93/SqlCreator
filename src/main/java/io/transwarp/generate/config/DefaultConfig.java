@@ -20,32 +20,36 @@ public interface DefaultConfig<T> {
   /**
    * <li>test whether this config class lack minimal configuration information
    * to let generation works</li>
-   * <li>cares only children, not all descendants</li>
+   * <li>work recursively: return true if any children or descendants lack config</li>
    */
   boolean lackChildConfig();
 
   /**
    * default behaviour is
    * <li>{@link #setCandidates(List)}</li>
-   * <li>to check children's {@link #lackChildConfig()}</li>
-   * <li>to invoke {@link #setFrom(List)} on child element</li>
+   * <li>{@link #setFrom(List)}</li>
+   * <li>to check children's {@link #lackChildConfig()} & this method</li>
    */
   T addDefaultConfig(List<Table> candidates, List<Table> from);
 
   /**
    * <li>set from after init tables in {@link io.transwarp.generate.config.stmt.FromConfig}</li>
+   *
    * @param tables the range this element operate on
-   * @see #setCandidates(List) candidates.size() >= from.size();
    */
   T setFrom(List<Table> tables);
 
   /**
-   * transmit candidates from father config to child config
+   * All the tables this query can access
    * <h3>To make sure the candidates not null when generation process start</h3>
    * <li>set candidates as early as possible, i.e. in constructor</li>
-   * <li>or in the setter invoked by JAXB</li>
+   * <li>or in the {@link #addDefaultConfig(List, List)}</li>
+   *
+   * <h3>should be immutable in a query generation</h3>
+   * <li>may different in `with as`</li>
    *
    * @param candidates the range descendant/nested element can operate on
+   * @see io.transwarp.generate.config.stmt.FromConfig
    */
   T setCandidates(List<Table> candidates);
 

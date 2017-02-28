@@ -12,6 +12,7 @@ import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
@@ -57,7 +58,10 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   @XmlIDREF
-  @XmlElement(name = "query")
+  @XmlElements({
+      @XmlElement(name = "query"),
+      @XmlElement(name = "correlatedQuery")
+  })
   public List<QueryConfig> getQueries() {
     return queries;
   }
