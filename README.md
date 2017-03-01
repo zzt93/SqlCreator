@@ -1,4 +1,5 @@
 
+[![Build Status](https://travis-ci.org/zzt93/SqlCreator.svg?branch=master)](https://travis-ci.org/zzt93/SqlCreator)
 
 ### Design
 #### Architecture
