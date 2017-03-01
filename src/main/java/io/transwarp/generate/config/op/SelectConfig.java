@@ -12,7 +12,6 @@ import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
@@ -58,10 +57,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   @XmlIDREF
-  @XmlElements({
-      @XmlElement(name = "query"),
-      @XmlElement(name = "correlatedQuery")
-  })
+  @XmlElement(name = "query")
   public List<QueryConfig> getQueries() {
     return queries;
   }
@@ -107,9 +103,9 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   @Override
-  public SelectConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
-    setFrom(from);
+  public SelectConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
+    setStmtUse(fatherStmtUse);
 
     if (!setSize()) {
       size += operands.size();
@@ -117,10 +113,10 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     }
 
     for (TypedExprConfig operand : operands) {
-      operand.addDefaultConfig(candidates, from);
+      operand.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
     for (QueryConfig query : queries) {
-      query.addDefaultConfig(candidates, from);
+      query.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
 
     // default setting when no setting
@@ -131,14 +127,14 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return this;
   }
 
-  public SelectConfig setFrom(List<Table> from) {
-    src = from;
+  public SelectConfig setStmtUse(List<Table> stmtUse) {
+    src = stmtUse;
     return this;
   }
 
   @Override
-  public SelectConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public SelectConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 

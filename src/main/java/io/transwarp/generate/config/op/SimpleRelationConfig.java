@@ -55,11 +55,11 @@ public class SimpleRelationConfig extends SetConfig {
   }
 
   @Override
-  public SimpleRelationConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
+  public SimpleRelationConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
 
     if (getSubQuery() != null) {
-      getSubQuery().addDefaultConfig(candidates, from);
+      getSubQuery().addDefaultConfig(fromCandidates, fatherStmtUse);
       return this;
     }
     if (!invalidTableName()) {

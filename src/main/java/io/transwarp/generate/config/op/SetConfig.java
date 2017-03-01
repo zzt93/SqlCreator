@@ -63,11 +63,11 @@ public class SetConfig implements DefaultConfig<SetConfig> {
   }
 
   @Override
-  public SetConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
+  public SetConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
 
     if (getSubQuery() != null) {
-      getSubQuery().addDefaultConfig(candidates, from);
+      getSubQuery().addDefaultConfig(fromCandidates, fatherStmtUse);
       return this;
     }
 
@@ -75,14 +75,14 @@ public class SetConfig implements DefaultConfig<SetConfig> {
     return this;
   }
 
-  public SetConfig setFrom(List<Table> tables) {
+  public SetConfig setStmtUse(List<Table> stmtUse) {
     // this class only has candidates
     return this;
   }
 
   @Override
-  public SetConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public SetConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 

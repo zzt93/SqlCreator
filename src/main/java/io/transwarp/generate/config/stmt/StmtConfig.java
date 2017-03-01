@@ -4,7 +4,6 @@ package io.transwarp.generate.config.stmt;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.DefaultConfig;
-import io.transwarp.parse.sql.DDLParser;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -22,10 +21,7 @@ import java.util.List;
 public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
 
   private String id;
-
   private int num;
-  private String table;
-  private Dialect dialect;
 
   @XmlAttribute
   @XmlID
@@ -46,53 +42,31 @@ public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
     this.num = num;
   }
 
-  @XmlAttribute
-  public String getTable() {
-    return table;
-  }
-
-  public StmtConfig setTable(String table) {
-    this.table = table;
-    return this;
-  }
-
-  @XmlAttribute(name = "dialect")
-  public Dialect getDialect() {
-    return dialect;
-  }
-
-  public StmtConfig setDialect(Dialect dialect) {
-    this.dialect = dialect;
-    return this;
-  }
-
   private List<Table> candidates;
 
   List<Table> getCandidates() {
-    if (candidates != null) {
-      return candidates;
-    }
-    return candidates = DDLParser.getTable(table, dialect);
+    return candidates;
   }
 
   @Override
-  public StmtConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public StmtConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 
-  public StmtConfig setFrom(List<Table> from) {
-    // only need candidates, from is generated
+  public StmtConfig setStmtUse(List<Table> ignored) {
+    // only need candidates, used table is generated
     throw new NotImplementedException();
   }
 
   @Override
   public boolean lackChildConfig() {
-    return false;
+    return candidates == null;
   }
 
   @Override
-  public StmtConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+  public StmtConfig addDefaultConfig(List<Table> fromCandidates, List<Table> ignored) {
+    setFromCandidates(fromCandidates);
     return this;
   }
 

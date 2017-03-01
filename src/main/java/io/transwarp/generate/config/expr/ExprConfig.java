@@ -4,7 +4,7 @@ import io.transwarp.db_specific.DialectSpecific;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
-import io.transwarp.generate.config.expr.adapter.PossibilityAdapter;
+import io.transwarp.generate.config.expr.adapter.BiChoicePossibilityAdapter;
 import io.transwarp.generate.config.expr.adapter.UdfFilterAdapter;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.stmt.expression.AggregateOp;
@@ -41,7 +41,6 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   private InputRelation inputRelation = InputRelation.SAME;
 
   private QueryConfig candidateQuery;
-  private QueryConfig candidateCorrelatedQuery;
 
   /*
   ---------------------- generate field -----------------
@@ -112,7 +111,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   @XmlAttribute
-  @XmlJavaTypeAdapter(PossibilityAdapter.class)
+  @XmlJavaTypeAdapter(BiChoicePossibilityAdapter.class)
   public BiChoicePossibility getConstOrColumnPossibility() {
     return constOrColumnPossibility;
   }
@@ -179,22 +178,21 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   @Override
-  public ExprConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
-    setFrom(from);
+  public ExprConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
+    setStmtUse(fatherStmtUse);
     assert src != null;
 
     if (hasNestedConfig()) {
-      assert udfDepth == INVALID;
       udfDepth = HAS_NESTED_UDF_DEPTH;
       for (ExprConfig operand : operands) {
-        operand.addDefaultConfig(candidates, from);
+        operand.addDefaultConfig(fromCandidates, fatherStmtUse);
       }
     } else if (udfDepth == INVALID) {
       udfDepth = NO_NESTED_UDF_DEPTH;
     }
     if (candidateQuery != null) {
-      candidateQuery.addDefaultConfig(candidates, from);
+      candidateQuery.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
     aggregateOpHandled = true;
     if (!useAggregateOp) {
@@ -223,14 +221,14 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   @Override
-  public ExprConfig setFrom(List<Table> tables) {
-    src = tables;
+  public ExprConfig setStmtUse(List<Table> stmtUse) {
+    src = stmtUse;
     return this;
   }
 
   @Override
-  public ExprConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public ExprConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 

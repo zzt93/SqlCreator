@@ -7,7 +7,7 @@
 
 
     <test>
-        <query id="correlatedQuery0">
+        <query id="correlatedQuery0" correlatedPossibility="1">
             <select>
                 <operand type="int">
                     <udfConfig>
@@ -47,7 +47,6 @@
         <!--</implicitJoin>-->
         <!--</from>-->
         <!--</query>    -->
-
         <query id="testCorrelatedSelect">
             <select>
                 <query>correlatedQuery0</query>

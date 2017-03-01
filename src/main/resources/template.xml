@@ -681,7 +681,7 @@
     </test>
     
     <test>
-        <query id="correlatedQuery0">
+        <query id="correlatedQuery0" correlatedPossibility="1">
             <select>
                 <operand type="int">
                     <udfConfig>
@@ -722,9 +722,21 @@
             <!--</from>-->
         <!--</query>    -->
         
-        <query id="testCorrelatedSelect">
+        <query id="testCorrelatedSelect0">
             <select>
-                <correlatedQuery>correlatedQuery0</correlatedQuery>
+                <query>correlatedQuery0</query>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+        <query id="testCorrelatedSelect1">
+            <select>
+                <query>testDdl</query>
             </select>
             <from>
                 <implicitJoin>
@@ -735,7 +747,7 @@
             </from>
         </query>
         
-        <query id="testCorrelatedWhere">
+        <query id="testCorrelatedWhere0">
             <select/>
             <from>
                 <implicitJoin>
@@ -745,13 +757,44 @@
                 </implicitJoin>
             </from>
             <where>
-                <operand candidateCorrelatedQuery="correlatedQuery0">
+                <operand candidateQuery="correlatedQuery0">
                     <udfConfig>
                         <udfList possibility="1">in_query exists</udfList>
                     </udfConfig>
                 </operand>
             </where>
         </query>
+        <query id="testCorrelatedWhere1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+            <where>
+                <operand candidateQuery="testDdl">
+                    <udfConfig>
+                        <udfList possibility="1">in_query exists</udfList>
+                    </udfConfig>
+                </operand>
+            </where>
+        </query>
+
     </test>
-    
+
+    <test dialect="INCEPTOR" tableDdlFile="default_inceptor.sql">
+        <query id="testDdl">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_view</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+    </test>
+
 </tests>

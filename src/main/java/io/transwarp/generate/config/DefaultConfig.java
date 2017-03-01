@@ -26,18 +26,18 @@ public interface DefaultConfig<T> {
 
   /**
    * default behaviour is
-   * <li>{@link #setCandidates(List)}</li>
-   * <li>{@link #setFrom(List)}</li>
+   * <li>{@link #setFromCandidates(List)}</li>
+   * <li>{@link #setStmtUse(List)}</li>
    * <li>to check children's {@link #lackChildConfig()} & this method</li>
    */
-  T addDefaultConfig(List<Table> candidates, List<Table> from);
+  T addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse);
 
   /**
    * <li>set from after init tables in {@link io.transwarp.generate.config.stmt.FromConfig}</li>
    *
-   * @param tables the range this element operate on
+   * @param stmtUse the range this element operate on
    */
-  T setFrom(List<Table> tables);
+  T setStmtUse(List<Table> stmtUse);
 
   /**
    * All the tables this query can access
@@ -48,9 +48,9 @@ public interface DefaultConfig<T> {
    * <h3>should be immutable in a query generation</h3>
    * <li>may different in `with as`</li>
    *
-   * @param candidates the range descendant/nested element can operate on
+   * @param fromCandidates the range descendant/nested element can operate on
    * @see io.transwarp.generate.config.stmt.FromConfig
    */
-  T setCandidates(List<Table> candidates);
+  T setFromCandidates(List<Table> fromCandidates);
 
 }

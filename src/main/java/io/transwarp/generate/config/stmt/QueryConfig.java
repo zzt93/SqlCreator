@@ -5,6 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.expr.adapter.BiChoicePossibilityAdapter;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
@@ -12,6 +13,8 @@ import io.transwarp.generate.type.GenerationDataType;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -23,9 +26,12 @@ import java.util.List;
 public class QueryConfig extends StmtConfig {
 
   private int queryDepth;
+
   private FilterOperatorConfig where, groupBy, having;
   private SelectConfig select;
   private FromConfig from;
+
+  private BiChoicePossibility correlatedPossibility = BiChoicePossibility.IMPOSSIBLE;
 
   public QueryConfig() {
   }
@@ -33,6 +39,7 @@ public class QueryConfig extends StmtConfig {
   private QueryConfig(List<Table> candidates) {
     from = new FromConfig();
     select = new SelectConfig();
+    // because default query is not correlated, so no need get outer/father table
     addDefaultConfig(candidates, null);
   }
 
@@ -89,21 +96,42 @@ public class QueryConfig extends StmtConfig {
     return from;
   }
 
-
   public void setFrom(FromConfig from) {
     this.from = from;
   }
 
+  @XmlAttribute
+  @XmlJavaTypeAdapter(BiChoicePossibilityAdapter.class)
+  public BiChoicePossibility getCorrelatedPossibility() {
+    return correlatedPossibility;
+  }
+
+  public void setCorrelatedPossibility(BiChoicePossibility correlatedPossibility) {
+    this.correlatedPossibility = correlatedPossibility;
+  }
+
   @Override
-  public QueryConfig addDefaultConfig(List<Table> candidates, List<Table> ignored) {
-    assert candidates != null;
-    setCandidates(candidates);
+  public QueryConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    assert fromCandidates != null;
+    setFromCandidates(fromCandidates);
 
-    GlobalConfig.checkConfig(from, candidates, null);
+    GlobalConfig.checkConfig(from, fromCandidates, null);
     final List<Table> fromObj = getFrom().getFromObj();
-    GlobalConfig.checkConfig(where, candidates, fromObj);
-    GlobalConfig.checkConfig(select, candidates, fromObj);
-
+    final Boolean useOuterTable = correlatedPossibility.random(true, false);
+    if (useOuterTable && fatherStmtUse != null) {
+      List<Table> tables = new ArrayList<>(fromObj.size() + fatherStmtUse.size());
+      tables.addAll(fromObj);
+      tables.addAll(fatherStmtUse);
+      // if this is a correlated sub-query, have to reset tables
+      where.addDefaultConfig(fromCandidates, tables);
+      select.addDefaultConfig(fromCandidates, tables);
+    } else {
+      if (useOuterTable) {
+        System.out.println("\n[SQL Creator][Warning]: generating a correlated query alone may be invalid: " + getId());
+      }
+      GlobalConfig.checkConfig(where, fromCandidates, fromObj);
+      GlobalConfig.checkConfig(select, fromCandidates, fromObj);
+    }
     return this;
   }
 
@@ -188,4 +216,5 @@ public class QueryConfig extends StmtConfig {
     select.addResType(dataType);
     return this;
   }
+
 }

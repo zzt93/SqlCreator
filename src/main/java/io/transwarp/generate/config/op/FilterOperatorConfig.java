@@ -27,31 +27,32 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
     return this;
   }
 
-  public FilterOperatorConfig setFrom(List<Table> from) {
-    this.src = from;
+  public FilterOperatorConfig setStmtUse(List<Table> stmtUse) {
+    this.src = stmtUse;
     return this;
   }
 
   @Override
-  public FilterOperatorConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public FilterOperatorConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 
   @Override
   public boolean lackChildConfig() {
-    return operand == null || operand.lackChildConfig();
+    return candidates == null || src == null
+        || operand == null || operand.lackChildConfig();
   }
 
   @Override
-  public FilterOperatorConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
-    setFrom(from);
+  public FilterOperatorConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
+    setStmtUse(fatherStmtUse);
 
     if (operand == null) {
-      operand = new ExprConfig(candidates, from);
-    } else if (operand.lackChildConfig()) {
-      operand.addDefaultConfig(candidates, from);
+      operand = new ExprConfig(fromCandidates, fatherStmtUse);
+    } else {
+      operand.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
 
     return this;

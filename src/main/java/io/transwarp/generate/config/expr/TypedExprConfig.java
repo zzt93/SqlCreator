@@ -56,8 +56,8 @@ public class TypedExprConfig extends ExprConfig {
   }
 
   @Override
-  public TypedExprConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    super.addDefaultConfig(candidates, from);
+  public TypedExprConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    super.addDefaultConfig(fromCandidates, fatherStmtUse);
     if (noTypeSetting()) {
       setTypes(DataTypeGroup.ALL_BUT_BOOL_BINARY_LIST.types().toArray(new GenerationDataType[0]));
     }

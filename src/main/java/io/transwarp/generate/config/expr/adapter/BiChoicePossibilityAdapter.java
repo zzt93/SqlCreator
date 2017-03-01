@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * <p>
  * <h3></h3>
  */
-public class PossibilityAdapter extends XmlAdapter<Double, BiChoicePossibility> {
+public class BiChoicePossibilityAdapter extends XmlAdapter<Double, BiChoicePossibility> {
   @Override
   public BiChoicePossibility unmarshal(Double v) throws Exception {
     return BiChoicePossibility.possibility(v);

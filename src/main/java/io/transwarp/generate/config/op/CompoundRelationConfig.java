@@ -45,19 +45,19 @@ public class CompoundRelationConfig extends SimpleRelationConfig {
   }
 
   @Override
-  public CompoundRelationConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+  public CompoundRelationConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
     assert lackChildConfig();
-    setCandidates(candidates);
+    setFromCandidates(fromCandidates);
 
     if (getSubQuery() != null) {
-      getSubQuery().addDefaultConfig(candidates, from);
+      getSubQuery().addDefaultConfig(fromCandidates, fatherStmtUse);
       return this;
     }
     if (!invalidTableName()) {
       return this;
     }
     if (joinedTable != null) {
-      joinedTable.addDefaultConfig(candidates, from);
+      joinedTable.addDefaultConfig(fromCandidates, fatherStmtUse);
       return this;
     }
 

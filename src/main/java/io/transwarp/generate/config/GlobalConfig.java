@@ -46,6 +46,12 @@ public class GlobalConfig {
     }
   }
 
+  public static <T extends DefaultConfig<T>> void resetConfig(DefaultConfig<T> defaultConfig) {
+    if (defaultConfig != null) {
+      defaultConfig.setStmtUse(null);
+    }
+  }
+
   public GlobalConfig setCmp(Dialect cmp) {
     GlobalConfig.cmp = cmp;
     return this;
