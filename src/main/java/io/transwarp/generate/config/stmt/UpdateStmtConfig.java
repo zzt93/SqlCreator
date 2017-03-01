@@ -16,4 +16,9 @@ public class UpdateStmtConfig extends StmtConfig {
     EnumMap<Dialect, String> res = new EnumMap<Dialect, String>(Dialect.class);
     return res;
   }
+
+  @Override
+  public StmtConfig deepCopyTo(StmtConfig t) {
+    return null;
+  }
 }

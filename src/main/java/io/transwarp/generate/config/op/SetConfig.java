@@ -22,7 +22,7 @@ import java.util.List;
 public class SetConfig implements DefaultConfig<SetConfig> {
   private QueryConfig subQuery;
 
-  private String desc;
+  private String desc = "";
 
   private List<Table> candidates;
   private String alias = TableUtil.INVALID_ALIAS;
@@ -34,6 +34,10 @@ public class SetConfig implements DefaultConfig<SetConfig> {
   }
 
   public void setSubQuery(QueryConfig subQuery) {
+    this.subQuery = QueryConfig.deepCopy(subQuery);
+  }
+
+  void noCopySetSubQuery(QueryConfig subQuery) {
     this.subQuery = subQuery;
   }
 
@@ -59,20 +63,24 @@ public class SetConfig implements DefaultConfig<SetConfig> {
   @Override
   public boolean lackChildConfig() {
     return candidates == null
-        || (getSubQuery() == null || getSubQuery().lackChildConfig());
+        || (!hasQuery() || getSubQuery().lackChildConfig());
   }
 
   @Override
   public SetConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
     setFromCandidates(fromCandidates);
 
-    if (getSubQuery() != null) {
+    if (hasQuery()) {
       getSubQuery().addDefaultConfig(fromCandidates, fatherStmtUse);
       return this;
     }
 
     defaultChoice();
     return this;
+  }
+
+  private boolean hasQuery() {
+    return getSubQuery() != null;
   }
 
   public SetConfig setStmtUse(List<Table> stmtUse) {
@@ -98,6 +106,16 @@ public class SetConfig implements DefaultConfig<SetConfig> {
   }
 
   void defaultChoice() {
-    setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
+    noCopySetSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
+  }
+
+  @Override
+  public SetConfig deepCopyTo(SetConfig t) {
+    t.setDesc(desc);
+    t.setAlias(alias);
+    if (hasQuery()) {
+      t.setSubQuery(subQuery.deepCopyTo(new QueryConfig()));
+    }
+    return t;
   }
 }

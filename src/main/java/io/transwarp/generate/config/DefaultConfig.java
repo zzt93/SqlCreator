@@ -15,7 +15,7 @@ import java.util.List;
  * <li>in constructor(Table[]) {@link io.transwarp.generate.config.op.SelectConfig}</li>
  * <li>in setter which is called by JAXB {@link io.transwarp.generate.config.stmt.QueryConfig}</li>
  */
-public interface DefaultConfig<T> {
+public interface DefaultConfig<T> extends Cloneable<T> {
 
   /**
    * <li>test whether this config class lack minimal configuration information

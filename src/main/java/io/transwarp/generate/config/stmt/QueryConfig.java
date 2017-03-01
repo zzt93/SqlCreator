@@ -4,6 +4,7 @@ package io.transwarp.generate.config.stmt;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
+import io.transwarp.generate.config.Cloneable;
 import io.transwarp.generate.config.GlobalConfig;
 import io.transwarp.generate.config.expr.adapter.BiChoicePossibilityAdapter;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
@@ -100,6 +101,31 @@ public class QueryConfig extends StmtConfig {
     this.from = from;
   }
 
+  public boolean hasWhere() {
+    return where != null;
+  }
+
+  public boolean singleColumn() {
+    return select.size() == 1;
+  }
+
+  public boolean selectQuery() {
+    return select.selectQuery();
+  }
+
+  public GenerationDataType getResType(int i) {
+    return select.getResType(i);
+  }
+
+  public boolean noResType() {
+    return select.getOperands().isEmpty() && select.getQueries().isEmpty();
+  }
+
+  public QueryConfig addResType(GenerationDataType dataType) {
+    select.addResType(dataType);
+    return this;
+  }
+
   @XmlAttribute
   @XmlJavaTypeAdapter(BiChoicePossibilityAdapter.class)
   public BiChoicePossibility getCorrelatedPossibility() {
@@ -127,7 +153,7 @@ public class QueryConfig extends StmtConfig {
       select.addDefaultConfig(fromCandidates, tables);
     } else {
       if (useOuterTable) {
-        System.out.println("\n[SQL Creator][Warning]: generating a correlated query alone may be invalid: " + getId());
+        System.out.println("\n[SQL Creator][Warning]: generating a correlated sub-query alone may be invalid: " + getId());
       }
       GlobalConfig.checkConfig(where, fromCandidates, fromObj);
       GlobalConfig.checkConfig(select, fromCandidates, fromObj);
@@ -145,12 +171,37 @@ public class QueryConfig extends StmtConfig {
     return map;
   }
 
+  private <T> T copy(Cloneable<T> t, Class<T> tClass) {
+    if (t != null) {
+      try {
+        return t.deepCopyTo(tClass.newInstance());
+      } catch (InstantiationException | IllegalAccessException ignored) {
+        System.err.println("Impossible");
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public QueryConfig deepCopyTo(StmtConfig t) {
+    super.deepCopyTo(t);
+    QueryConfig config = (QueryConfig) t;
+    config.setQueryDepth(queryDepth);
+    config.setCorrelatedPossibility(correlatedPossibility);
+    config.setFrom(copy(from, FromConfig.class));
+    config.setWhere(copy(where, FilterOperatorConfig.class));
+    config.setSelect(copy(select, SelectConfig.class));
+    config.setGroupBy(copy(groupBy, FilterOperatorConfig.class));
+    config.setHaving(copy(having, FilterOperatorConfig.class));
+    return config;
+  }
+
   /**
    * <h3>Requirement</h3>
    * <li>not bool</li>
    * <li>aggregate function</li>
    */
-  public static QueryConfig defaultSelectExpr(Table[] src) {
+  public static QueryConfig defaultSelectExpr(List<Table> src) {
     return null;
   }
 
@@ -169,7 +220,13 @@ public class QueryConfig extends StmtConfig {
     return res;
   }
 
-
+  /**
+   * generate one {@link QueryConfig} according to another input config's select result and candidates
+   *
+   * @param config     use it's select
+   * @param candidates tables for {@link FromConfig} to use
+   * @see io.transwarp.generate.config.op.SetConfig
+   */
   public static QueryConfig defaultSetConfig(QueryConfig config, List<Table> candidates) {
     QueryConfig res = new QueryConfig(candidates);
     return res;
@@ -192,29 +249,8 @@ public class QueryConfig extends StmtConfig {
     return config;
   }
 
-  public boolean hasWhere() {
-    return where != null;
-  }
-
-  public boolean singleColumn() {
-    return select.size() == 1;
-  }
-
-  public boolean selectQuery() {
-    return select.selectQuery();
-  }
-
-  public GenerationDataType getResType(int i) {
-    return select.getResType(i);
-  }
-
-  public boolean noResType() {
-    return select.getOperands().isEmpty() && select.getQueries().isEmpty();
-  }
-
-  public QueryConfig addResType(GenerationDataType dataType) {
-    select.addResType(dataType);
-    return this;
+  public static QueryConfig deepCopy(QueryConfig input) {
+    return input.deepCopyTo(new QueryConfig());
   }
 
 }

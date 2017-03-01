@@ -71,4 +71,11 @@ public abstract class StmtConfig implements DefaultConfig<StmtConfig> {
   }
 
   public abstract EnumMap<Dialect, String> generate(Dialect[] dialects);
+
+  @Override
+  public StmtConfig deepCopyTo(StmtConfig stmtConfig) {
+    stmtConfig.setNum(num);
+    stmtConfig.setId(id + "-clone");
+    return stmtConfig;
+  }
 }

@@ -68,7 +68,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
       assert implicitJoin == null;
       implicitJoin = new ImplicitJoinConfig(joinTimes).addDefaultConfig(candidates, null);
       fromObj.addAll(implicitJoin.implicitJoin());
-    } else if (implicitJoin != null) {
+    } else if (hasImplicitJoin()) {
       fromObj.addAll(implicitJoin.implicitJoin());
     } else {
       final ExplicitJoinConfig join = getExplicitJoin();
@@ -95,9 +95,9 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     setFromCandidates(fromCandidates);
 
     // check children first
-    if (explicitJoin != null) {
+    if (hasExplicitJoin()) {
       explicitJoin.addDefaultConfig(fromCandidates, null);
-    } else if (implicitJoin != null) {
+    } else if (hasImplicitJoin()) {
       implicitJoin.addDefaultConfig(fromCandidates, null);
     } else {
       joinTimes = 1;
@@ -110,7 +110,27 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     return this;
   }
 
+  private boolean hasImplicitJoin() {
+    return implicitJoin != null;
+  }
+
+  private boolean hasExplicitJoin() {
+    return explicitJoin != null;
+  }
+
   private boolean joinTimesSet() {
     return joinTimes != 0;
+  }
+
+  @Override
+  public FromConfig deepCopyTo(FromConfig t) {
+    if (hasExplicitJoin()) {
+      t.setExplicitJoin(explicitJoin.deepCopyTo(new ExplicitJoinConfig()));
+    } else  if (hasImplicitJoin()) {
+      t.setImplicitJoin(implicitJoin.deepCopyTo(new ImplicitJoinConfig()));
+    } else {
+      t.setJoinTimes(joinTimes);
+    }
+    return t;
   }
 }

@@ -85,4 +85,14 @@ public class TypedExprConfig extends ExprConfig {
     }
     return true;
   }
+
+  @Override
+  public TypedExprConfig deepCopyTo(ExprConfig t) {
+    TypedExprConfig config = (TypedExprConfig) t;
+    super.deepCopyTo(config);
+    if (!noTypeSetting()) {
+      config.setTypes(types);
+    }
+    return config;
+  }
 }

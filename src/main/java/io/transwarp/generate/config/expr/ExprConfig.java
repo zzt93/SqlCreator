@@ -64,7 +64,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   public void setCandidateQuery(QueryConfig candidateQuery) {
-    this.candidateQuery = candidateQuery;
+    this.candidateQuery = QueryConfig.deepCopy(candidateQuery);
   }
 
   @XmlElements({
@@ -191,7 +191,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     } else if (udfDepth == INVALID) {
       udfDepth = NO_NESTED_UDF_DEPTH;
     }
-    if (candidateQuery != null) {
+    if (hasQuery()) {
       candidateQuery.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
     aggregateOpHandled = true;
@@ -203,6 +203,10 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
       }
     }
     return this;
+  }
+
+  private boolean hasQuery() {
+    return candidateQuery != null;
   }
 
   private boolean preferAggregate() {
@@ -248,5 +252,21 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   public UdfFilter addPreference(Function[] f, BiChoicePossibility p) {
     return udfFilter.addPreference(f, p);
+  }
+
+  @Override
+  public ExprConfig deepCopyTo(ExprConfig t) {
+    t.setUdfDepth(udfDepth);
+    for (ExprConfig operand : operands) {
+      t.getOperands().add(operand.deepCopyTo(new ExprConfig()));
+    }
+    t.setUseAggregateOp(useAggregateOp);
+    t.setUdfFilter(new UdfFilter(udfFilter));
+    t.setConstOrColumnPossibility(constOrColumnPossibility);
+    t.setInputRelation(inputRelation);
+    if (hasQuery()) {
+      t.setCandidateQuery(candidateQuery.deepCopyTo(new QueryConfig()));
+    }
+    return t;
   }
 }

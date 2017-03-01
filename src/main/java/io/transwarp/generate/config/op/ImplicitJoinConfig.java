@@ -68,4 +68,12 @@ public class ImplicitJoinConfig implements DefaultConfig<ImplicitJoinConfig> {
   public ImplicitJoinConfig setFromCandidates(List<Table> fromCandidates) {
     return this;
   }
+
+  @Override
+  public ImplicitJoinConfig deepCopyTo(ImplicitJoinConfig t) {
+    for (CompoundRelationConfig operand : operands) {
+      t.operands.add(operand.deepCopyTo(new CompoundRelationConfig()));
+    }
+    return t;
+  }
 }

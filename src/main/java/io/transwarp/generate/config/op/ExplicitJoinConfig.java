@@ -142,4 +142,12 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
     from.add(getRight().toTable());
     return from;
   }
+
+  @Override
+  public ExplicitJoinConfig deepCopyTo(ExplicitJoinConfig t) {
+    t.setCondition(condition.deepCopyTo(new ExprConfig()));
+    t.setLeft(left.deepCopyTo(new CompoundRelationConfig()));
+    t.setRight(right.deepCopyTo(new SimpleRelationConfig()));
+    return t;
+  }
 }

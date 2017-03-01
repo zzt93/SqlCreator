@@ -78,7 +78,16 @@ public class SimpleRelationConfig extends SetConfig {
       operand = TableUtil.randomTable(getCandidatesTables());
       setTableName(operand.name().get());
     } else if (random == QueryConfig.class) {
-      setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
+      noCopySetSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
     }
+  }
+
+  @Override
+  public SimpleRelationConfig deepCopyTo(SetConfig t) {
+    super.deepCopyTo(t);
+    final SimpleRelationConfig simple = (SimpleRelationConfig) t;
+    simple.setTableName(tableName);
+    simple.operand = operand;
+    return simple;
   }
 }

@@ -30,12 +30,12 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   private List<TypedExprConfig> operands = new ArrayList<>();
   private List<QueryConfig> queries = new ArrayList<>();
   private int selectNum = 0;
+  private BiChoicePossibility useStar = BiChoicePossibility.HALF;
 
   /*
   ------------ generation field ------------
    */
   private List<Table> src, candidates;
-  private BiChoicePossibility useStar = BiChoicePossibility.HALF;
   private int size;
 
   public SelectConfig() {
@@ -63,7 +63,9 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   public void setQueries(List<QueryConfig> queries) {
-    this.queries = queries;
+    for (QueryConfig query : queries) {
+      this.queries.add(QueryConfig.deepCopy(query));
+    }
   }
 
   @XmlElement
@@ -206,5 +208,18 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   public void addResType(GenerationDataType dataType) {
     assert candidates != null && src != null;
     operands.add(new TypedExprConfig(candidates, src, dataType));
+  }
+
+  @Override
+  public SelectConfig deepCopyTo(SelectConfig t) {
+    for (TypedExprConfig operand : operands) {
+      t.getOperands().add(operand.deepCopyTo(new TypedExprConfig()));
+    }
+    for (QueryConfig query : queries) {
+      t.getQueries().add(query.deepCopyTo(new QueryConfig()));
+    }
+    t.setUseStar(useStar);
+    t.setSelectNum(selectNum);
+    return t;
   }
 }

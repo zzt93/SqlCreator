@@ -41,7 +41,7 @@ public class CompoundRelationConfig extends SimpleRelationConfig {
     return getCandidatesTables() == null
         || ((getSubQuery() == null || getSubQuery().lackChildConfig())
         && invalidTableName()
-        && (joinedTable == null || joinedTable.lackChildConfig()));
+        && (!hasNested() || joinedTable.lackChildConfig()));
   }
 
   @Override
@@ -56,13 +56,17 @@ public class CompoundRelationConfig extends SimpleRelationConfig {
     if (!invalidTableName()) {
       return this;
     }
-    if (joinedTable != null) {
+    if (hasNested()) {
       joinedTable.addDefaultConfig(fromCandidates, fatherStmtUse);
       return this;
     }
 
     defaultChoice();
     return this;
+  }
+
+  private boolean hasNested() {
+    return joinedTable != null;
   }
 
   @Override
@@ -73,7 +77,7 @@ public class CompoundRelationConfig extends SimpleRelationConfig {
       operand = TableUtil.randomTable(getCandidatesTables());
       setTableName(operand.name().get());
     } else if (random == QueryConfig.class) {
-      setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
+      noCopySetSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
     } else {
       joinedTable = new ExplicitJoinConfig(getCandidatesTables());
     }
@@ -81,9 +85,19 @@ public class CompoundRelationConfig extends SimpleRelationConfig {
 
   @Override
   Table toTable() {
-    if (joinedTable != null) {
+    if (hasNested()) {
       return joinedTable.explicitJoin();
     }
     return super.toTable();
+  }
+
+  @Override
+  public CompoundRelationConfig deepCopyTo(SetConfig t) {
+    super.deepCopyTo(t);
+    final CompoundRelationConfig comp = (CompoundRelationConfig) t;
+    if (hasNested()) {
+      comp.setJoinedTable(joinedTable.deepCopyTo(new ExplicitJoinConfig()));
+    }
+    return comp;
   }
 }
