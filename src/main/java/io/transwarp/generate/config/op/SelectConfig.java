@@ -63,9 +63,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   public void setQueries(List<QueryConfig> queries) {
-    for (QueryConfig query : queries) {
-      this.queries.add(QueryConfig.deepCopy(query));
-    }
+    this.queries = queries;
   }
 
   @XmlElement
@@ -117,8 +115,14 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     for (TypedExprConfig operand : operands) {
       operand.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
+
+    List<QueryConfig> tmp = new ArrayList<>();
     for (QueryConfig query : queries) {
-      query.addDefaultConfig(fromCandidates, fatherStmtUse);
+      tmp.add(QueryConfig.deepCopy(query));
+    }
+    setQueries(tmp);
+    for (QueryConfig queryConfig : tmp) {
+      queryConfig.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
 
     // default setting when no setting

@@ -52,6 +52,11 @@ syntax limit in Java code now not abstracted, scatter in many class (TODO change
 - Data Type Group
 
 ##### Operand
+###### Generation Requirement Successful Rate
+- Result DataType: 100% sure
+- UDF: Given the right config, can be 100% sure
+- Input:
+
 ##### Stmt
 
 ##### Syntax (TODO)

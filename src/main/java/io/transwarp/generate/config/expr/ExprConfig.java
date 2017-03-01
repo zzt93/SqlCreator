@@ -1,6 +1,7 @@
 package io.transwarp.generate.config.expr;
 
 import io.transwarp.db_specific.DialectSpecific;
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.DefaultConfig;
@@ -37,7 +38,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   private int udfDepth = INVALID;
   private String desc;
-  private BiChoicePossibility constOrColumnPossibility = BiChoicePossibility.HALF;
+  private BiChoicePossibility constOrColumnPossibility = BiChoicePossibility.NORMAL;
   private InputRelation inputRelation = InputRelation.SAME;
 
   private QueryConfig candidateQuery;
@@ -151,11 +152,13 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     return false;
   }
 
+  @DialectSpecific(
+      value = Dialect.INCEPTOR,
+      desc = "inceptor error: The sub-query used in the filter is not a scalar subquery")
   public QueryConfig getSubQuery(GenerationDataType dataType) {
     assert candidates != null;
     if (candidateQuery == null) {
-      candidateQuery = QueryConfig.defaultWhereExpr(candidates, dataType);
-      return candidateQuery;
+      return candidateQuery = QueryConfig.defaultWhereExpr(candidates, dataType);
     }
     if (!candidateQuery.singleColumn()) {
       throw new IllegalArgumentException("SubQuery in where statement has more than one column: " + candidateQuery.getId());
@@ -218,7 +221,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     if (udfDepth >= 1) {
       // add nested config
       if (operands.isEmpty()) {
-        operands.add(defaultNestedExpr(this));
+        operands.add(defaultNestedExpr(this, udfDepth));
       }
       udfDepth = HAS_NESTED_UDF_DEPTH;
     }
@@ -241,8 +244,12 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
   }
 
   public static ExprConfig defaultNestedExpr(ExprConfig config) {
+    return defaultNestedExpr(config, NESTED_EXPR_UDF_DEPTH);
+  }
+
+  private static ExprConfig defaultNestedExpr(ExprConfig config, int udfDepth) {
     final ExprConfig exprConfig = new ExprConfig(config.candidates, config.getFrom());
-    exprConfig.setUdfDepth(NESTED_EXPR_UDF_DEPTH);
+    exprConfig.setUdfDepth(udfDepth);
     return exprConfig;
   }
 
