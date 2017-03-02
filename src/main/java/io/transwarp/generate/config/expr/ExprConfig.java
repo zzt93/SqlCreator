@@ -154,7 +154,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @DialectSpecific(
       value = Dialect.INCEPTOR,
-      desc = "inceptor error: The sub-query used in the filter is not a scalar subquery")
+      desc = "inceptor requirement: The sub-query used in the filter is not a scalar subquery")
   public QueryConfig getSubQuery(GenerationDataType dataType) {
     assert candidates != null;
     if (candidateQuery == null) {

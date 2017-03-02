@@ -746,7 +746,27 @@
                 </implicitJoin>
             </from>
         </query>
-        
+        <query id="correlatedQuery1" correlatedPossibility="1">
+            <select>
+                <operand/>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+            <where>
+                <operand>
+                    <udfConfig>
+                        <udfList possibility="1">EQ</udfList>
+                    </udfConfig>
+                    <columnExpr/>
+                    <columnExpr/>
+                </operand>
+            </where>
+        </query>
         <query id="testCorrelatedWhere0">
             <select/>
             <from>
@@ -757,7 +777,7 @@
                 </implicitJoin>
             </from>
             <where>
-                <operand candidateQuery="correlatedQuery0">
+                <operand candidateQuery="correlatedQuery1">
                     <udfConfig>
                         <udfList possibility="1">in_query exists</udfList>
                     </udfConfig>
