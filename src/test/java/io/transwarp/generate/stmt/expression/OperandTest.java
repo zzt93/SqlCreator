@@ -38,8 +38,8 @@ public class OperandTest {
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
         System.out.println(operand.getType());
-        System.out.println(operand.sql(GlobalConfig.getBase()));
-        System.out.println(operand.sql(GlobalConfig.getCmp()));
+        System.out.println(operand.sql(GlobalConfig.getBase()).length());
+        System.out.println(operand.sql(GlobalConfig.getCmp()).length());
         assertTrue(operand.getType().equals(type));
       }
     }
