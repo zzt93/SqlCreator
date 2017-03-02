@@ -1,5 +1,6 @@
 package io.transwarp.db_specific;
 
+import com.google.common.base.Preconditions;
 import io.transwarp.db_specific.base.DBType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
@@ -25,9 +26,7 @@ public enum OracleType implements DBType {
 
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      if (len > 4000 || len == NO_LEN) {
-        throw new IllegalArgumentException("invalid len for varchar2: " + len);
-      }
+      Preconditions.checkArgument(len < 4000 && len > 0, "invalid len for varchar2: " + len);
       return SequenceDataType.sequence(DataType.Meta.CHAR, len);
     }
   },
@@ -39,9 +38,7 @@ public enum OracleType implements DBType {
 
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      if (len > 4000 || len == NO_LEN) {
-        throw new IllegalArgumentException("invalid len for nvarchar2: " + len);
-      }
+      Preconditions.checkArgument(len < 4000 && len > 0, "invalid len for nvarchar2: " + len);
       return SequenceDataType.sequence(DataType.Meta.UNICODE, len);
     }
   },
@@ -49,6 +46,7 @@ public enum OracleType implements DBType {
     @Override
     public GenerationDataType mapToGeneration(int len) {
       if (len != NO_LEN) {
+        Preconditions.checkArgument(len <= 64 && len > 0, "invalid len for number: " + len);
         return SequenceDataType.sequence(DataType.Meta.BIT, len);
       }
       // TODO add precision and scale
@@ -96,12 +94,10 @@ public enum OracleType implements DBType {
 
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      if (len > 2000) {
-        throw new IllegalArgumentException("too long for varchar2: " + len);
-      }
       if (len == DBType.NO_LEN) {
         len = 1;
       }
+      Preconditions.checkArgument(len < 2000 && len > 0, "invalid len for char2: " + len);
       return SequenceDataType.sequence(DataType.Meta.CHAR, len);
     }
   },
@@ -113,12 +109,10 @@ public enum OracleType implements DBType {
 
     @Override
     public GenerationDataType mapToGeneration(int len) {
-      if (len > 2000) {
-        throw new IllegalArgumentException("too long for varchar2: " + len);
-      }
       if (len == DBType.NO_LEN) {
         len = 1;
       }
+      Preconditions.checkArgument(len < 2000 && len > 0, "invalid len for nchar2: " + len);
       return SequenceDataType.sequence(DataType.Meta.UNICODE, len);
     }
   },

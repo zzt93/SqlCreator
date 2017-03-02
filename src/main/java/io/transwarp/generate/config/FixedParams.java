@@ -9,7 +9,7 @@ public class FixedParams {
   public static final int VAR_ARGS_MAX_LEN = 5;
   private static final int randomBitsMaxLen = 64;
   private static final int randomListMaxLen = 10;
-  private static final int randomStrMaxLen = 100;
+  private static final int randomStrMaxLen = 200;
 
   public static int getRandomListMaxLen() {
     return randomListMaxLen;

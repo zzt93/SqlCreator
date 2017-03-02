@@ -1,6 +1,8 @@
 package io.transwarp.db_specific;
 
+import com.google.common.base.Preconditions;
 import io.transwarp.db_specific.base.DBType;
+import io.transwarp.generate.config.FixedParams;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
 import io.transwarp.generate.type.SequenceDataType;
@@ -63,6 +65,9 @@ public enum InceptorType implements DBType {
   STRING {
     @Override
     public GenerationDataType mapToGeneration(int len) {
+      if (len == NO_LEN) {
+        len = FixedParams.getRandomStrMaxLen();
+      }
       return SequenceDataType.sequence(DataType.Meta.CHAR, len);
     }
   },
@@ -74,6 +79,7 @@ public enum InceptorType implements DBType {
 
     @Override
     public GenerationDataType mapToGeneration(int len) {
+      Preconditions.checkArgument(len > 0, "invalid len for varchar: " + len);
       return SequenceDataType.sequence(DataType.Meta.UNICODE, len);
     }
   },

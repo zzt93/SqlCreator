@@ -149,10 +149,8 @@ public class QueryConfig extends StmtConfig {
       tables = new ArrayList<>(fromObj.size() + fatherStmtUse.size());
       tables.addAll(fromObj);
       tables.addAll(fatherStmtUse);
-    } else {
-      if (useOuterTable) {
-        System.out.println("\n[SQL Creator][Warning]: generating a correlated sub-query alone may be invalid: " + getId());
-      }
+    } else if (useOuterTable) {
+      System.out.println("\n[SQL Creator][Warning]: generating a correlated sub-query alone may be invalid: " + getId());
     }
     GlobalConfig.checkConfig(where, fromCandidates, tables);
     GlobalConfig.checkConfig(select, fromCandidates, tables);
