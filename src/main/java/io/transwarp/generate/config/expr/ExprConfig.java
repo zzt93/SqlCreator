@@ -182,6 +182,9 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
 
   @Override
   public ExprConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    if (!lackChildConfig()) {
+      return this;
+    }
     setFromCandidates(fromCandidates);
     setStmtUse(fatherStmtUse);
     assert src != null;
@@ -272,7 +275,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
     t.setConstOrColumnPossibility(constOrColumnPossibility);
     t.setInputRelation(inputRelation);
     if (hasQuery()) {
-      t.setCandidateQuery(candidateQuery.deepCopyTo(new QueryConfig()));
+      t.setCandidateQuery(QueryConfig.deepCopy(candidateQuery));
     }
     return t;
   }

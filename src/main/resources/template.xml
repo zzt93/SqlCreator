@@ -794,6 +794,7 @@
                 </implicitJoin>
             </from>
             <where>
+                <!-- discouraged query ref: located under different dialect/ddl compared with outer query-->
                 <operand candidateQuery="testDdl">
                     <udfConfig>
                         <udfList possibility="1">in_query exists</udfList>
@@ -806,11 +807,13 @@
 
     <test dialect="INCEPTOR" tableDdlFile="default_inceptor.sql">
         <query id="testDdl">
-            <select/>
+            <select>
+                <operand/>
+            </select>
             <from>
                 <implicitJoin>
                     <operand>
-                        <tableName>test_view</tableName>
+                        <tableName>test_udf</tableName>
                     </operand>
                 </implicitJoin>
             </from>

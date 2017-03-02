@@ -114,7 +114,7 @@ public class SetConfig implements DefaultConfig<SetConfig> {
     t.setDesc(desc);
     t.setAlias(alias);
     if (hasQuery()) {
-      t.setSubQuery(subQuery.deepCopyTo(new QueryConfig()));
+      t.setSubQuery(QueryConfig.deepCopy(subQuery));
     }
     return t;
   }

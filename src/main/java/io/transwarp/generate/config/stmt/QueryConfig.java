@@ -143,21 +143,19 @@ public class QueryConfig extends StmtConfig {
 
     GlobalConfig.checkConfig(from, fromCandidates, null);
     final List<Table> fromObj = getFrom().getFromObj();
+    List<Table> tables = fromObj;
     final Boolean useOuterTable = correlatedPossibility.random(true, false);
     if (useOuterTable && fatherStmtUse != null) {
-      List<Table> tables = new ArrayList<>(fromObj.size() + fatherStmtUse.size());
+      tables = new ArrayList<>(fromObj.size() + fatherStmtUse.size());
       tables.addAll(fromObj);
       tables.addAll(fatherStmtUse);
-      // if this is a correlated sub-query, have to reset tables
-      where.addDefaultConfig(fromCandidates, tables);
-      select.addDefaultConfig(fromCandidates, tables);
     } else {
       if (useOuterTable) {
         System.out.println("\n[SQL Creator][Warning]: generating a correlated sub-query alone may be invalid: " + getId());
       }
-      GlobalConfig.checkConfig(where, fromCandidates, fromObj);
-      GlobalConfig.checkConfig(select, fromCandidates, fromObj);
     }
+    GlobalConfig.checkConfig(where, fromCandidates, tables);
+    GlobalConfig.checkConfig(select, fromCandidates, tables);
     return this;
   }
 

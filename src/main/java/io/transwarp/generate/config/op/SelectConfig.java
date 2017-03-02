@@ -222,7 +222,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
       t.getOperands().add(operand.deepCopyTo(new TypedExprConfig()));
     }
     for (QueryConfig query : queries) {
-      t.getQueries().add(query.deepCopyTo(new QueryConfig()));
+      t.getQueries().add(QueryConfig.deepCopy(query));
     }
     t.setUseStar(useStar);
     t.setSelectNum(selectNum);

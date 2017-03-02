@@ -41,7 +41,7 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
   @Override
   public boolean lackChildConfig() {
     return candidates == null || src == null
-        || hasOp() || operand.lackChildConfig();
+        || !hasOp() || operand.lackChildConfig();
   }
 
   @Override
@@ -49,7 +49,7 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
     setFromCandidates(fromCandidates);
     setStmtUse(fatherStmtUse);
 
-    if (hasOp()) {
+    if (!hasOp()) {
       operand = new ExprConfig(fromCandidates, fatherStmtUse);
     } else {
       operand.addDefaultConfig(fromCandidates, fatherStmtUse);
@@ -59,7 +59,7 @@ public class FilterOperatorConfig implements DefaultConfig<FilterOperatorConfig>
   }
 
   private boolean hasOp() {
-    return operand == null;
+    return operand != null;
   }
 
   @Override
