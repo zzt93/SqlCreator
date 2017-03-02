@@ -37,9 +37,9 @@ public class OperandTest {
       final Operand[] operands = Operand.getOperands(3, testType, config);
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
-        System.out.println(operand.getType());
-        System.out.println(operand.sql(GlobalConfig.getBase()).length());
-        System.out.println(operand.sql(GlobalConfig.getCmp()).length());
+        System.out.println(operand.getType() + ":"
+            + operand.sql(GlobalConfig.getBase()).length() + ";"
+            + operand.sql(GlobalConfig.getCmp()).length());
         assertTrue(operand.getType().equals(type));
       }
     }
