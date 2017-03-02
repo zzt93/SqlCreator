@@ -49,7 +49,7 @@ public class Operand {
     if (depth == FunctionDepth.SINGLE) {
       if (config.hasNestedConfig()) {
         nextConfig = config.getOperands();
-        // use nested config later to reuse code
+        // save nested config to use later and reuse code
       } else {
         final Optional<Column> col = TableUtil.sameTypeRandomCol(config.getFrom(), resultType);
         if (col.isPresent()) {

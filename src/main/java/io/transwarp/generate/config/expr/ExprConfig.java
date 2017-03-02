@@ -164,7 +164,7 @@ public class ExprConfig implements DefaultConfig<ExprConfig> {
       throw new IllegalArgumentException("SubQuery in where statement has more than one column: " + candidateQuery.getId());
     }
     if (candidateQuery.noResType()) {
-      return candidateQuery.addResType(dataType);
+      return QueryConfig.deepCopy(candidateQuery).addDefaultConfig(candidates, getFrom()).addResType(dataType);
     } else if (candidateQuery.getResType(0) != dataType) {
       return QueryConfig.defaultWhereExpr(candidates, dataType);
     }

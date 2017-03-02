@@ -24,12 +24,13 @@ import java.util.List;
  */
 public class SelectConfig implements DefaultConfig<SelectConfig> {
 
+  private static final int SELECT_NUM_DEFAULT = 0;
   /*
-  ------------- xml elements --------------
-   */
+      ------------- xml elements --------------
+       */
   private List<TypedExprConfig> operands = new ArrayList<>();
   private List<QueryConfig> queries = new ArrayList<>();
-  private int selectNum = 0;
+  private int selectNum = SELECT_NUM_DEFAULT;
   private BiChoicePossibility useStar = BiChoicePossibility.HALF;
 
   /*
@@ -212,6 +213,7 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   public void addResType(GenerationDataType dataType) {
     assert candidates != null && src != null;
     operands.add(new TypedExprConfig(candidates, src, dataType));
+    selectNum = SELECT_NUM_DEFAULT;
   }
 
   @Override

@@ -5,35 +5,11 @@
 
 
     <test>
-        <query id="correlatedQuery0" correlatedPossibility="1">
-            <select>
-                <operand type="int">
-                    <udfConfig>
-                        <udfList possibility="1">max</udfList>
-                    </udfConfig>
-                </operand>
-            </select>
-            <from>
-                <implicitJoin>
-                    <operand>
-                        <tableName>test_udf_2</tableName>
-                    </operand>
-                </implicitJoin>
-            </from>
-            <where>
-                <operand>
-                    <udfConfig>
-                        <udfList possibility="1">EQ</udfList>
-                    </udfConfig>
-                    <columnExpr/>
-                    <columnExpr/>
-                </operand>
-            </where>
-        </query>
+
 
         <query id="correlatedQuery1" correlatedPossibility="1">
             <select>
-                <operand/>
+                <selectNum>1</selectNum>
             </select>
             <from>
                 <implicitJoin>
@@ -53,35 +29,11 @@
             </where>
         </query>
 
-        <!-- not supported -->
-        <!--<query id="testCorrelatedFrom">-->
-        <!--<select></select>-->
-        <!--<from>-->
-        <!--<implicitJoin>-->
-        <!--<operand>-->
-        <!--<tableName>test_udf</tableName>-->
-        <!--</operand>-->
-        <!--<operand>-->
-        <!--<subQuery>correlatedQuery0</subQuery>-->
-        <!--</operand>-->
-        <!--</implicitJoin>-->
-        <!--</from>-->
-        <!--</query>    -->
-        <query id="testCorrelatedSelect">
-            <select>
-                <query>correlatedQuery0</query>
-            </select>
-            <from>
-                <implicitJoin>
-                    <operand>
-                        <tableName>test_udf</tableName>
-                    </operand>
-                </implicitJoin>
-            </from>
-        </query>
 
         <query id="testCorrelatedWhere">
-            <select/>
+            <select>
+                <selectNum>1</selectNum>
+            </select>
             <from>
                 <implicitJoin>
                     <operand>

@@ -1,6 +1,9 @@
 package io.transwarp.generate.config;
 
 import io.transwarp.generate.common.Table;
+import io.transwarp.generate.config.expr.ExprConfig;
+import io.transwarp.generate.config.expr.UdfFilter;
+import io.transwarp.generate.type.GenerationDataType;
 
 import java.util.List;
 
@@ -14,6 +17,13 @@ import java.util.List;
  * <h3>Usage</h3>
  * <li>in constructor(Table[]) {@link io.transwarp.generate.config.op.SelectConfig}</li>
  * <li>in setter which is called by JAXB {@link io.transwarp.generate.config.stmt.QueryConfig}</li>
+ *
+ * <h3>Notice</h3>
+ * The config should be effectively immutable, to used in multiple generation process
+ * <li>{@link io.transwarp.generate.stmt.expression.Operand#makeOperand(GenerationDataType, ExprConfig, int, UdfFilter)}
+ * will update the possibility of udf config, so have to use separate copy of original config
+ * </li>
+ * <li>{@link ExprConfig#getCandidateQuery()} may change candidate query, so copy it before change</li>
  */
 public interface DefaultConfig<T> extends Cloneable<T> {
 
@@ -40,6 +50,7 @@ public interface DefaultConfig<T> extends Cloneable<T> {
   T setStmtUse(List<Table> stmtUse);
 
   /**
+   * TODO may change to ThreadLocal
    * All the tables this query can access
    * <h3>To make sure the candidates not null when generation process start</h3>
    * <li>set candidates as early as possible, i.e. in constructor</li>

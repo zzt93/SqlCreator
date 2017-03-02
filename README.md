@@ -96,10 +96,13 @@ Some class violate the single responsibility of class, which has mixed abstracti
   - sql abstraction: `name` | `alias`, columns, etc
   - sql clause generation abstraction: `name` | `name alias`
   
+##### Use XML-Mapped DTO Across Levels
+Maybe it's better to split config with xml-content, in which config has a class of xml-content and derive needed info from it.
 #### TODO
   - group by
   - having
   - order by
+  - sub-query cyclic dependency detection
   
   
 ### Bugs Found

@@ -748,7 +748,7 @@
         </query>
         <query id="correlatedQuery1" correlatedPossibility="1">
             <select>
-                <operand/>
+                <selectNum>1</selectNum>
             </select>
             <from>
                 <implicitJoin>
