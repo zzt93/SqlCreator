@@ -71,7 +71,7 @@ public class UdfFilter {
       }
     }
     final Function function = fs.get(random.nextInt(fs.size()));
-    // TODO function preference self-changing strategy, may extract a class
+    // TODO udf preference self-changing strategy, may extract a class
     decreasePossibility(function);
     return function;
   }
