@@ -53,7 +53,7 @@ public class SelectResultTest {
   public static QueryConfig[] data() throws Exception {
     ConfigUnmarshaller configUnmarshaller = new ConfigUnmarshaller();
     clParser = new CLParser(Strs.of(ClassLoader.getSystemResource("test.xml").getFile(), "oracle=oracle", "inceptor=inceptor"));
-    final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource(clParser.getInputPath()));
+    final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource(clParser.getInput()));
     List<QueryConfig> list = parse.getQueries();
     return list.toArray(new QueryConfig[0]);
   }

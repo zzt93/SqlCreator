@@ -1,5 +1,6 @@
 package io.transwarp.parse.xml;
 
+import com.google.inject.Inject;
 import io.transwarp.parse.ParserSource;
 
 import java.io.InputStream;
@@ -14,6 +15,7 @@ public class XMLParserSource implements ParserSource{
 
   private final InputStream xmlFile;
 
+  @Inject
   public XMLParserSource(InputStream xmlFile) {
     this.xmlFile = xmlFile;
   }

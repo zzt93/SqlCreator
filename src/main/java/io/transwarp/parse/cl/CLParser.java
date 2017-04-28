@@ -2,6 +2,8 @@ package io.transwarp.parse.cl;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.GlobalConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,13 +22,17 @@ import java.util.EnumMap;
  */
 public class CLParser {
 
+  private static final Logger logger = LoggerFactory.getLogger(CLParser.class);
+
   private String[] paths = new String[]{"oracle=oracle", "inceptor=inceptor"};
   private InputStream xmlFile = ClassLoader.getSystemResourceAsStream("template.xml");
 
   public CLParser(String[] args) {
     if (args.length >= 1) {
       if (!Files.exists(Paths.get(args[0]))) {
-        throw new IllegalArgumentException("No such xml config file: " + xmlFile);
+        IllegalArgumentException illegalArgumentException = new IllegalArgumentException("No such xml config file: " + xmlFile);
+        logger.error("", illegalArgumentException);
+        throw illegalArgumentException;
       }
       try {
         xmlFile = new FileInputStream(args[0]);
@@ -42,7 +48,7 @@ public class CLParser {
     }
   }
 
-  public InputStream getInputPath() {
+  public InputStream getInput() {
     return xmlFile;
   }
 

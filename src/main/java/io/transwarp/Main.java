@@ -6,6 +6,7 @@ import io.transwarp.parse.cl.CLParser;
 import io.transwarp.parse.xml.ConfigUnmarshaller;
 import io.transwarp.parse.xml.ValidationException;
 import io.transwarp.parse.xml.XMLParserSource;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,8 +21,10 @@ import java.util.EnumMap;
 public class Main {
 
   public static void main(String[] args) throws IOException, ValidationException {
+    PropertyConfigurator.configure(ClassLoader.getSystemResourceAsStream("log4j.properties"));
+
     final CLParser clParser = new CLParser(args);
-    InputStream xmlFile = clParser.getInputPath();
+    InputStream xmlFile = clParser.getInput();
     final GlobalConfig parse = new ConfigUnmarshaller().parse(new XMLParserSource(xmlFile));
     EnumMap<Dialect, Path> map = clParser.getOutputDir();
     parse.generate(map);
