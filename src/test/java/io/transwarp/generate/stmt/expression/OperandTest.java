@@ -14,6 +14,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +35,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class OperandTest {
   private final GenerationDataType testType;
+  private final PrintWriter writer;
+
 
   @Test
   public void randomSameTypeOperand() throws Exception {
@@ -37,16 +46,24 @@ public class OperandTest {
       final Operand[] operands = Operand.getOperands(3, testType, config);
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
-        System.out.println(operand.getType() + ":"
-            + operand.sql(GlobalConfig.getBase()).length() + ";"
-            + operand.sql(GlobalConfig.getCmp()).length());
+        writer.println(operand.getType());
+        writer.println(operand.sql(GlobalConfig.getBase()));
+        writer.println(operand.sql(GlobalConfig.getCmp()));
         assertTrue(operand.getType().equals(type));
       }
     }
+    writer.flush();
+    writer.close();
   }
 
-  public OperandTest(GenerationDataType type) {
+  public OperandTest(GenerationDataType type) throws IOException {
     this.testType = type;
+    Path dir = Paths.get("operand");
+    if (!Files.exists(dir)) {
+      Files.createDirectory(dir);
+    }
+    String file = Paths.get(dir.toString(), testType.toString()).toString();
+    writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, false)));
   }
 
   @Parameterized.Parameters

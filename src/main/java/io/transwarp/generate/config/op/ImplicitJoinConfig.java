@@ -52,20 +52,28 @@ public class ImplicitJoinConfig implements DefaultConfig<ImplicitJoinConfig> {
   }
 
   @Override
-  public ImplicitJoinConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
+  public ImplicitJoinConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
     for (CompoundRelationConfig operand : operands) {
-      operand.addDefaultConfig(candidates, null);
+      operand.addDefaultConfig(fromCandidates, null);
     }
     return this;
   }
 
   @Override
-  public ImplicitJoinConfig setFrom(List<Table> tables) {
+  public ImplicitJoinConfig setStmtUse(List<Table> stmtUse) {
     return this;
   }
 
   @Override
-  public ImplicitJoinConfig setCandidates(List<Table> candidates) {
+  public ImplicitJoinConfig setFromCandidates(List<Table> fromCandidates) {
     return this;
+  }
+
+  @Override
+  public ImplicitJoinConfig deepCopyTo(ImplicitJoinConfig t) {
+    for (CompoundRelationConfig operand : operands) {
+      t.operands.add(operand.deepCopyTo(new CompoundRelationConfig()));
+    }
+    return t;
   }
 }

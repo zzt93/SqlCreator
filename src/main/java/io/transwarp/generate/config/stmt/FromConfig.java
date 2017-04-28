@@ -8,6 +8,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,9 +24,6 @@ public class FromConfig implements DefaultConfig<FromConfig> {
 
   private List<Table> fromObj = new ArrayList<>();
   private List<Table> candidates;
-
-  public FromConfig() {
-  }
 
   @XmlElement
   public ExplicitJoinConfig getExplicitJoin() {
@@ -54,14 +52,14 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     this.implicitJoin = implicitJoin;
   }
 
-  public FromConfig setFrom(List<Table> from) {
+  public FromConfig setStmtUse(List<Table> stmtUse) {
     // only need candidates, from is generated
     throw new NotImplementedException();
   }
 
   @Override
-  public FromConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public FromConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 
@@ -70,7 +68,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
       assert implicitJoin == null;
       implicitJoin = new ImplicitJoinConfig(joinTimes).addDefaultConfig(candidates, null);
       fromObj.addAll(implicitJoin.implicitJoin());
-    } else if (implicitJoin != null) {
+    } else if (hasImplicitJoin()) {
       fromObj.addAll(implicitJoin.implicitJoin());
     } else {
       final ExplicitJoinConfig join = getExplicitJoin();
@@ -80,7 +78,7 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   public List<Table> getFromObj() {
-    return fromObj;
+    return Collections.unmodifiableList(fromObj);
   }
 
   @Override
@@ -93,14 +91,14 @@ public class FromConfig implements DefaultConfig<FromConfig> {
   }
 
   @Override
-  public FromConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
+  public FromConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
 
     // check children first
-    if (explicitJoin != null) {
-      explicitJoin.addDefaultConfig(candidates, null);
-    } else if (implicitJoin != null) {
-      implicitJoin.addDefaultConfig(candidates, null);
+    if (hasExplicitJoin()) {
+      explicitJoin.addDefaultConfig(fromCandidates, null);
+    } else if (hasImplicitJoin()) {
+      implicitJoin.addDefaultConfig(fromCandidates, null);
     } else {
       joinTimes = 1;
     }
@@ -112,7 +110,27 @@ public class FromConfig implements DefaultConfig<FromConfig> {
     return this;
   }
 
+  private boolean hasImplicitJoin() {
+    return implicitJoin != null;
+  }
+
+  private boolean hasExplicitJoin() {
+    return explicitJoin != null;
+  }
+
   private boolean joinTimesSet() {
     return joinTimes != 0;
+  }
+
+  @Override
+  public FromConfig deepCopyTo(FromConfig t) {
+    if (hasExplicitJoin()) {
+      t.setExplicitJoin(explicitJoin.deepCopyTo(new ExplicitJoinConfig()));
+    } else  if (hasImplicitJoin()) {
+      t.setImplicitJoin(implicitJoin.deepCopyTo(new ImplicitJoinConfig()));
+    } else {
+      t.setJoinTimes(joinTimes);
+    }
+    return t;
   }
 }

@@ -59,7 +59,7 @@ public class DDLParser {
       final String stmt = it.next();
       final Optional<String> name = extractTableName(stmt);
       if (!name.isPresent()) {
-        System.out.println("Couldn't find table/view name: " + stmt);
+        System.out.println("[SQL Creator][Warning]: Couldn't find table/view name: " + stmt);
         continue;
       }
       final Matcher matcher = columns.matcher(stmt);

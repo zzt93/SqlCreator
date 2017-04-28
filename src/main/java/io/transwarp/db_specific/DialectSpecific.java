@@ -16,4 +16,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface DialectSpecific {
   Dialect value() default Dialect.INCEPTOR;
+  String desc() default "";
 }

@@ -55,11 +55,11 @@ public class SimpleRelationConfig extends SetConfig {
   }
 
   @Override
-  public SimpleRelationConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
+  public SimpleRelationConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
 
     if (getSubQuery() != null) {
-      getSubQuery().addDefaultConfig(candidates, from);
+      getSubQuery().addDefaultConfig(fromCandidates, fatherStmtUse);
       return this;
     }
     if (!invalidTableName()) {
@@ -78,7 +78,16 @@ public class SimpleRelationConfig extends SetConfig {
       operand = TableUtil.randomTable(getCandidatesTables());
       setTableName(operand.name().get());
     } else if (random == QueryConfig.class) {
-      setSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
+      noCopySetSubQuery(QueryConfig.fromQuery(getCandidatesTables()));
     }
+  }
+
+  @Override
+  public SimpleRelationConfig deepCopyTo(SetConfig t) {
+    super.deepCopyTo(t);
+    final SimpleRelationConfig simple = (SimpleRelationConfig) t;
+    simple.setTableName(tableName);
+    simple.operand = operand;
+    return simple;
   }
 }

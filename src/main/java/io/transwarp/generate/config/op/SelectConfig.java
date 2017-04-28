@@ -24,18 +24,19 @@ import java.util.List;
  */
 public class SelectConfig implements DefaultConfig<SelectConfig> {
 
+  private static final int SELECT_NUM_DEFAULT = 0;
   /*
-  ------------- xml elements --------------
-   */
+      ------------- xml elements --------------
+       */
   private List<TypedExprConfig> operands = new ArrayList<>();
   private List<QueryConfig> queries = new ArrayList<>();
-  private int selectNum = 0;
+  private int selectNum = SELECT_NUM_DEFAULT;
+  private BiChoicePossibility useStar = BiChoicePossibility.HALF;
 
   /*
   ------------ generation field ------------
    */
   private List<Table> src, candidates;
-  private BiChoicePossibility useStar = BiChoicePossibility.HALF;
   private int size;
 
   public SelectConfig() {
@@ -103,9 +104,9 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   }
 
   @Override
-  public SelectConfig addDefaultConfig(List<Table> candidates, List<Table> from) {
-    setCandidates(candidates);
-    setFrom(from);
+  public SelectConfig addDefaultConfig(List<Table> fromCandidates, List<Table> fatherStmtUse) {
+    setFromCandidates(fromCandidates);
+    setStmtUse(fatherStmtUse);
 
     if (!setSize()) {
       size += operands.size();
@@ -113,10 +114,16 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     }
 
     for (TypedExprConfig operand : operands) {
-      operand.addDefaultConfig(candidates, from);
+      operand.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
+
+    List<QueryConfig> tmp = new ArrayList<>();
     for (QueryConfig query : queries) {
-      query.addDefaultConfig(candidates, from);
+      tmp.add(QueryConfig.deepCopy(query));
+    }
+    setQueries(tmp);
+    for (QueryConfig queryConfig : tmp) {
+      queryConfig.addDefaultConfig(fromCandidates, fatherStmtUse);
     }
 
     // default setting when no setting
@@ -127,14 +134,14 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
     return this;
   }
 
-  public SelectConfig setFrom(List<Table> from) {
-    src = from;
+  public SelectConfig setStmtUse(List<Table> stmtUse) {
+    src = stmtUse;
     return this;
   }
 
   @Override
-  public SelectConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public SelectConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 
@@ -206,5 +213,19 @@ public class SelectConfig implements DefaultConfig<SelectConfig> {
   public void addResType(GenerationDataType dataType) {
     assert candidates != null && src != null;
     operands.add(new TypedExprConfig(candidates, src, dataType));
+    selectNum = SELECT_NUM_DEFAULT;
+  }
+
+  @Override
+  public SelectConfig deepCopyTo(SelectConfig t) {
+    for (TypedExprConfig operand : operands) {
+      t.getOperands().add(operand.deepCopyTo(new TypedExprConfig()));
+    }
+    for (QueryConfig query : queries) {
+      t.getQueries().add(QueryConfig.deepCopy(query));
+    }
+    t.setUseStar(useStar);
+    t.setSelectNum(selectNum);
+    return t;
   }
 }

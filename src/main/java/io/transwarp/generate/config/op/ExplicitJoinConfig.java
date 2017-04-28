@@ -65,14 +65,14 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
   }
 
 
-  public ExplicitJoinConfig setFrom(List<Table> from) {
+  public ExplicitJoinConfig setStmtUse(List<Table> stmtUse) {
     // only need candidates, from is generated
     throw new NotImplementedException();
   }
 
   @Override
-  public ExplicitJoinConfig setCandidates(List<Table> candidates) {
-    this.candidates = candidates;
+  public ExplicitJoinConfig setFromCandidates(List<Table> fromCandidates) {
+    this.candidates = fromCandidates;
     return this;
   }
 
@@ -102,22 +102,22 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
   }
 
   @Override
-  public ExplicitJoinConfig addDefaultConfig(List<Table> candidates, List<Table> notUsed) {
-    setCandidates(candidates);
+  public ExplicitJoinConfig addDefaultConfig(List<Table> fromCandidates, List<Table> notUsed) {
+    setFromCandidates(fromCandidates);
 
     if (!lackChildConfig()) {
       return this;
     }
     assert this.candidates != null;
-    checkOp(candidates, left);
-    checkOp(candidates, right);
+    checkOp(fromCandidates, left);
+    checkOp(fromCandidates, right);
 
     final List<Table> from = initFrom();
 
     if (condition == null) {
-      condition = new ExprConfig(candidates, from);
+      condition = new ExprConfig(fromCandidates, from);
     } else {
-      condition.addDefaultConfig(candidates, from);
+      condition.addDefaultConfig(fromCandidates, from);
     }
     addConditionLimit(condition);
     return this;
@@ -141,5 +141,13 @@ public class ExplicitJoinConfig implements DefaultConfig<ExplicitJoinConfig> {
     from.add(getLeft().toTable());
     from.add(getRight().toTable());
     return from;
+  }
+
+  @Override
+  public ExplicitJoinConfig deepCopyTo(ExplicitJoinConfig t) {
+    t.setCondition(condition.deepCopyTo(new ExprConfig()));
+    t.setLeft(left.deepCopyTo(new CompoundRelationConfig()));
+    t.setRight(right.deepCopyTo(new SimpleRelationConfig()));
+    return t;
   }
 }

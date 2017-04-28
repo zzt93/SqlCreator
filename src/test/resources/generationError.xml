@@ -3,12 +3,30 @@
 <tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:noNamespaceSchemaLocation="define.xsd">
 
+    <test dialect="INCEPTOR" tableDdlFile="default_inceptor.sql">
+        <query id="twoColumn" correlatedPossibility="1">
+            <select>
+                <selectNum>2</selectNum>
+            </select>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf_2</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+            <where>
+            </where>
+        </query>
+
+    </test>
+
     <test>
         <query id="testInvalidWhereQuery">
             <select/>
             <from/>
             <where>
-                <operand candidateQuery="testInvalidSelectQuery">
+                <operand candidateQuery="twoColumn">
                     <udfConfig>
                         <udfList possibility="1">IN_QUERY</udfList>
                     </udfConfig>
@@ -26,22 +44,14 @@
             </where>
         </query>
 
-        <!-- recursive dependent problem? -->
+
+        <!-- cyclic dependent problem? -->
         <!--<query id="simpleQuery" queryDepth="2" num="0">-->
             <!--<select/>-->
             <!--<from/>-->
             <!--<where/>-->
         <!--</query>-->
-        <query id="testJoinInvalidTable">
-            <select/>
-            <from>
-                <explicitJoin>
-                    <left>
-                        <tableName>test</tableName>
-                    </left>
-                </explicitJoin>
-            </from>
-        </query>
+
     </test>
 
 </tests>

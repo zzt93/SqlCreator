@@ -4,6 +4,49 @@
        xsi:noNamespaceSchemaLocation="define.xsd">
 
     <test>
+        <query id="testDdl" correlatedPossibility="1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_view</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+        </query>
+
+    </test>
+
+    <test>
+        <query id="testJoinInvalidTable">
+            <select/>
+            <from>
+                <explicitJoin>
+                    <left>
+                        <tableName>test</tableName>
+                    </left>
+                </explicitJoin>
+            </from>
+        </query>
+
+
+        <query id="testCorrelatedWhere1">
+            <select/>
+            <from>
+                <implicitJoin>
+                    <operand>
+                        <tableName>test_udf</tableName>
+                    </operand>
+                </implicitJoin>
+            </from>
+            <where>
+                <operand candidateQuery="testDdl">
+                    <udfConfig>
+                        <udfList possibility="1">in_query exists</udfList>
+                    </udfConfig>
+                </operand>
+            </where>
+        </query>
 
     </test>
 

@@ -53,8 +53,6 @@
     <xs:complexType name="stmtConfig" abstract="true">
         <xs:attribute name="id" type="xs:ID" use="required"/>
         <xs:attribute name="num" type="xs:unsignedInt" default="10"/>
-        <xs:attribute name="table" type="xs:string" default="default_oracle.sql"/>
-        <xs:attribute name="dialect" type="dialects" default="ORACLE"/>
     </xs:complexType>
 
     <xs:complexType name="queryConfig">
@@ -92,7 +90,7 @@
                 <xs:attribute name="queryDepth" default="1">
                     <xs:simpleType>
                         <xs:annotation>
-                            <xs:appinfo>Sql Generator Note</xs:appinfo>
+                            <xs:appinfo>Sql Creator Note</xs:appinfo>
                             <xs:documentation xml:lang="en">
                                 this attribute not affect the depth of containing recursive queryConfig depth settings
                             </xs:documentation>
@@ -103,6 +101,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:attribute>
+                <xs:attribute name="correlatedPossibility" type="possibility" default="0"/>
             </xs:extension>
         </xs:complexContent>
 
@@ -126,7 +125,7 @@
 
     <xs:simpleType name="depthInt">
         <xs:annotation>
-            <xs:appinfo>Sql Generator Note</xs:appinfo>
+            <xs:appinfo>Sql Creator Note</xs:appinfo>
             <xs:documentation xml:lang="en">
                 this attribute not affect the depth of containing recursive exprConfig depth settings
             </xs:documentation>
@@ -149,9 +148,9 @@
         </xs:choice>
         <xs:attribute name="candidateQuery" type="xs:IDREF">
             <xs:annotation xml:lang="en">
-                <xs:appinfo>Sql Generator Note</xs:appinfo>
+                <xs:appinfo>Sql Creator Note</xs:appinfo>
                 <xs:documentation xml:lang="en">
-                    If user provided subQuery is invalid for this location, program will ignore this setting
+                    If user provided subQuery is invalid for this location, program will complain this setting
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>

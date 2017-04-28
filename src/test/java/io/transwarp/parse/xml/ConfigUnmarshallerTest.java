@@ -43,39 +43,41 @@ public class ConfigUnmarshallerTest {
   @Test
   public void generationError() throws Exception {
     GlobalConfig parse = getGlobalConfig("generationError.xml");
-    for (PerTestConfig perTestConfig : parse.getPerTestConfigs()) {
-      for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
-        boolean rightError = false;
-        try {
-          stmtConfig.generate(GlobalConfig.getCmpBase());
-        } catch (IllegalArgumentException e) {
-          final String msg = e.getMessage();
-          System.out.println(msg);
-          rightError = msg.contains("SubQuery in where statement has more than one column")
-              || msg.contains("SubQuery in select statement ")
-              || msg.contains("Illegal table name")
-          ;
-        }
-        Assert.assertTrue(rightError);
+    Assert.assertTrue(parse.getPerTestConfigs().size() >= 2);
+    PerTestConfig perTestConfig = parse.getPerTestConfigs().get(1);
+    for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
+      boolean rightError = false;
+      try {
+        stmtConfig.generate(GlobalConfig.getCmpBase());
+      } catch (IllegalArgumentException e) {
+        final String msg = e.getMessage();
+        System.out.println(msg);
+        rightError = msg.contains("SubQuery in where statement has more than one column")
+            || msg.contains("SubQuery in select statement ")
+            || msg.contains("Illegal table name")
+        ;
       }
+      Assert.assertTrue(rightError);
     }
   }
 
   @Test
   public void validationError() throws Exception {
-//          ("The content of element 'operand' is not complete. One of '{subQuery, tableName}' is expected.");
     errorTest("xsdValidationError.xml", ValidationException.class);
   }
 
   @Test
   public void parseError() throws Exception {
-//    errorTest("parseError.xml", IllegalArgumentException.class);
+    errorTest("parseError.xml", IllegalArgumentException.class);
   }
 
   private void errorTest(String file, Class<? extends Exception> exceptionClass) throws IOException {
     boolean rightError = false;
     try {
-      getGlobalConfig(file);
+      GlobalConfig parse = getGlobalConfig(file);
+      Assert.assertTrue(parse.getPerTestConfigs().size() >= 2);
+      PerTestConfig perTestConfig = parse.getPerTestConfigs().get(1);
+      perTestConfig.getStmtConfigs();
     } catch (Exception e) {
       e.printStackTrace();
       if (exceptionClass.isInstance(e)) {

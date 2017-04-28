@@ -5,7 +5,6 @@ import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.expr.TypedExprConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
@@ -32,14 +31,12 @@ public class SelectListStmt implements SqlGeneration {
       useStar = config.useStar().random(true, false);
     } else if (config.setPositiveSelectNum()) {
       final int colLimit = config.getSelectNum();
-      cols = TableUtil.randomSubCols(from, BiChoicePossibility.SELECT_COL_POSSIBILITY, colLimit);
-      if (cols.size() < colLimit) {
-        final int num = colLimit - cols.size();
-        for (int i = 0; i < num; i++) {
-          final TypedExprConfig typedExprConfig = new TypedExprConfig(config.getCandidatesTables(), from);
-          cols.addAll(Arrays.asList(Column.fromOperand(
-              Operand.getOperands(1, typedExprConfig.getType(), typedExprConfig))));
-        }
+      cols = new ArrayList<>(colLimit);
+      // TODO 3/2/17 only random operand, may add random select query
+      for (int i = 0; i < colLimit; i++) {
+        final TypedExprConfig typedExprConfig = new TypedExprConfig(config.getCandidatesTables(), from);
+        cols.addAll(Arrays.asList(Column.fromOperand(
+            Operand.getOperands(1, typedExprConfig.getType(), typedExprConfig))));
       }
     } else {
       final List<TypedExprConfig> operands = config.getOperands();

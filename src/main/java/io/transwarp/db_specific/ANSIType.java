@@ -1,5 +1,6 @@
 package io.transwarp.db_specific;
 
+import com.google.common.base.Preconditions;
 import io.transwarp.db_specific.base.DBType;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
@@ -24,6 +25,7 @@ public enum ANSIType implements DBType {
       if (len == DBType.NO_LEN) {
         return DataType.INT;
       }
+      Preconditions.checkArgument(len > 0, "invalid len for varchar2: " + len);
       return SequenceDataType.sequence(DataType.Meta.BIT, len);
     }
   };
