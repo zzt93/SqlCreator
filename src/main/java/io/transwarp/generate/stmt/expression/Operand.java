@@ -2,6 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import com.google.common.base.Optional;
 import io.transwarp.db_specific.base.Dialect;
+import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.GlobalConfig;
@@ -26,7 +27,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * <br>operation</br>
  * <br>result</br>
  */
-public class Operand {
+public class Operand implements SqlGeneration {
   /**
    * use @see DataTypeGeneration for this type is for generation
    * and should isolate from the specific sql dialect
@@ -97,6 +98,7 @@ public class Operand {
     return res;
   }
 
+  @Override
   public StringBuilder sql(Dialect dialect) {
     return versions.get(dialect);
   }

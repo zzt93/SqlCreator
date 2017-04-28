@@ -30,7 +30,7 @@ import io.transwarp.generate.type.GenerationDataType;
  *
  * @see FunctionMap#random(GenerationDataType, UdfFilter)
  * @see InputRelation#refine(GenerationDataType[])
- * @see Operand#makeOperand(GenerationDataType, ExprConfig, int)
+ * @see Operand#makeOperand(GenerationDataType, ExprConfig, int, UdfFilter)
  */
 public interface Function {
 
@@ -51,7 +51,7 @@ public interface Function {
 
   /**
    * <li> update sql</li>
-   * <li> update type -- set at {@link Operand#makeOperand(GenerationDataType, ExprConfig, int)}
+   * <li> update type -- set at {@link Operand#makeOperand(GenerationDataType, ExprConfig, int, UdfFilter)}
    *
    * @param dialects used when different dialect has different ways to apply
    * @param input   parameter  @return result
