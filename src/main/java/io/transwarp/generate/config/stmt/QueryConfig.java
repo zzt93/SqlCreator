@@ -237,7 +237,7 @@ public class QueryConfig extends StmtConfig {
   }
 
   /**
-   * from `query` can't use `select *`, must using column name
+   * `from query` can't use `select *`, must using column name
    */
   public static QueryConfig fromQuery(List<Table> candidates) {
     final QueryConfig config = new QueryConfig(candidates);
