@@ -22,7 +22,6 @@ import java.util.EnumMap;
  */
 public class CLParser {
 
-  private static final Logger logger = LoggerFactory.getLogger(CLParser.class);
 
   private String[] paths = new String[]{"oracle=oracle", "inceptor=inceptor"};
   private InputStream xmlFile = ClassLoader.getSystemResourceAsStream("template.xml");
@@ -30,9 +29,7 @@ public class CLParser {
   public CLParser(String[] args) {
     if (args.length >= 1) {
       if (!Files.exists(Paths.get(args[0]))) {
-        IllegalArgumentException illegalArgumentException = new IllegalArgumentException("No such xml config file: " + xmlFile);
-        logger.error("", illegalArgumentException);
-        throw illegalArgumentException;
+        throw new IllegalArgumentException("No such xml config file: " + xmlFile);
       }
       try {
         xmlFile = new FileInputStream(args[0]);
