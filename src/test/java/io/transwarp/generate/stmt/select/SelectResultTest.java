@@ -3,7 +3,7 @@ package io.transwarp.generate.stmt.select;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.util.Strs;
 import io.transwarp.parse.cl.CLParser;
@@ -53,7 +53,7 @@ public class SelectResultTest {
   public static QueryConfig[] data() throws Exception {
     ConfigUnmarshaller configUnmarshaller = new ConfigUnmarshaller();
     clParser = new CLParser(Strs.of(ClassLoader.getSystemResource("test.xml").getFile(), "oracle=oracle", "inceptor=inceptor"));
-    final GlobalConfig parse = configUnmarshaller.parse(new XMLParserSource(clParser.getInput()));
+    final TestsConfig parse = configUnmarshaller.parse(new XMLParserSource(clParser.getInput()));
     List<QueryConfig> list = parse.getQueries();
     return list.toArray(new QueryConfig[0]);
   }
@@ -94,8 +94,8 @@ public class SelectResultTest {
     name();
     columns();
     for (SelectResult selectResult : selectResults) {
-      oracle.println(selectResult.sql(GlobalConfig.getBase()));
-      inceptor.println(selectResult.sql(GlobalConfig.getCmp()));
+      oracle.println(selectResult.sql(TestsConfig.getBase()));
+      inceptor.println(selectResult.sql(TestsConfig.getCmp()));
     }
     close();
   }

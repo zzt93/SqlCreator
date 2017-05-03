@@ -5,7 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.SqlGeneration;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.config.expr.FunctionDepth;
 import io.transwarp.generate.config.expr.UdfFilter;
@@ -38,7 +38,7 @@ public class Operand implements SqlGeneration {
 
   public Operand(GenerationDataType type, String... ops) {
     this.type = type;
-    final Dialect[] dialects = GlobalConfig.getCmpBase();
+    final Dialect[] dialects = TestsConfig.getCmpBase();
     assert ops.length == dialects.length;
     for (int i = 0; i < dialects.length; i++) {
       versions.put(dialects[i], new StringBuilder(ops[i]));
@@ -56,12 +56,12 @@ public class Operand implements SqlGeneration {
         if (col.isPresent()) {
           final Column column = col.get();
           return new Operand(resultType,
-              column.getNameOrConst(GlobalConfig.getCmpBase(), config.getConstOrColumnPossibility()));
+              column.getNameOrConst(TestsConfig.getCmpBase(), config.getConstOrColumnPossibility()));
         } else {
           if (DataTypeGroup.LIST_GROUP.contains(resultType)) {
-            return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, GlobalConfig.getCmpBase()));
+            return new Operand(resultType, ((ListDataType) resultType).listOrQuery(config, TestsConfig.getCmpBase()));
           }
-          return new Operand(resultType, resultType.randomData(GlobalConfig.getCmpBase()));
+          return new Operand(resultType, resultType.randomData(TestsConfig.getCmpBase()));
         }
       }
     }
@@ -84,7 +84,7 @@ public class Operand implements SqlGeneration {
         ops[i] = makeOperand(nextResultType[i], config, depth - 1, udfFilter);
       }
     }
-    return function.apply(GlobalConfig.getCmpBase(), resultType, ops)
+    return function.apply(TestsConfig.getCmpBase(), resultType, ops)
         .setType(resultType);
   }
 

@@ -1,6 +1,6 @@
 package io.transwarp.parse.xml;
 
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.parse.ConfigParser;
 import io.transwarp.parse.ParserSource;
 import org.xml.sax.InputSource;
@@ -29,7 +29,7 @@ public class ConfigUnmarshaller implements ConfigParser {
 
   private InputStream schemaFile = ClassLoader.getSystemResourceAsStream("define.xsd");
 
-  public GlobalConfig parse(ParserSource parserSource) throws IOException, ValidationException {
+  public TestsConfig parse(ParserSource parserSource) throws IOException, ValidationException {
     SAXParserFactory spf = SAXParserFactory.newInstance();
     spf.setNamespaceAware(true);
 
@@ -37,13 +37,13 @@ public class ConfigUnmarshaller implements ConfigParser {
     try {
       Schema schema = sf.newSchema(new StreamSource(schemaFile));
       spf.setSchema(schema);
-      JAXBContext jc = JAXBContext.newInstance(GlobalConfig.class);
+      JAXBContext jc = JAXBContext.newInstance(TestsConfig.class);
       Unmarshaller unmarshaller = jc.createUnmarshaller();
 
       XMLReader xmlReader = spf.newSAXParser().getXMLReader();
       SAXSource source = new SAXSource(xmlReader, new InputSource(parserSource.getSource()));
       unmarshaller.setEventHandler(new PrintInfoHandler());
-      return (GlobalConfig) unmarshaller.unmarshal(source);
+      return (TestsConfig) unmarshaller.unmarshal(source);
 
     } catch (SAXException | JAXBException | ParserConfigurationException e) {
       throw new ValidationException(e);

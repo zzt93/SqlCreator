@@ -5,7 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Column;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -28,7 +28,7 @@ public class FromObj implements Table {
   }
 
   private void initSql() {
-    for (Dialect dialect : GlobalConfig.getCmpBase()) {
+    for (Dialect dialect : TestsConfig.getCmpBase()) {
       sqls.put(dialect, new StringBuilder(name));
     }
   }
@@ -55,7 +55,7 @@ public class FromObj implements Table {
     // update columns
     t1.columns().addAll(t2.columns());
     // update sql
-    for (Dialect dialect : GlobalConfig.getCmpBase()) {
+    for (Dialect dialect : TestsConfig.getCmpBase()) {
       t1.toTableSql(dialect)
           .append(" join ")
           .append(t2.toTableSql(dialect))

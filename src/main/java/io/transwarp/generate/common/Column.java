@@ -2,7 +2,7 @@ package io.transwarp.generate.common;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.BiChoicePossibility;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.stmt.expression.Operand;
 import io.transwarp.generate.stmt.select.SelectResult;
 import io.transwarp.generate.type.GenerationDataType;
@@ -84,7 +84,7 @@ public class Column {
     assert columns.size() == 1;
     final GenerationDataType type = columns.get(0).getType();
     return new Column(
-        new Operand(type, selectResult.subQueries(GlobalConfig.getCmpBase())),
+        new Operand(type, selectResult.subQueries(TestsConfig.getCmpBase())),
         TableUtil.nextColAlias());
   }
 

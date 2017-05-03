@@ -1,6 +1,6 @@
 package io.transwarp.parse;
 
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.parse.xml.ValidationException;
 
 import java.io.IOException;
@@ -12,5 +12,5 @@ import java.io.IOException;
  */
 public interface ConfigParser {
 
-    GlobalConfig parse(ParserSource parserSource) throws IOException, ValidationException;
+    TestsConfig parse(ParserSource parserSource) throws IOException, ValidationException;
 }

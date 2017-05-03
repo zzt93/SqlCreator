@@ -4,7 +4,7 @@ package io.transwarp.generate.config.stmt;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
 import io.transwarp.generate.stmt.select.SelectResult;
@@ -47,7 +47,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
-    GlobalConfig.checkConfig(select, super.getCandidates(), from.getFromObj());
+    TestsConfig.checkConfig(select, super.getCandidates(), from.getFromObj());
     return select;
   }
 
@@ -57,7 +57,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FilterOperatorConfig getWhere() {
-    GlobalConfig.checkConfig(where, super.getCandidates(), from.getFromObj());
+    TestsConfig.checkConfig(where, super.getCandidates(), from.getFromObj());
     return where;
   }
 
@@ -85,7 +85,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
-    GlobalConfig.checkConfig(from, getCandidates(), null);
+    TestsConfig.checkConfig(from, getCandidates(), null);
     return from;
   }
 

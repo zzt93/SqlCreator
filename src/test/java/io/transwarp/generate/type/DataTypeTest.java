@@ -1,7 +1,7 @@
 package io.transwarp.generate.type;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class DataTypeTest {
     SimpleDateFormat dateFormat = new SimpleDateFormat(DataType.YYYY_MM_DD_HH_MM_SS);
     System.out.println(dateFormat.format(new Date(Integer.MAX_VALUE)));
 
-    Dialect[] dialects = GlobalConfig.getCmpBase();
+    Dialect[] dialects = TestsConfig.getCmpBase();
     String maxDate = "DATE'9999-12-31'";
     String minDate = "DATE'0001-01-01'";
     for (int i = 0; i < 1000; i++) {
@@ -44,14 +44,14 @@ public class DataTypeTest {
 
   @Test
   public void dataDialectMatchTest() {
-    Dialect[] dialects = GlobalConfig.getCmpBase();
+    Dialect[] dialects = TestsConfig.getCmpBase();
     Assert.assertTrue(
         dialects[0] == Dialect.INCEPTOR && dialects[1] == Dialect.ORACLE && dialects.length == 2);
   }
 
   @Test
   public void ensureBoolDataOrder() {
-    final String[] strings = DataType.BOOL.randomData(GlobalConfig.getCmpBase());
+    final String[] strings = DataType.BOOL.randomData(TestsConfig.getCmpBase());
     Assert.assertTrue(strings[0].equals("true") || strings[0].equals("false"));
   }
 

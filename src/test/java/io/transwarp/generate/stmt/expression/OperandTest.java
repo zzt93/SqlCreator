@@ -2,7 +2,7 @@ package io.transwarp.generate.stmt.expression;
 
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.config.expr.ExprConfig;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.GenerationDataType;
@@ -38,8 +38,8 @@ public class OperandTest {
       final GenerationDataType type = operands[0].getType();
       for (Operand operand : operands) {
         System.out.println(operand.getType() + ":"
-            + operand.sql(GlobalConfig.getBase()).length() + ";"
-            + operand.sql(GlobalConfig.getCmp()).length());
+            + operand.sql(TestsConfig.getBase()).length() + ";"
+            + operand.sql(TestsConfig.getCmp()).length());
         assertTrue(operand.getType().equals(type));
       }
     }

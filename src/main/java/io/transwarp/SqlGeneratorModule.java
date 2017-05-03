@@ -10,11 +10,12 @@ import io.transwarp.parse.xml.XMLParserSource;
 
 /**
  * Created by zzt on 17/4/27.
+ *
+ * bind service-like class
  */
 public class SqlGeneratorModule extends AbstractModule {
   @Override
   protected void configure() {
-    bind(SqlWriter.class).to(FileSqlWriter.class);
     bind(ParserSource.class).to(XMLParserSource.class);
     bind(ConfigParser.class).to(ConfigUnmarshaller.class);
   }
