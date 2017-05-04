@@ -8,6 +8,8 @@ import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.stmt.share.FromObj;
 import io.transwarp.generate.type.GenerationDataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,9 +27,10 @@ import java.util.regex.Pattern;
  * <h3></h3>
  */
 public class DDLParser {
+  private static final Logger logger = LoggerFactory.getLogger(DDLParser.class);
 
   private static final String TABLE = " TABLE ";
-  public static final String VIEW = " VIEW ";
+  private static final String VIEW = " VIEW ";
   /**
    * Pattern.DOTALL or (?s) tells Java to allow the dot to match newline characters
    */
@@ -41,6 +44,18 @@ public class DDLParser {
     scanner = new Scanner(path);
     scanner.useDelimiter(";");
     this.dialect = dialect;
+  }
+
+  public static List<Table> getTable(String tableFile, Dialect dialect) {
+    List<FromObj> tables;
+    if (TableLoader.map.containsKey(tableFile)) {
+      tables = TableLoader.map.get(tableFile).table;
+    } else {
+      final TableLoader value = new TableLoader(tableFile, dialect);
+      TableLoader.map.put(tableFile, value);
+      tables = value.table;
+    }
+    return TableUtil.deepCopy(tables);
   }
 
   private StmtIterator createSql() {
@@ -59,7 +74,7 @@ public class DDLParser {
       final String stmt = it.next();
       final Optional<String> name = extractTableName(stmt);
       if (!name.isPresent()) {
-        System.out.println("[SQL Creator][Warning]: Couldn't find table/view name: " + stmt);
+        logger.warn("Couldn't find table/view name: " + stmt);
         continue;
       }
       final Matcher matcher = columns.matcher(stmt);
@@ -124,6 +139,8 @@ public class DDLParser {
 
   private static class TableLoader {
 
+    private static HashMap<String, TableLoader> map = new HashMap<>();
+    private final List<FromObj> table;
     TableLoader(String fileName, Dialect dialect) {
       DDLParser ddlParser = null;
       try {
@@ -138,20 +155,5 @@ public class DDLParser {
       }
       table = ddlParser.parse();
     }
-
-    private final List<FromObj> table;
-    private static HashMap<String, TableLoader> map = new HashMap<>();
-  }
-
-  public static List<Table> getTable(String tableFile, Dialect dialect) {
-    List<FromObj> tables;
-    if (TableLoader.map.containsKey(tableFile)) {
-      tables = TableLoader.map.get(tableFile).table;
-    } else {
-      final TableLoader value = new TableLoader(tableFile, dialect);
-      TableLoader.map.put(tableFile, value);
-      tables = value.table;
-    }
-    return TableUtil.deepCopy(tables);
   }
 }

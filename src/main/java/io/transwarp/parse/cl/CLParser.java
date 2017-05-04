@@ -20,6 +20,7 @@ import java.util.EnumMap;
  */
 public class CLParser {
 
+
   private String[] paths = new String[]{"oracle=oracle", "inceptor=inceptor"};
   private InputStream xmlFile = ClassLoader.getSystemResourceAsStream("template.xml");
 
@@ -42,7 +43,7 @@ public class CLParser {
     }
   }
 
-  public InputStream getInputPath() {
+  public InputStream getInput() {
     return xmlFile;
   }
 

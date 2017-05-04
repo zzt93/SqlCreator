@@ -1,5 +1,6 @@
 package io.transwarp.generate.stmt.select;
 
+import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.common.TableUtil;
 import io.transwarp.generate.config.TestsConfig;
@@ -18,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ public class SelectResultTest {
 
   private final QueryConfig queryConfig;
   private SelectResult[] selectResults;
+  private PrintWriter oracle;
+  private PrintWriter inceptor;
   private List<Table> fromObj;
   private static CLParser clParser;
 
@@ -49,7 +53,7 @@ public class SelectResultTest {
   public static QueryConfig[] data() throws Exception {
     ConfigUnmarshaller configUnmarshaller = new ConfigUnmarshaller();
     clParser = new CLParser(Strs.of(ClassLoader.getSystemResource("test.xml").getFile(), "oracle=oracle", "inceptor=inceptor"));
-    final TestsConfig parse = configUnmarshaller.parse(new XMLParserSource(clParser.getInputPath()));
+    final TestsConfig parse = configUnmarshaller.parse(new XMLParserSource(clParser.getInput()));
     List<QueryConfig> list = parse.getQueries();
     return list.toArray(new QueryConfig[0]);
   }
@@ -62,6 +66,9 @@ public class SelectResultTest {
       selectResults[i] = SelectResult.generateQuery(queryConfig);
     }
     fromObj = queryConfig.getFrom().getFromObj();
+    final EnumMap<Dialect, Path> outputDir = clParser.getOutputDir();
+    oracle = getWriter(outputDir.get(Dialect.ORACLE), queryConfig.getId());
+    inceptor = getWriter(outputDir.get(Dialect.INCEPTOR), queryConfig.getId());
   }
 
   private PrintWriter getWriter(Path dir, String prefix) throws FileNotFoundException {
@@ -87,9 +94,16 @@ public class SelectResultTest {
     name();
     columns();
     for (SelectResult selectResult : selectResults) {
-      System.out.println(selectResult.sql(TestsConfig.getBase()));
-      System.out.println(selectResult.sql(TestsConfig.getCmp()));
+      oracle.println(selectResult.sql(TestsConfig.getBase()));
+      inceptor.println(selectResult.sql(TestsConfig.getCmp()));
     }
+    close();
   }
 
+  public void close() {
+    oracle.flush();
+    oracle.close();
+    inceptor.flush();
+    inceptor.close();
+  }
 }

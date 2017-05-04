@@ -63,6 +63,7 @@ public class ConfigUnmarshallerTest {
 
   @Test
   public void validationError() throws Exception {
+//          ("The content of element 'operand' is not complete. One of '{subQuery, tableName}' is expected.");
     errorTest("xsdValidationError.xml", ValidationException.class);
   }
 

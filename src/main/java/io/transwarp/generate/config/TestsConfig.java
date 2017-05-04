@@ -4,15 +4,13 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.stmt.QueryConfig;
 import io.transwarp.generate.config.stmt.StmtConfig;
+import io.transwarp.out.SqlWriter;
+import io.transwarp.out.file.SqlWriterGenerator;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -34,8 +32,18 @@ public class TestsConfig {
     return cmp;
   }
 
+  public TestsConfig setCmp(Dialect cmp) {
+    TestsConfig.cmp = cmp;
+    return this;
+  }
+
   public static Dialect getBase() {
     return base;
+  }
+
+  public TestsConfig setBase(Dialect base) {
+    TestsConfig.base = base;
+    return this;
   }
 
   public static <T extends DefaultConfig<T>> void checkConfig(DefaultConfig<T> defaultConfig, List<Table> candidates, List<Table> from) {
@@ -46,14 +54,8 @@ public class TestsConfig {
     }
   }
 
-  public TestsConfig setCmp(Dialect cmp) {
-    TestsConfig.cmp = cmp;
-    return this;
-  }
-
-  public TestsConfig setBase(Dialect base) {
-    TestsConfig.base = base;
-    return this;
+  public static Dialect[] getCmpBase() {
+    return new Dialect[]{getCmp(), getBase()};
   }
 
   @XmlElement(name = "test")
@@ -64,10 +66,6 @@ public class TestsConfig {
   public TestsConfig setPerTestConfigs(List<PerTestConfig> perTestConfigs) {
     this.perTestConfigs = perTestConfigs;
     return this;
-  }
-
-  public static Dialect[] getCmpBase() {
-    return new Dialect[]{getCmp(), getBase()};
   }
 
   public List<QueryConfig> getQueries() {
@@ -82,34 +80,21 @@ public class TestsConfig {
     return list;
   }
 
-  public void generate(EnumMap<Dialect, Path> dirs) throws FileNotFoundException {
+  public void generate(SqlWriterGenerator generator) throws FileNotFoundException {
     // now, only with queries
     for (QueryConfig queryConfig : getQueries()) {
       if (queryConfig.getNum() == 0) {
         continue;
       }
-      EnumMap<Dialect, PrintWriter> writers = getPrintWriter(dirs, queryConfig.getId());
+      Dialect[] cmpBase = getCmpBase();
+      SqlWriter sqlWriter = generator.file(queryConfig.getId());
       for (int i = 0; i < queryConfig.getNum(); i++) {
-        final EnumMap<Dialect, String> generate = queryConfig.generate(getCmpBase());
-        for (Dialect dialect : getCmpBase()) {
-          writers.get(dialect).println(generate.get(dialect));
-        }
+        final EnumMap<Dialect, String> generate = queryConfig.generate(cmpBase);
+        sqlWriter.println(generate);
       }
-      for (PrintWriter printWriter : writers.values()) {
-        printWriter.flush();
-        printWriter.close();
-      }
+      sqlWriter.flush();
+      sqlWriter.close();
     }
   }
 
-  private EnumMap<Dialect, PrintWriter> getPrintWriter(EnumMap<Dialect, Path> dirs, String prefix) throws FileNotFoundException {
-    final Dialect[] dialects = getCmpBase();
-    EnumMap<Dialect, PrintWriter> res = new EnumMap<>(Dialect.class);
-    for (Dialect dialect : dialects) {
-      final Path dir = dirs.get(dialect);
-      final Path path = Paths.get(dir.toString(), prefix + ".sql");
-      res.put(dialect, new PrintWriter(new OutputStreamWriter(new FileOutputStream(path.toString(), false))));
-    }
-    return res;
-  }
 }
