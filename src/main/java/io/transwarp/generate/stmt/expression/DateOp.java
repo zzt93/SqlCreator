@@ -3,7 +3,7 @@ package io.transwarp.generate.stmt.expression;
 import com.google.common.collect.ObjectArrays;
 import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.config.BiChoicePossibility;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.type.DataType;
 import io.transwarp.generate.type.DataTypeGroup;
 import io.transwarp.generate.type.GenerationDataType;
@@ -68,7 +68,7 @@ public enum DateOp implements Function {
 
   DateOp(String... ops) {
     for (int i = 0; i < ops.length; i++) {
-      Dialect dialect = GlobalConfig.getCmpBase()[i];
+      Dialect dialect = TestsConfig.getCmpBase()[i];
       this.ops.put(dialect, ops[i]);
     }
   }
@@ -132,7 +132,7 @@ public enum DateOp implements Function {
 
     DateArithOp(String[] ops, String[] delims) {
       for (int i = 0; i < ops.length; i++) {
-        Dialect dialect = GlobalConfig.getCmpBase()[i];
+        Dialect dialect = TestsConfig.getCmpBase()[i];
         this.ops.put(dialect, ops[i]);
         this.delims.put(dialect, delims[i]);
       }
@@ -241,7 +241,7 @@ public enum DateOp implements Function {
 
     CountDateOp(String... op) {
       for (int i = 0; i < op.length; i++) {
-        Dialect dialect = GlobalConfig.getCmpBase()[i];
+        Dialect dialect = TestsConfig.getCmpBase()[i];
         ops.put(dialect, op[i]);
       }
     }

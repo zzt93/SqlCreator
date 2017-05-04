@@ -16,12 +16,12 @@ import java.util.EnumMap;
  * <p>
  * <h3></h3>
  */
-public class GlobalConfigTest {
+public class TestsConfigTest {
   @Test
   public void generate() throws Exception {
     final CLParser clParser = new CLParser(Strs.of(ClassLoader.getSystemResource("test.xml").getFile(), "oracle=oracle", "inceptor=inceptor"));
     InputStream xmlFile = clParser.getInputPath();
-    final GlobalConfig parse = new ConfigUnmarshaller().parse(new XMLParserSource(xmlFile));
+    final TestsConfig parse = new ConfigUnmarshaller().parse(new XMLParserSource(xmlFile));
     EnumMap<Dialect, Path> map = clParser.getOutputDir();
     parse.generate(map);
   }

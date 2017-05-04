@@ -1,7 +1,7 @@
 package io.transwarp;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.parse.cl.CLParser;
 import io.transwarp.parse.xml.ConfigUnmarshaller;
 import io.transwarp.parse.xml.ValidationException;
@@ -22,7 +22,7 @@ public class Main {
   public static void main(String[] args) throws IOException, ValidationException {
     final CLParser clParser = new CLParser(args);
     InputStream xmlFile = clParser.getInputPath();
-    final GlobalConfig parse = new ConfigUnmarshaller().parse(new XMLParserSource(xmlFile));
+    final TestsConfig parse = new ConfigUnmarshaller().parse(new XMLParserSource(xmlFile));
     EnumMap<Dialect, Path> map = clParser.getOutputDir();
     parse.generate(map);
   }

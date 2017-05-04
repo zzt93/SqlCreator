@@ -1,6 +1,6 @@
 package io.transwarp.parse.xml;
 
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.config.PerTestConfig;
 import io.transwarp.generate.config.stmt.StmtConfig;
 import org.junit.Assert;
@@ -31,24 +31,24 @@ public class ConfigUnmarshallerTest {
 
   @Test
   public void parse() throws Exception {
-    final GlobalConfig parse = getGlobalConfig("template.xml");
+    final TestsConfig parse = getTestsConfig("template.xml");
     System.out.println();
   }
 
-  private GlobalConfig getGlobalConfig(String file) throws IOException, ValidationException {
+  private TestsConfig getTestsConfig(String file) throws IOException, ValidationException {
     InputStream inputPath = ClassLoader.getSystemResourceAsStream(file);
     return configUnmarshaller.parse(new XMLParserSource(inputPath));
   }
 
   @Test
   public void generationError() throws Exception {
-    GlobalConfig parse = getGlobalConfig("generationError.xml");
+    TestsConfig parse = getTestsConfig("generationError.xml");
     Assert.assertTrue(parse.getPerTestConfigs().size() >= 2);
     PerTestConfig perTestConfig = parse.getPerTestConfigs().get(1);
     for (StmtConfig stmtConfig : perTestConfig.getStmtConfigs()) {
       boolean rightError = false;
       try {
-        stmtConfig.generate(GlobalConfig.getCmpBase());
+        stmtConfig.generate(TestsConfig.getCmpBase());
       } catch (IllegalArgumentException e) {
         final String msg = e.getMessage();
         System.out.println(msg);
@@ -74,7 +74,7 @@ public class ConfigUnmarshallerTest {
   private void errorTest(String file, Class<? extends Exception> exceptionClass) throws IOException {
     boolean rightError = false;
     try {
-      GlobalConfig parse = getGlobalConfig(file);
+      TestsConfig parse = getTestsConfig(file);
       Assert.assertTrue(parse.getPerTestConfigs().size() >= 2);
       PerTestConfig perTestConfig = parse.getPerTestConfigs().get(1);
       perTestConfig.getStmtConfigs();
@@ -89,7 +89,7 @@ public class ConfigUnmarshallerTest {
 
   @Test
   public void generate() throws IOException, JAXBException {
-    JAXBContext jaxbContext = JAXBContext.newInstance(GlobalConfig.class);
+    JAXBContext jaxbContext = JAXBContext.newInstance(TestsConfig.class);
     SchemaOutputResolver sor = new MySchemaOutputResolver();
     jaxbContext.generateSchema(sor);
   }

@@ -5,7 +5,7 @@ import io.transwarp.db_specific.base.Dialect;
 import io.transwarp.generate.common.Table;
 import io.transwarp.generate.config.BiChoicePossibility;
 import io.transwarp.generate.config.Cloneable;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 import io.transwarp.generate.config.expr.adapter.BiChoicePossibilityAdapter;
 import io.transwarp.generate.config.op.FilterOperatorConfig;
 import io.transwarp.generate.config.op.SelectConfig;
@@ -55,7 +55,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement(type = SelectConfig.class)
   public SelectConfig getSelect() {
-    GlobalConfig.checkConfig(select, super.getCandidates(), from.getFromObj());
+    TestsConfig.checkConfig(select, super.getCandidates(), from.getFromObj());
     return select;
   }
 
@@ -65,7 +65,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FilterOperatorConfig getWhere() {
-    GlobalConfig.checkConfig(where, super.getCandidates(), from.getFromObj());
+    TestsConfig.checkConfig(where, super.getCandidates(), from.getFromObj());
     return where;
   }
 
@@ -93,7 +93,7 @@ public class QueryConfig extends StmtConfig {
 
   @XmlElement
   public FromConfig getFrom() {
-    GlobalConfig.checkConfig(from, getCandidates(), null);
+    TestsConfig.checkConfig(from, getCandidates(), null);
     return from;
   }
 
@@ -141,7 +141,7 @@ public class QueryConfig extends StmtConfig {
     assert fromCandidates != null;
     setFromCandidates(fromCandidates);
 
-    GlobalConfig.checkConfig(from, fromCandidates, null);
+    TestsConfig.checkConfig(from, fromCandidates, null);
     final List<Table> fromObj = getFrom().getFromObj();
     List<Table> tables = fromObj;
     final Boolean useOuterTable = correlatedPossibility.random(true, false);
@@ -152,8 +152,8 @@ public class QueryConfig extends StmtConfig {
     } else if (useOuterTable) {
       System.out.println("\n[SQL Creator][Warning]: generating a correlated sub-query alone may be invalid: " + getId());
     }
-    GlobalConfig.checkConfig(where, fromCandidates, tables);
-    GlobalConfig.checkConfig(select, fromCandidates, tables);
+    TestsConfig.checkConfig(where, fromCandidates, tables);
+    TestsConfig.checkConfig(select, fromCandidates, tables);
     return this;
   }
 

@@ -1,7 +1,7 @@
 package io.transwarp.parse.cl;
 
 import io.transwarp.db_specific.base.Dialect;
-import io.transwarp.generate.config.GlobalConfig;
+import io.transwarp.generate.config.TestsConfig;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -37,7 +37,7 @@ public class CLParser {
       }
     }
 
-    if (paths.length != GlobalConfig.getCmpBase().length) {
+    if (paths.length != TestsConfig.getCmpBase().length) {
       throw new IllegalArgumentException("Only support oracle and inceptor now");
     }
   }

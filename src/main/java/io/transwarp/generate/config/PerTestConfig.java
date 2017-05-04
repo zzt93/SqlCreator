@@ -44,7 +44,7 @@ public class PerTestConfig {
   })
   public List<StmtConfig> getStmtConfigs() {
     for (StmtConfig stmtConfig : stmtConfigs) {
-      GlobalConfig.checkConfig(stmtConfig, getCandidates(), null);
+      TestsConfig.checkConfig(stmtConfig, getCandidates(), null);
     }
     return stmtConfigs;
   }

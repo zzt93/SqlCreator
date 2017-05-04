@@ -23,7 +23,7 @@ import java.util.List;
  * <h3></h3>
  */
 @XmlRootElement(name = "tests")
-public class GlobalConfig {
+public class TestsConfig {
 
   private static Dialect cmp = Dialect.INCEPTOR;
   private static Dialect base = Dialect.ORACLE;
@@ -46,13 +46,13 @@ public class GlobalConfig {
     }
   }
 
-  public GlobalConfig setCmp(Dialect cmp) {
-    GlobalConfig.cmp = cmp;
+  public TestsConfig setCmp(Dialect cmp) {
+    TestsConfig.cmp = cmp;
     return this;
   }
 
-  public GlobalConfig setBase(Dialect base) {
-    GlobalConfig.base = base;
+  public TestsConfig setBase(Dialect base) {
+    TestsConfig.base = base;
     return this;
   }
 
@@ -61,7 +61,7 @@ public class GlobalConfig {
     return perTestConfigs;
   }
 
-  public GlobalConfig setPerTestConfigs(List<PerTestConfig> perTestConfigs) {
+  public TestsConfig setPerTestConfigs(List<PerTestConfig> perTestConfigs) {
     this.perTestConfigs = perTestConfigs;
     return this;
   }
